@@ -7,7 +7,7 @@
  * Testbench for vga_timing module.
  */
 
-module vga_timing_tb;
+ module vga_timing_tb;
 
     timeunit 1ns;
     timeprecision 1ps;
@@ -19,7 +19,7 @@ module vga_timing_tb;
      *  Local parameters
      */
 
-    localparam CLK_FREQ = 65;     
+    localparam CLK_PERIOD = 15.3846; // 65 MHz
 
 
     /**
@@ -42,7 +42,7 @@ module vga_timing_tb;
 
     initial begin
         clk = 1'b0;
-        forever #(1_000_000_000 / (CLK_FREQ << 2)) clk = ~clk;
+        forever #(CLK_PERIOD/2) clk = ~clk;
     end
 
 
@@ -52,9 +52,9 @@ module vga_timing_tb;
 
     initial begin
         rst = 1'b0;
-        #50 rst = 1'b1;
+        #(1.25*CLK_PERIOD) rst = 1'b1;
         rst = 1'b1;
-        #100 rst = 1'b0;
+        #(2.00*CLK_PERIOD) rst = 1'b0;
     end
 
 
