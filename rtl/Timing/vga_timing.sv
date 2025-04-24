@@ -31,11 +31,21 @@ logic vsync_nxt, vblnk_nxt, hsync_nxt, hblnk_nxt;
 //------------------------------------------------------------------------------
 // output register with sync reset
 //------------------------------------------------------------------------------
- always_ff @(posedge clk) begin 
+always_ff @(posedge clk) begin 
     if (rst) begin 
-        {out.vcount, out.hcount, out.vsync, out.vblnk, out.hsync, out.hblnk} <= START;
+        out.vcount <= START;
+        out.hcount <= START;
+        out.vsync <= START;
+        out.vblnk <= START;
+        out.hsync <= START;
+        out.hblnk <= START;
     end else begin
-        {out.vcount, out.hcount, out.vsync, out.vblnk, out.hsync, out.hblnk} <= {vcount_nxt, hcount_nxt, vsync_nxt, vblnk_nxt, hsync_nxt, hblnk_nxt};
+        out.vcount <= vcount_nxt; 
+        out.hcount <= hcount_nxt;
+        out.vsync <= vsync_nxt;
+        out.vblnk <= vblnk_nxt;
+        out.hsync <= hsync_nxt;
+        out.hblnk <= hblnk_nxt;
     end
  end
 

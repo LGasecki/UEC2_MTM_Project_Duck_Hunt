@@ -35,6 +35,7 @@ module top_vga (
 
 
     timing_if timing_if();
+    vga_if background_if();
 
 
     /**
@@ -49,9 +50,9 @@ module top_vga (
      * Signals assignments
      */
     
-    assign vs = timing_if.vsync;
-    assign hs = timing_if.hsync;
-    assign {r,g,b} = timing_if.rgb;
+    assign vs = background_if.vsync;
+    assign hs = background_if.hsync;
+    assign {r,g,b} = background_if.rgb;
     
     
     /**
@@ -65,6 +66,13 @@ module top_vga (
         .out(timing_if)
     );
 
+    Game_Background u_game_background (
+        .clk(clk100),
+        .rst(rst),
+
+        .in(timing_if),
+        .out(background_if)
+    );
 
  
 endmodule
