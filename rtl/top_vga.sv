@@ -67,7 +67,7 @@ module top_vga (
     );
 
     Game_Background u_game_background (
-        .clk(clk100),
+        .clk(clk65),
         .rst(rst),
 
         .in(timing_if),
