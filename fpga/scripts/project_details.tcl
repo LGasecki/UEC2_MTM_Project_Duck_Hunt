@@ -32,13 +32,13 @@ set xdc_files {
 
 # Specify SystemVerilog design files location  
 set sv_files {
-../../rtl/Timing/vga_pkg.sv \
+    ../rtl/Timing/vga_pkg.sv \
     ../rtl/Timing/vga_timing.sv \
     ../rtl/vga_if.sv \
     ../rtl/top_vga.sv \
     ../rtl/Background/Game_Background.sv \
     ../rtl/Mouse_Control/buffor1.sv
-    ../rtl/Mouse_Control/buffor1.sv
+    ../rtl/Mouse_Control/buffor2.sv
     ../rtl/Mouse_Control/draw_mouse.sv
     rtl/top_vga_basys3.sv
 }
@@ -49,7 +49,7 @@ set sv_files {
     rtl/clk_wiz_project_clk_wiz.v
 }
 
- Specify VHDL design files location           
+# Specify VHDL design files location           
  set vhdl_files {
    ../rtl/Mouse_Control/MouseCtl.vhd 
    ../rtl/Mouse_Control/MouseDisplay.vhd

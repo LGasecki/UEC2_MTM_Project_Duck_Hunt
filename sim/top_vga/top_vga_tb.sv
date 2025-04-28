@@ -94,6 +94,9 @@ module top_vga_tb;
         rst = 1'b0;
         # 30 rst = 1'b1;
         # 30 rst = 1'b0;
+
+        force dut.xpos_bf2 = 12'd200;
+        force dut.ypos_bf2 = 12'd200;
         
 
         $display("If simulation ends before the testbench");

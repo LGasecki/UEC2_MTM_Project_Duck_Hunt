@@ -66,22 +66,7 @@ module top_vga (
     /**
      * Submodules instances
      */
-
-    vga_timing u_vga_timing (
-        .clk(clk65),
-        .rst,
-
-        .out(timing_if)
-    );
-
-    Game_Background u_game_background (
-        .clk(clk100),
-        .rst(rst),
-
-        .in(timing_if),
-        .out(background_if)
-    );
-
+    
     MouseCtl u_MouseCtl (
         .ps2_clk (ps2_clk),
         .ps2_data (ps2_data),
@@ -99,6 +84,21 @@ module top_vga (
         .left(),
         .middle(),
         .right()
+    );
+
+    vga_timing u_vga_timing (
+        .clk(clk65),
+        .rst,
+
+        .out(timing_if)
+    );
+
+    Game_Background u_game_background (
+        .clk(clk100),
+        .rst(rst),
+
+        .in(timing_if),
+        .out(background_if)
     );
 
     buffor1 u_buffor1(
