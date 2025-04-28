@@ -8,7 +8,7 @@
  * MTM UEC2
  * Piotr Kaczmarczyk,
  * Łukasz Gąsecki
- *
+ * Oliwia Szewczyk
  * Description:
  * The project top module.
  */
