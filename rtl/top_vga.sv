@@ -128,7 +128,7 @@ module top_vga (
         .in(background_if),
         .out(draw_mouse)
         
-        );
+    );
 
  
 endmodule

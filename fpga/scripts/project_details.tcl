@@ -1,7 +1,7 @@
 # Copyright (C) 2025  AGH University of Science and Technology
 # MTM UEC2
 # Author: Piotr Kaczmarczyk
-#
+# modified: Oliwia Szewczyk
 # Description:
 # Project detiles required for generate_bitstream.tcl
 # Make sure that project_name, top_module and target are correct.
@@ -32,10 +32,14 @@ set xdc_files {
 
 # Specify SystemVerilog design files location  
 set sv_files {
-    ../rtl/vga_pkg.sv
-    ../rtl/vga_timing.sv
-    ../rtl/top_vga.sv
-    ../rtl/vga_if.sv
+../../rtl/Timing/vga_pkg.sv \
+    ../rtl/Timing/vga_timing.sv \
+    ../rtl/vga_if.sv \
+    ../rtl/top_vga.sv \
+    ../rtl/Background/Game_Background.sv \
+    ../rtl/Mouse_Control/buffor1.sv
+    ../rtl/Mouse_Control/buffor1.sv
+    ../rtl/Mouse_Control/draw_mouse.sv
     rtl/top_vga_basys3.sv
 }
 
@@ -45,9 +49,12 @@ set sv_files {
     rtl/clk_wiz_project_clk_wiz.v
 }
 
-# Specify VHDL design files location           
-# set vhdl_files {
-#}
+ Specify VHDL design files location           
+ set vhdl_files {
+   ../rtl/Mouse_Control/MouseCtl.vhd 
+   ../rtl/Mouse_Control/MouseDisplay.vhd
+   ../rtl/Mouse_Control/Ps2Interface.vhd
+}
 
 # Specify files for a memory initialization    
 # set mem_files {
