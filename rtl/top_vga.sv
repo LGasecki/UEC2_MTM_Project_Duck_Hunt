@@ -38,7 +38,7 @@ module top_vga (
 
     timing_if timing_if();
     vga_if background_if();
-    vga_if draw_mouse();
+    vga_if draw_mouse_if();
 
 
     /**
@@ -58,9 +58,9 @@ module top_vga (
      * Signals assignments
      */
     
-    assign vs = background_if.vsync;
-    assign hs = background_if.hsync;
-    assign {r,g,b} = background_if.rgb;
+    assign vs = draw_mouse_if.vsync;
+    assign hs = draw_mouse_if.hsync;
+    assign {r,g,b} = draw_mouse_if.rgb;
     
     
     /**
@@ -126,8 +126,7 @@ module top_vga (
         .ypos(ypos_bf2),
         
         .in(background_if),
-        .out(draw_mouse)
-        
+        .out(draw_mouse_if)        
     );
 
  
