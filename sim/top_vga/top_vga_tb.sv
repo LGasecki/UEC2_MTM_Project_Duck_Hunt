@@ -36,9 +36,10 @@ module top_vga_tb;
      * Local variables and signals
      */
 
-    logic clk65, clk100, rst;
+    logic clk65, rst;
     wire vs, hs;
     wire [3:0] r, g, b;
+    wire ps2data, ps2clk;
 
 
     /**
@@ -88,8 +89,8 @@ module top_vga_tb;
         # 30 rst = 1'b1;
         # 30 rst = 1'b0;
 
-        force dut.xpos_bf2 = 12'd200;
-        force dut.ypos_bf2 = 12'd200;
+        force dut.xpos = 12'd200;
+        force dut.ypos = 12'd200;
         
 
         $display("If simulation ends before the testbench");

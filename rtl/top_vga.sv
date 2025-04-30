@@ -48,10 +48,6 @@ module top_vga (
 
     logic [11:0]xpos;
     logic [11:0]ypos;
-    logic [11:0]xpos_bf1;
-    logic [11:0]ypos_bf1;
-    logic [11:0]xpos_bf2;
-    logic [11:0]ypos_bf2;
     
     /**
      * Signals assignments
@@ -71,7 +67,7 @@ module top_vga (
         .ps2_data (ps2_data),
         .xpos (xpos),
         .ypos (ypos),
-        .clk (clk100),
+        .clk (clk65),
         .rst (rst),
         .value(12'b0),
         .setx('b0),
@@ -100,29 +96,11 @@ module top_vga (
         .out(background_if)
     );
 
-    buffor1 u_buffor1(
-        .clk(clk65),
-        .rst(rst),
-        .xpos(xpos),
-        .ypos(ypos),
-        .xpos_bf1(xpos_bf1),
-        .ypos_bf1(ypos_bf1)
-    );
-
-    buffor2 u_buffor2(
-        .clk(clk65),
-        .rst(rst),
-        .xpos_bf1(xpos_bf1),
-        .ypos_bf1(ypos_bf1),
-        .xpos_bf2(xpos_bf2),
-        .ypos_bf2(ypos_bf2)
-    );
-
     draw_mouse u_draw_mouse(
         .rst,   
         .clk(clk65),
-        .xpos(xpos_bf2),
-        .ypos(ypos_bf2),
+        .xpos(xpos),
+        .ypos(ypos),
         
         .in(background_if),
         .out(draw_mouse_if)        

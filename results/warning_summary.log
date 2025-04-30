@@ -1,10 +1,9 @@
 Warnings, critical warnings and errors from synthesis and implementation
 
-Created: 2025-04-29 01:24:51
+Created: 2025-04-30 20:39:46
 
 ----SYNTHESIS----
 WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
 
 ----IMPLEMENTATION----
-WARNING: [Route 35-328] Router estimated timing not met.
-CRITICAL WARNING: [Timing 38-282] The design failed to meet the timing requirements. Please see the timing summary report for details on the timing violations.
+CLEAR :)

@@ -37,9 +37,7 @@ set sv_files {
     ../rtl/vga_if.sv \
     ../rtl/top_vga.sv \
     ../rtl/Background/Game_Background.sv \
-    ../rtl/Mouse_Control/buffor1.sv
-    ../rtl/Mouse_Control/buffor2.sv
-    ../rtl/Mouse_Control/draw_mouse.sv
+    ../rtl/Mouse_Control/draw_mouse.sv\
     rtl/top_vga_basys3.sv
 }
 
