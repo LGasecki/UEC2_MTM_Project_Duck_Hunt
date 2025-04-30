@@ -16,7 +16,6 @@
 module top_vga (
         input  logic clk65,
         input  logic rst,
-        input  logic clk100,
 
         output logic vs,
         output logic hs,
