@@ -30,7 +30,6 @@ module top_vga_tb;
      */
 
     localparam CLK_PERIOD_65MHz = 15.3846; // 65 MHz
-    localparam CLK_PERIOD_100MHz = 10; // 100 MHz
 
 
     /**
@@ -38,7 +37,6 @@ module top_vga_tb;
      */
 
     logic clk65, clk100, rst;
-    wire ps2data, ps2clk;
     wire vs, hs;
     wire [3:0] r, g, b;
 
@@ -51,10 +49,6 @@ module top_vga_tb;
         clk65 = 1'b0;
         forever #(CLK_PERIOD_65MHz/2) clk65 = ~clk65;
     end
-    initial begin
-        clk100 = 1'b0;
-        forever #(CLK_PERIOD_100MHz/2) clk100 = ~clk100;
-    end
 
     /**
      * Submodules instances
@@ -63,7 +57,6 @@ module top_vga_tb;
     top_vga dut (
         .clk65(clk65),
         .rst(rst),
-        .clk100(clk100),
         .vs(vs),
         .hs(hs),
         .r(r),

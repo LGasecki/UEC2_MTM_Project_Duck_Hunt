@@ -16,7 +16,6 @@
 module top_vga (
         input  logic clk65,
         input  logic rst,
-        input  logic clk100,
 
         output logic vs,
         output logic hs,
@@ -94,7 +93,7 @@ module top_vga (
     );
 
     Game_Background u_game_background (
-        .clk(clk100),
+        .clk(clk65),
         .rst(rst),
 
         .in(timing_if),
