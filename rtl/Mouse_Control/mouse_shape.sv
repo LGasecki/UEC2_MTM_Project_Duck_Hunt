@@ -1,3 +1,10 @@
+/**
+# Copyright (C) 2025  AGH University of Science and Technology
+# MTM UEC2
+# Author: Oliwia Szewczyk
+# Description: 
+# this module draw right shape of a mouse on the screen
+*/
 module mouse_shape (
     input  logic clk,
     input  logic rst,
