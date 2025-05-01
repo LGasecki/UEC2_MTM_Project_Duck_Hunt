@@ -38,6 +38,7 @@ module top_vga (
     timing_if timing_if();
     vga_if background_if();
     vga_if draw_mouse_if();
+    vga_if mouse_shape_if();
 
 
     /**
@@ -48,6 +49,7 @@ module top_vga (
 
     logic [11:0]xpos;
     logic [11:0]ypos;
+
     
     /**
      * Signals assignments
@@ -102,8 +104,18 @@ module top_vga (
         .xpos(xpos),
         .ypos(ypos),
         
-        .in(background_if),
+        .in(mouse_shape_if),
         .out(draw_mouse_if)        
+    );
+
+    mouse_shape u_mouse_shape (
+        .clk(clk65),
+        .rst,
+        .xpos (xpos),
+        .ypos (ypos),
+        .in(background_if),
+        .out(mouse_shape_if)
+
     );
 
  
