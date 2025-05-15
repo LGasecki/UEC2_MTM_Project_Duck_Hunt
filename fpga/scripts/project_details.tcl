@@ -39,6 +39,7 @@ set sv_files {
     ../rtl/Background/Game_Background.sv \
     ../rtl/Mouse_Control/draw_mouse.sv\
     ../rtl/Mouse_Control/mouse_shape.sv\
+    ../rtl/lfsr_random.sv\
     rtl/top_vga_basys3.sv
 }
 
