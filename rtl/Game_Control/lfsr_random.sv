@@ -27,7 +27,7 @@ module lfsr_random #(
             feedback <= 'b0;
         end else if (enable) begin
             feedback <= lfsr[15] ^ lfsr[13] ^ lfsr[12] ^ lfsr[10];
-            lfsr <= {lfsr[14:0], feedback};
+            lfsr <= {lfsr[WIDTH-2:0], feedback};
         end
     end
 

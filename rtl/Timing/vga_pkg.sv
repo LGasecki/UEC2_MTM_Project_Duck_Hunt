@@ -14,7 +14,7 @@
     localparam HOR_PIXELS = 1024;
     localparam VER_PIXELS = 768;
 
-    // Add VGA timing parameters here and refer to them in other modules.
+    // VGA Timing Parameters
 
     localparam START = 0;
 
@@ -27,5 +27,12 @@
     localparam VL_BLANK_START = 768;
     localparam VL_SYNC_START = 771;
     localparam VL_SYNC_END = 777;
+
+    // GAME CONSTANTS
+    // start screen parameters
+    localparam START_AREA_WIDTH = 10 * 24; // 10 characters
+    localparam AREA_HEIGHT = 48;
+    localparam START_CHAR_XPOS = (HOR_PIXELS / 2) - (START_AREA_WIDTH / 2); //CENTER
+    localparam START_CHAR_YPOS = 320;
 
 endpackage

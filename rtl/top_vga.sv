@@ -39,6 +39,7 @@ module top_vga (
     vga_if background_if();
     vga_if draw_mouse_if();
     vga_if mouse_shape_if();
+    vga_if game_if();
 
 
     /**
@@ -49,15 +50,16 @@ module top_vga (
 
     logic [11:0]xpos;
     logic [11:0]ypos;
+    logic left_mouse, right_mouse;
 
     
     /**
      * Signals assignments
      */
     
-    assign vs = draw_mouse_if.vsync;
-    assign hs = draw_mouse_if.hsync;
-    assign {r,g,b} = draw_mouse_if.rgb;
+    assign vs = game_if.vsync;
+    assign hs = game_if.hsync;
+    assign {r,g,b} = game_if.rgb;
     
     
     /**
@@ -78,9 +80,9 @@ module top_vga (
         .setmax_y('b0),
         .new_event(),
         .zpos(),
-        .left(),
+        .left(left_mouse),
         .middle(),
-        .right()
+        .right(right_mouse)
     );
 
     vga_timing u_vga_timing (
@@ -116,6 +118,18 @@ module top_vga (
         .in(background_if),
         .out(mouse_shape_if)
 
+    );
+
+    top_game u_top_game (
+        .clk(clk65),
+        .rst(rst),
+        .mouse_xpos(xpos),
+        .mouse_ypos(ypos),
+        .left_mouse(left_mouse),
+        .right_mouse(right_mouse),
+
+        .in(mouse_shape_if),
+        .out(game_if)
     );
 
  

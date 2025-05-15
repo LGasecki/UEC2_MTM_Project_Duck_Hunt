@@ -15,7 +15,14 @@ sv work ../../rtl/Timing/vga_pkg.sv \
         ../../rtl/top_vga.sv \
         ../../rtl/Background/Game_Background.sv \
         ../../rtl/Mouse_Control/draw_mouse.sv \
-        ../../rtl/Mouse_Control\mouse_shape.sv\
+        ../../rtl/Mouse_Control\mouse_shape.sv \
+        ../../rtl/Game_Control/top_game.sv \
+        ../../rtl/Game_Control/game_control_fsm.sv \
+        ../../rtl/Game_Control/start_screen.sv \
+        ../../rtl/Game_Control/lfsr_random.sv \
+        ../../rtl/Game_Control/Text_files/char_rom.sv \
+        ../../rtl/Game_Control/Text_files/draw_rect_char.sv \
+        ../../rtl/Game_Control/Text_files/font_rom.sv \
         ../common/tiff_writer.sv \
         top_vga_tb.sv
 

@@ -39,7 +39,14 @@ set sv_files {
     ../rtl/Background/Game_Background.sv \
     ../rtl/Mouse_Control/draw_mouse.sv\
     ../rtl/Mouse_Control/mouse_shape.sv\
-    ../rtl/lfsr_random.sv\
+    ../rtl/Game_Control/top_game.sv \
+    ../rtl/Game_Control/game_control_fsm.sv \
+    ../rtl/Game_Control/start_screen.sv \
+    ../rtl/Game_Control/lfsr_random.sv \
+    ../rtl/Game_Control/Text_files/char_rom.sv \
+    ../rtl/Game_Control/Text_files/draw_rect_char.sv \
+    ../rtl/Game_Control/Text_files/font_rom.sv \
+    ../rtl/Game_Control/lfsr_random.sv\
     rtl/top_vga_basys3.sv
 }
 
