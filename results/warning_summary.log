@@ -1,6 +1,6 @@
 Warnings, critical warnings and errors from synthesis and implementation
 
-Created: 2025-05-15 19:09:43
+Created: 2025-05-16 12:12:14
 
 ----SYNTHESIS----
 WARNING: [Synth 8-7129] Port right_mouse in module top_game is either unconnected or has no load
@@ -8,5 +8,4 @@ WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
 WARNING: [Synth 8-7129] Port right_mouse in module top_game is either unconnected or has no load
 
 ----IMPLEMENTATION----
-WARNING: [Route 35-328] Router estimated timing not met.
-CRITICAL WARNING: [Timing 38-282] The design failed to meet the timing requirements. Please see the timing summary report for details on the timing violations.
+CLEAR :)

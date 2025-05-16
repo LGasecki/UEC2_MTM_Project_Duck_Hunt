@@ -30,9 +30,9 @@
 
     // GAME CONSTANTS
     // start screen parameters
-    localparam START_AREA_WIDTH = 10 * 24; // 10 characters
-    localparam AREA_HEIGHT = 48;
-    localparam START_CHAR_XPOS = (HOR_PIXELS / 2) - (START_AREA_WIDTH / 2); //CENTER
-    localparam START_CHAR_YPOS = 320;
+    localparam START_AREA_WIDTH = 10 * 8 * 4; // 10 characters, 8 pixels per character, 4x scaling
+    localparam AREA_HEIGHT = 16 * 4; // 16 pixels, 4x scaling
+    localparam START_CHAR_XPOS = (HOR_PIXELS / 2) - (START_AREA_WIDTH / 2); //X_CENTER
+    localparam START_CHAR_YPOS = 510;
 
 endpackage

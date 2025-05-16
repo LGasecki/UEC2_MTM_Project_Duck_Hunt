@@ -49,13 +49,7 @@ lfsr_random #(
 );
 
 // CONTROL
-game_control_fsm #(
-    .XPOS_START_AREA(START_CHAR_XPOS),
-    .YPOS_START_AREA(START_CHAR_YPOS),
-    .AREA_WIDTH(START_AREA_WIDTH),
-    .AREA_HEIGHT(AREA_HEIGHT)
-)
-u_game_control_fsm (
+game_control_fsm u_game_control_fsm (
     .clk(clk),
     .rst(rst),
     .left_mouse(left_mouse),

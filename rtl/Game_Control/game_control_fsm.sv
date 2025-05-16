@@ -7,12 +7,6 @@
 # The FSM manages the game states: start screen, game running, and game over.
 */
 module game_control_fsm 
-    #(parameter 
-    XPOS_START_AREA = 476,
-    YPOS_START_AREA = 400,
-    AREA_WIDTH = 72,
-    AREA_HEIGHT = 72
-    )
     (
     input logic clk,
     input logic rst,
@@ -25,6 +19,9 @@ module game_control_fsm
     output logic game_enable,
     output logic game_end_enable
 );
+
+import vga_pkg::*;
+
 enum logic [1:0] {
     START_SCREEN = 2'b00,
     GAME_RUNNING = 2'b01
@@ -56,8 +53,8 @@ always_ff @(posedge clk) begin : seq_blk
                 start_screen_enable <= 1'b1;
                 game_enable <= 1'b0;
                 game_end_enable <= 1'b0;
-                if(left_mouse && (mouse_xpos >= XPOS_START_AREA) && (mouse_xpos < XPOS_START_AREA + AREA_WIDTH) &&
-                   (mouse_ypos >= YPOS_START_AREA) && (mouse_ypos < YPOS_START_AREA + AREA_HEIGHT)) begin
+                if(left_mouse && (mouse_xpos >= START_CHAR_XPOS) && (mouse_xpos < START_CHAR_XPOS + START_AREA_WIDTH) &&
+                   (mouse_ypos >= START_CHAR_YPOS) && (mouse_ypos < START_CHAR_YPOS + AREA_HEIGHT)) begin
                     state <= GAME_RUNNING;
                 end
             end
