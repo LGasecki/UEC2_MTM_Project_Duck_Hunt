@@ -80,7 +80,7 @@ always_comb begin : state_comb_blk
     case(state)
         WAIT_FOR_START: state_nxt = (game_enable) ? DELAY : WAIT_FOR_START;
         DELAY:          state_nxt = (delay_ms == 0) ? HUNTING : DELAY;
-        HUNTING:        state_nxt = (left_mouse) ? RELOADING : HUNTING;
+        HUNTING:        state_nxt = (left_mouse || right_mouse) ? RELOADING : HUNTING;
         RELOADING:      state_nxt = DELAY;
         default:        state_nxt = WAIT_FOR_START;
     endcase
@@ -90,7 +90,8 @@ end
 //------------------------------------------------------------------------------
 always_ff @(posedge clk) begin : out_reg_blk
     if(rst) begin : out_reg_rst_blk
-        {target_xpos, target_ypos, score, delay_ms, bullets_count, reload_enable} <= 0;
+        {target_xpos, target_ypos, score,bullets_count, reload_enable} <= 0;
+        delay_ms <= COUNTDOWN;
     end
     else begin : out_reg_run_blk
         target_xpos <= target_xpos_nxt;
@@ -118,28 +119,28 @@ always_comb begin : out_comb_blk
             target_xpos_nxt = target_xpos;
             target_ypos_nxt = target_ypos;
             score_nxt       = score;
-            delay_ms_nxt    = delay_ms_nxt - 1;
+            delay_ms_nxt    = delay_ms - 1;
             bullets_count_nxt = bullets_count;
-            reload_enable_nxt   = 0;
+            reload_enable_nxt   = reload_enable;
         end
         RELOADING: begin
             target_xpos_nxt = target_xpos;
             target_ypos_nxt = target_ypos;
             score_nxt       = score;
-            delay_ms_nxt    = delay_ms_nxt;
+            delay_ms_nxt    = delay_ms;
             bullets_count_nxt = bullets_count;
             reload_enable_nxt   = 0;
 
         // Działanie magazynka, jeśli nie ma amunicji to wyświetla aby przeładwoać
             if(bullets_count > 0) begin
-                bullets_count_nxt = bullets_count_nxt - 1;
+                bullets_count_nxt = bullets_count - 1;
                 reload_enable_nxt = 0;
             end else begin
                 if(right_mouse) begin
                     bullets_count_nxt = 8;
                     reload_enable_nxt = 0;
                 end else begin
-                    bullets_count_nxt = bullets_count_nxt;
+                    bullets_count_nxt = bullets_count;
                     reload_enable_nxt = 1;
                 end
             end
@@ -147,7 +148,7 @@ always_comb begin : out_comb_blk
         // Sprawdzenie czy myszka trafiła w kaczke
         // Jeżeli tak to zwiększa wynik i zmienia pozycje kaczki
             if((mouse_xpos >= target_xpos && mouse_xpos <= target_xpos + DUCK_WIDTH && 
-                    mouse_ypos >= target_ypos && mouse_ypos <= target_ypos + DUCK_HEIGHT)) begin
+                    mouse_ypos >= target_ypos && mouse_ypos <= target_ypos + DUCK_HEIGHT && left_mouse)) begin
                 score_nxt       = score + 1;
                 delay_ms_nxt    = DEATH_TIME;
                 target_xpos_nxt = {2'd0,lfsr_number[9:0]};

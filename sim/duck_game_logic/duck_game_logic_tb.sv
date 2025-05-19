@@ -39,34 +39,36 @@ module duck_game_logic_tb;
 
     // Task to print outputs
     task print_state;
-        $display("State: %s | Time: %t |delay_ms: %d| Score: %0d | Bullets: %0d | Reload: %b | Target: (%0d, %0d)", 
-                  dut.state, $time, dut.delay_ms_nxt, score, bullets_count, reload_enable, target_xpos, target_ypos);
+        $display("State: %15s | Time: %10d |delay_ms: %4d| Score: %0d | Bullets: %0d | Reload: %b | Target: (%0d, %0d)", 
+                  dut.state, $time, dut.delay_ms, score, bullets_count, reload_enable, target_xpos, target_ypos);
     endtask
 
     initial begin
         $display("Starting test...");
         #20;
         rst = 0;
+        #20
         print_state();
         // Start game
         game_enable = 1;
         #1000; // let it settle in DELAY state
         print_state();
-        #20;
-        #20;
-        #20;
+        #400;
+        
         // Simulate miss (click outside duck)
+        $display("Missing the target...");
         left_mouse = 1;
-        mouse_xpos = 0;
-        mouse_ypos = 0;
+        mouse_xpos = 1200;
+        mouse_ypos = 800;
         #20;
         left_mouse = 0;
         print_state();
 
-        repeat (1000000) @(posedge clk);
+        repeat (1000) @(posedge clk);
         print_state();
-
+        #400;
         // Simulate hit
+        $display("Hit the target!");
         mouse_xpos = target_xpos + 1;
         mouse_ypos = target_ypos + 1;
         left_mouse = 1;
@@ -74,30 +76,21 @@ module duck_game_logic_tb;
         left_mouse = 0;
         print_state();
 
-        repeat (10000) @(posedge clk);
-        left_mouse = 0;
+        repeat (1000) @(posedge clk);
         print_state();
-        repeat (10000) @(posedge clk);
-        print_state();
-        repeat (10000) @(posedge clk);
-        left_mouse = 0;
-        print_state();
-        repeat (10000) @(posedge clk);
-        print_state();
-        repeat (10000) @(posedge clk);
-        left_mouse = 0;
-        print_state();
-        repeat (10000) @(posedge clk);
-        print_state();
-        repeat (10000) @(posedge clk);
+        #400;
         // Simulate bullets empty and reload
-        dut.bullets_count = 0;
+        $display("Trying to shoot with no bullets...");
+        dut.bullets_count_nxt = 0;
+        #200;
         left_mouse = 1;
         #20;
         left_mouse = 0;
         print_state();
+        #400;
 
         // Try reloading
+        $display("Reloading...");
         right_mouse = 1;
         #20;
         right_mouse = 0;
