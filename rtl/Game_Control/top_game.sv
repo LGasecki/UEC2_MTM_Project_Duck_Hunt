@@ -27,7 +27,7 @@ timeprecision 1ps;
 import vga_pkg::*;
 
 // LOCAL PARAMETERS
-localparam LFSR_WIDTH = 16; // Width of the LFSR
+localparam logic [5:0] LFSR_WIDTH = 16; // Width of the LFSR
 
 
 
@@ -72,5 +72,21 @@ start_screen u_start_screen (
     .out(out)
 );
 
+duck_game_logic u_duck_game_logic (
+    .clk(clk),
+    .rst(rst),
+    .game_enable(game_enable),
+    .left_mouse(left_mouse),
+    .right_mouse(right_mouse),
+    .lfsr_number(random_number),
+    .mouse_xpos(mouse_xpos),
+    .mouse_ypos(mouse_ypos),
+
+    .target_xpos(),
+    .target_ypos(),
+    .bullets_count(),
+    .reload_enable(),
+    .score()
+);
 //---------------------------------//
 endmodule

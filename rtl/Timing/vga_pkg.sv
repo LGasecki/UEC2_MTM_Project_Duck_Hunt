@@ -6,6 +6,7 @@
  *
  * Description:
  * Package with vga related constants.
+ * This package contains parameters for VGA display timing and game constants.
  */
 
  package vga_pkg;
@@ -34,5 +35,15 @@
     localparam AREA_HEIGHT = 16 * 4; // 16 pixels, 4x scaling
     localparam START_CHAR_XPOS = (HOR_PIXELS / 2) - (START_AREA_WIDTH / 2); //X_CENTER
     localparam START_CHAR_YPOS = 510;
+
+    //duck parameters
+    localparam DUCK_HEIGHT = 32;
+    localparam DUCK_WIDTH = 96;
+    localparam KILLED_DUCK_HEIGHT = 96;
+    localparam KILLED_DUCK_WIDTH = 96;
+
+    //bullet parameters
+    localparam BULLET_HEIGHT = 16;
+    localparam BULLET_WIDTH = 48;
 
 endpackage
