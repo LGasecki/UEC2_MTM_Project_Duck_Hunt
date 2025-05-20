@@ -27,7 +27,7 @@ timeprecision 1ps;
 import vga_pkg::*;
 
 // LOCAL PARAMETERS
-localparam logic [5:0] LFSR_WIDTH = 16; // Width of the LFSR
+localparam logic [3:0] LFSR_WIDTH = 10; // Width of the LFSR
 
 
 
@@ -35,7 +35,9 @@ localparam logic [5:0] LFSR_WIDTH = 16; // Width of the LFSR
 // LOCAL VARIABLES
 logic [LFSR_WIDTH-1:0] random_number;
 logic start_screen_enable, game_enable, game_end_enable;
+logic [11:0] duck_xpos, duck_ypos;
 
+vga_if start_screen_if();
 //------------------------------------------------------------------------------
 // MODULES
 //------------------------------------------------------------------------------
@@ -69,24 +71,33 @@ start_screen u_start_screen (
     .start_screen_enable(start_screen_enable),
 
     .in(in),
-    .out(out)
+    .out(start_screen_if)
 );
 
-duck_game_logic u_duck_game_logic (
+//GAME
+
+duck_ctl u_duck_ctl (
+    .game_enable(game_enable),
     .clk(clk),
     .rst(rst),
-    .game_enable(game_enable),
-    .left_mouse(left_mouse),
-    .right_mouse(right_mouse),
     .lfsr_number(random_number),
-    .mouse_xpos(mouse_xpos),
-    .mouse_ypos(mouse_ypos),
 
-    .target_xpos(),
-    .target_ypos(),
-    .bullets_count(),
-    .reload_enable(),
-    .score()
+    .xpos(duck_xpos),
+    .ypos(duck_ypos)
+);
+
+draw_duck #(
+    .DUCK_WIDTH(DUCK_WIDTH),
+    .DUCK_HEIGHT(DUCK_HEIGHT)
+) u_draw_duck (
+    .game_enable(game_enable),
+    .clk(clk),
+    .rst(rst),
+    .xpos(duck_xpos),
+    .ypos(duck_ypos),
+
+    .in(start_screen_if),
+    .out(out)
 );
 //---------------------------------//
 endmodule

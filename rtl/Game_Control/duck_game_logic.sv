@@ -34,8 +34,13 @@ timeprecision 1ps;
 //------------------------------------------------------------------------------
 localparam DUCK_HEIGHT = 32;
 localparam DUCK_WIDTH = 96;
+localparam [35:0] DUCK_WIDTH_q12_24 = DUCK_WIDTH << 24; // width of the duck in q12.24 format
+localparam [35:0] DUCK_HEIGHT_q12_24 = DUCK_HEIGHT << 24; // height of the duck in q12.24 format
 
-localparam LOWEST_POINT = 668; // maximum Y position
+localparam SPEED_q12_24 = 258;
+
+localparam [11:0] LOWEST_POINT = 668; // maximum Y position
+localparam [35:0] LOWEST_POINT_q12_24 = LOWEST_POINT << 24; //maximum Y position in q12.24 format
 localparam STATE_BITS   = 3; // number of bits used for state register
 // localparam COUNTDOWN    = 4000 * 65_000; // countdown value at start of the game T - 4000ms
 // localparam DEATH_TIME   = 2000 * 65_000; // time for duck fall after death T - 2000ms
@@ -49,11 +54,14 @@ localparam RELOAD_TIME  = 1;
 //------------------------------------------------------------------------------
 // local variables
 //------------------------------------------------------------------------------
-logic      [31:0] delay_ms = COUNTDOWN, delay_ms_nxt = COUNTDOWN;
-logic      [11:0] target_xpos_nxt, target_ypos_nxt;
+logic      [31:0] delay_ms, delay_ms_nxt;
+logic      [35:0] xpos_nxt_q12_24, ypos_nxt_q12_24;
+logic      [35:0] xpos_q12_24, ypos_q12_24;
 logic      [6:0]  score_nxt;
 logic      [3:0]  bullets_count_nxt;
 logic      reload_enable_nxt;
+
+logic left_mouse_prev, left_mouse_posedge , right_mouse_posedge, right_mouse_prev;
 
 enum logic [STATE_BITS-1 :0] {
     WAIT_FOR_START = 3'b000,
@@ -80,7 +88,7 @@ always_comb begin : state_comb_blk
     case(state)
         WAIT_FOR_START: state_nxt = (game_enable) ? DELAY : WAIT_FOR_START;
         DELAY:          state_nxt = (delay_ms == 0) ? HUNTING : DELAY;
-        HUNTING:        state_nxt = (left_mouse || right_mouse) ? RELOADING : HUNTING;
+        HUNTING:        state_nxt = (left_mouse_posedge || right_mouse_posedge) ? RELOADING : HUNTING;
         RELOADING:      state_nxt = DELAY;
         default:        state_nxt = WAIT_FOR_START;
     endcase
@@ -92,74 +100,82 @@ always_ff @(posedge clk) begin : out_reg_blk
     if(rst) begin : out_reg_rst_blk
         {target_xpos, target_ypos, score,bullets_count, reload_enable} <= 0;
         delay_ms <= COUNTDOWN;
+        {xpos_q12_24, ypos_q12_24} <= 0;
+        left_mouse_prev <= 0;
+        right_mouse_prev <= 0;
     end
     else begin : out_reg_run_blk
-        target_xpos <= target_xpos_nxt;
-        target_ypos <= target_ypos_nxt;
+        target_xpos <= xpos_nxt_q12_24[35:24];
+        target_ypos <= ypos_nxt_q12_24[35:24];
         score       <= score_nxt;
         delay_ms    <= delay_ms_nxt;
         bullets_count <= bullets_count_nxt;
         reload_enable <= reload_enable_nxt;
+        {xpos_q12_24, ypos_q12_24} <= {xpos_nxt_q12_24, ypos_nxt_q12_24};
+        left_mouse_prev <= left_mouse;
+        right_mouse_prev <= right_mouse;
     end
 end
 //------------------------------------------------------------------------------
 // output logic
 //------------------------------------------------------------------------------
 always_comb begin : out_comb_blk
+    left_mouse_posedge = (left_mouse == 1 && left_mouse_prev == 0);
+    right_mouse_posedge = (right_mouse == 1 && right_mouse_prev == 0);
     case(state_nxt)
         WAIT_FOR_START: begin
-            target_xpos_nxt = {2'd0,lfsr_number[9:0]};
-            target_ypos_nxt = LOWEST_POINT;
+            xpos_nxt_q12_24 = {2'd0,lfsr_number[9:0], 24'd0};
+            ypos_nxt_q12_24 = LOWEST_POINT_q12_24;
             score_nxt       = 0;
             delay_ms_nxt    = COUNTDOWN;
             bullets_count_nxt = 8;
             reload_enable_nxt   = 0;
         end
         DELAY: begin
-            target_xpos_nxt = target_xpos;
-            target_ypos_nxt = target_ypos;
+            xpos_nxt_q12_24 = xpos_q12_24;
+            ypos_nxt_q12_24 = ypos_q12_24;
             score_nxt       = score;
             delay_ms_nxt    = delay_ms - 1;
             bullets_count_nxt = bullets_count;
             reload_enable_nxt   = reload_enable;
         end
         RELOADING: begin
-            target_xpos_nxt = target_xpos;
-            target_ypos_nxt = target_ypos;
-            score_nxt       = score;
-            delay_ms_nxt    = delay_ms;
+            xpos_nxt_q12_24 = xpos_q12_24;
+            ypos_nxt_q12_24 = ypos_q12_24;
             bullets_count_nxt = bullets_count;
-            reload_enable_nxt   = 0;
-
-        // Działanie magazynka, jeśli nie ma amunicji to wyświetla aby przeładwoać
-            if(bullets_count > 0) begin
-                bullets_count_nxt = bullets_count - 1;
-                reload_enable_nxt = 0;
-            end else begin
-                if(right_mouse) begin
-                    bullets_count_nxt = 8;
-                    reload_enable_nxt = 0;
-                end else begin
-                    bullets_count_nxt = bullets_count;
+            if (left_mouse_posedge) begin
+                if (bullets_count == 0) begin : no_bullets
                     reload_enable_nxt = 1;
+                    delay_ms_nxt = RELOAD_TIME;
+                    bullets_count_nxt = bullets_count;
+                end else if (mouse_xpos >= target_xpos && mouse_xpos <= target_xpos + DUCK_WIDTH && 
+                             mouse_ypos >= target_ypos && mouse_ypos <= target_ypos + DUCK_HEIGHT) begin : hit_target_with_bullets
+                    bullets_count_nxt = bullets_count - 1;
+                    score_nxt = score + 1;
+                    xpos_nxt_q12_24 = {2'd0,lfsr_number[9:0], 24'd0};
+                    ypos_nxt_q12_24 = LOWEST_POINT_q12_24;
+                    delay_ms_nxt = DEATH_TIME;
+                    reload_enable_nxt = 0;
+                end else begin : miss_target
+                    reload_enable_nxt = 0;
+                    delay_ms_nxt = RELOAD_TIME;
+                    bullets_count_nxt = bullets_count - 1;
+                    score_nxt = score;
                 end
             end
-
-        // Sprawdzenie czy myszka trafiła w kaczke
-        // Jeżeli tak to zwiększa wynik i zmienia pozycje kaczki
-            if((mouse_xpos >= target_xpos && mouse_xpos <= target_xpos + DUCK_WIDTH && 
-                    mouse_ypos >= target_ypos && mouse_ypos <= target_ypos + DUCK_HEIGHT && left_mouse)) begin
-                score_nxt       = score + 1;
-                delay_ms_nxt    = DEATH_TIME;
-                target_xpos_nxt = {2'd0,lfsr_number[9:0]};
-                target_ypos_nxt = LOWEST_POINT;
-            end else begin
-                score_nxt       = score;
-                delay_ms_nxt    = RELOAD_TIME;
-                target_xpos_nxt = target_xpos;
-                target_ypos_nxt = target_ypos;
+            
+            else if (right_mouse_posedge) begin : reload
+                reload_enable_nxt = 0;
+                delay_ms_nxt = RELOAD_TIME;
+                bullets_count_nxt = 8;
+            end
+            else begin : no_action
+                reload_enable_nxt = reload_enable;
+                delay_ms_nxt = RELOAD_TIME;
+                bullets_count_nxt = bullets_count;
             end
         end
+
         HUNTING: begin
             //SOON
         end

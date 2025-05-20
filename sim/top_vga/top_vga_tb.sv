@@ -91,6 +91,9 @@ module top_vga_tb;
 
         force dut.xpos = 12'd200;
         force dut.ypos = 12'd200;
+        // force dut.u_top_game.start_screen_enable = 1'b0;
+        // force dut.u_top_game.game_enable = 1'b1;
+
         
 
         $display("If simulation ends before the testbench");
