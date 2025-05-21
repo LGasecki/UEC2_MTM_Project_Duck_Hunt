@@ -27,7 +27,7 @@ timeprecision 1ps;
 import vga_pkg::*;
 
 // LOCAL PARAMETERS
-localparam logic [5:0] LFSR_WIDTH = 16; // Width of the LFSR
+localparam logic [3:0] LFSR_WIDTH = 10; // Width of the LFSR
 
 
 
@@ -35,7 +35,12 @@ localparam logic [5:0] LFSR_WIDTH = 16; // Width of the LFSR
 // LOCAL VARIABLES
 logic [LFSR_WIDTH-1:0] random_number;
 logic start_screen_enable, game_enable, game_end_enable;
+logic [11:0] duck_xpos, duck_ypos;
+logic [12:0] pixel_addr;
+logic [11:0] rgb;
+logic [11:0] rgb_pixel;
 
+vga_if start_screen_if();
 //------------------------------------------------------------------------------
 // MODULES
 //------------------------------------------------------------------------------
@@ -69,24 +74,41 @@ start_screen u_start_screen (
     .start_screen_enable(start_screen_enable),
 
     .in(in),
+    .out(start_screen_if)
+);
+
+//GAME
+
+duck_ctl u_duck_ctl (
+    .game_enable(game_enable),
+    .clk(clk),
+    .rst(rst),
+    .lfsr_number(random_number),
+
+    .xpos(duck_xpos),
+    .ypos(duck_ypos)
+);
+
+draw_duck #(
+    .DUCK_WIDTH(DUCK_WIDTH),
+    .DUCK_HEIGHT(DUCK_HEIGHT)
+) u_draw_duck (
+    .game_enable(start_screen_enable),
+    //.game_enable(game_enable),
+    .clk(clk),
+    .rst(rst),
+    .xpos(duck_xpos),
+    .ypos(duck_ypos),
+    .rgb_pixel(rgb),
+    .pixel_addr(pixel_addr),
+    .in(start_screen_if),
     .out(out)
 );
 
-duck_game_logic u_duck_game_logic (
-    .clk(clk),
-    .rst(rst),
-    .game_enable(game_enable),
-    .left_mouse(left_mouse),
-    .right_mouse(right_mouse),
-    .lfsr_number(random_number),
-    .mouse_xpos(mouse_xpos),
-    .mouse_ypos(mouse_ypos),
-
-    .target_xpos(),
-    .target_ypos(),
-    .bullets_count(),
-    .reload_enable(),
-    .score()
+duck_rom u_duck_rom(
+    .clk,
+    .address(pixel_addr),
+    .rgb(rgb)
 );
 //---------------------------------//
 endmodule

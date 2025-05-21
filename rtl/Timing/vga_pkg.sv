@@ -37,7 +37,7 @@
     localparam START_CHAR_YPOS = 510;
 
     //duck parameters
-    localparam DUCK_HEIGHT = 32;
+    localparam DUCK_HEIGHT = 60;
     localparam DUCK_WIDTH = 96;
     localparam KILLED_DUCK_HEIGHT = 96;
     localparam KILLED_DUCK_WIDTH = 96;

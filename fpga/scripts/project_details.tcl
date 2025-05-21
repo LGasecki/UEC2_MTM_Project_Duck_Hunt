@@ -48,6 +48,9 @@ set sv_files {
     ../rtl/Game_Control/Text_files/font_rom.sv \
     ../rtl/Game_Control/lfsr_random.sv\
     ../rtl/Game_Control/duck_game_logic.sv \
+    ../rtl/Game_Control/duck_ctl.sv \
+    ../rtl/Game_Control/draw_files/draw_duck.sv \
+    ../rtl/Game_Control/draw_files/duck_rom.sv \
     rtl/top_vga_basys3.sv
 }
 
@@ -64,6 +67,7 @@ set sv_files {
    ../rtl/Mouse_Control/Ps2Interface.vhd
 }
 
-# Specify files for a memory initialization    
-# set mem_files {
-#}
+ #Specify files for a memory initialization    
+ set mem_files {
+    ../rtl/Game_Control/draw_files/duck_96x60.data
+}

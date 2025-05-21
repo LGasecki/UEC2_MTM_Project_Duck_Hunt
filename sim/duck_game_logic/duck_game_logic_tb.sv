@@ -51,16 +51,19 @@ module duck_game_logic_tb;
         print_state();
         // Start game
         game_enable = 1;
-        #1000; // let it settle in DELAY state
+        #20;
+        print_state();
+        #1000;
+        $display("START GAME pressed...");
         print_state();
         #400;
-        
+
         // Simulate miss (click outside duck)
         $display("Missing the target...");
         left_mouse = 1;
         mouse_xpos = 1200;
         mouse_ypos = 800;
-        #20;
+        #100;
         left_mouse = 0;
         print_state();
 
@@ -69,14 +72,14 @@ module duck_game_logic_tb;
         #400;
         // Simulate hit
         $display("Hit the target!");
-        mouse_xpos = target_xpos + 1;
-        mouse_ypos = target_ypos + 1;
+        mouse_xpos = target_xpos + 4;
+        mouse_ypos = target_ypos + 4;
         left_mouse = 1;
-        #20;
+        #100;
         left_mouse = 0;
+        #40
         print_state();
-
-        repeat (1000) @(posedge clk);
+        repeat (1000) @(posedge clk) ;
         print_state();
         #400;
         // Simulate bullets empty and reload
@@ -92,11 +95,12 @@ module duck_game_logic_tb;
         // Try reloading
         $display("Reloading...");
         right_mouse = 1;
-        #20;
+        #100;
         right_mouse = 0;
         print_state();
 
         #500;
+        print_state();
         $display("Test finished.");
         $stop;
     end

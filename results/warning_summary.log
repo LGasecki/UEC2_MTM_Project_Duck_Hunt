@@ -1,11 +1,27 @@
 Warnings, critical warnings and errors from synthesis and implementation
 
-Created: 2025-05-16 12:12:14
+Created: 2025-05-21 15:24:15
 
 ----SYNTHESIS----
+CRITICAL WARNING: [Synth 8-4445] could not open $readmem data file '../../rtl/Game_Control/draw_files/duck_96x60.data'; please make sure the file is added to project and has read permission, ignoring [C:/Users/Oliwia/Desktop/duckhunt/UEC2_MTM_Project_Duck_Hunt-1/rtl/Game_Control/draw_files/duck_rom.sv:36]
+WARNING: [Synth 8-3848] Net rom in module/entity duck_rom does not have driver. [C:/Users/Oliwia/Desktop/duckhunt/UEC2_MTM_Project_Duck_Hunt-1/rtl/Game_Control/draw_files/duck_rom.sv:28]
+WARNING: [Synth 8-7129] Port address[12] in module duck_rom is either unconnected or has no load
+WARNING: [Synth 8-7129] Port address[11] in module duck_rom is either unconnected or has no load
+WARNING: [Synth 8-7129] Port address[10] in module duck_rom is either unconnected or has no load
+WARNING: [Synth 8-7129] Port address[9] in module duck_rom is either unconnected or has no load
+WARNING: [Synth 8-7129] Port address[8] in module duck_rom is either unconnected or has no load
+WARNING: [Synth 8-7129] Port address[7] in module duck_rom is either unconnected or has no load
+WARNING: [Synth 8-7129] Port address[6] in module duck_rom is either unconnected or has no load
+WARNING: [Synth 8-7129] Port address[5] in module duck_rom is either unconnected or has no load
+WARNING: [Synth 8-7129] Port address[4] in module duck_rom is either unconnected or has no load
+WARNING: [Synth 8-7129] Port address[3] in module duck_rom is either unconnected or has no load
+WARNING: [Synth 8-7129] Port address[2] in module duck_rom is either unconnected or has no load
+WARNING: [Synth 8-7129] Port address[1] in module duck_rom is either unconnected or has no load
+WARNING: [Synth 8-7129] Port address[0] in module duck_rom is either unconnected or has no load
 WARNING: [Synth 8-7129] Port right_mouse in module top_game is either unconnected or has no load
 WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
 WARNING: [Synth 8-7129] Port right_mouse in module top_game is either unconnected or has no load
+INFO: [runtcl-6] Synthesis results are not added to the cache due to CRITICAL_WARNING
 
 ----IMPLEMENTATION----
 CLEAR :)

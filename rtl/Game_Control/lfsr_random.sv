@@ -9,7 +9,7 @@
  **/
  
 module lfsr_random #(
-    parameter WIDTH = 16  // Szerokość rejestru, np. 16-bitowy LFSR
+    parameter WIDTH = 10  // Szerokość rejestru, np. 16-bitowy LFSR
 )(
     input  logic clk,
     input  logic rst,
@@ -23,10 +23,10 @@ module lfsr_random #(
     // Przykład dla LFSR 16-bitowego z tapami: 16, 14, 13, 11
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
-            lfsr <= 16'hACE1; // Dowolny niezerowy seed
+            lfsr <= 'h1B7; // Dowolny niezerowy seed
             feedback <= 'b0;
         end else if (enable) begin
-            feedback <= lfsr[15] ^ lfsr[13] ^ lfsr[12] ^ lfsr[10];
+            feedback <= lfsr[9] ^ lfsr[7] ^ lfsr[6] ^ lfsr[4];
             lfsr <= {lfsr[WIDTH-2:0], feedback};
         end
     end
