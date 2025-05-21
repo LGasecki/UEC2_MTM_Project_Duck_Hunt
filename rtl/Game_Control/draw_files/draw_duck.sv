@@ -8,7 +8,7 @@
  **/
 
 
-module draw_duck
+ module draw_duck
     #(parameter 
         DUCK_WIDTH = 96,
         DUCK_HEIGHT = 60
@@ -19,8 +19,9 @@ module draw_duck
     input  logic [11:0] xpos,
     input  logic [11:0] ypos,
     input  logic [11:0] rgb_pixel,
-    output logic [12:0] pixel_addr,
     input  logic game_enable,
+    input  logic duck_direction,
+    output logic [12:0] pixel_addr,
 
     vga_if.in in,
     vga_if.out out
@@ -65,7 +66,7 @@ module draw_duck
             rgb1    <= in.rgb;
             hsync1  <= in.hsync;
             vsync1  <= in.vsync;
-            pixel_addr <= (in.vcount - ypos) * 96 + (in.hcount - xpos);
+            pixel_addr <= (in.vcount - ypos) * DUCK_WIDTH +  (duck_direction ? (DUCK_WIDTH - 1 - (in.hcount - xpos)) : (in.hcount - xpos));
         end
     end
 

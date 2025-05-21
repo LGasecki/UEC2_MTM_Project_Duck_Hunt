@@ -14,18 +14,23 @@ module game_control_fsm
     input logic [11:0] mouse_xpos,
     input logic [11:0] mouse_ypos,
     input logic game_finished,
+    input logic delay_finished,
+
+    output logic start_delay,
 
     output logic start_screen_enable,
     output logic game_enable,
     output logic game_end_enable
+
 );
 
 import vga_pkg::*;
 
 enum logic [1:0] {
     START_SCREEN = 2'b00,
-    GAME_RUNNING = 2'b01
-//    GAME_OVER = 2'b10
+    DELAY_START = 2'b01,
+    GAME_RUNNING = 2'b10
+//    GAME_OVER = 2'b11
 } state;
 
 //------------------------------------------------------------------------------
@@ -58,7 +63,19 @@ always_ff @(posedge clk) begin : seq_blk
                     state <= GAME_RUNNING;
                 end
             end
-
+            DELAY_START: begin
+                start_screen_enable <= 1'b0;
+                game_enable <= 1'b0;
+                game_end_enable <= 1'b0;   
+                if(delay_finished) begin
+                    state <= GAME_RUNNING;
+                    start_delay <= 1'b0;
+                end 
+                else begin
+                    start_delay <= 1'b1;
+                end
+            end
+ 
             GAME_RUNNING: begin
                 start_screen_enable <= 1'b0;
                 game_enable <= 1'b1;

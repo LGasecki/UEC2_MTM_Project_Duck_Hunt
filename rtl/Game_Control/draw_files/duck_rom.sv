@@ -25,7 +25,7 @@
  * Local variables and signals
  */
 
-reg [12:0] rom [0:5759]; // 96x60 = 5760 pixels
+logic [11:0] duck_rom [0:5759]; // 96x60 = 5760 pixels
 
 
 /**
@@ -41,6 +41,6 @@ initial $readmemh("../../../rtl/Game_Control/draw_files/duck_96x60.data", rom);
  */
 
 always_ff @(posedge clk)
-    rgb <= 12'(rom[address]);
+    rgb <= duck_rom[address];
 
 endmodule
