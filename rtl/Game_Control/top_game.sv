@@ -38,9 +38,10 @@ logic start_screen_enable, game_enable, game_end_enable;
 logic [11:0] duck_xpos, duck_ypos;
 logic [12:0] pixel_addr;
 logic [11:0] rgb;
-logic [11:0] rgb_pixel;
+//logic [11:0] rgb_pixel;
 
 vga_if start_screen_if();
+vga_if duck_if();
 //------------------------------------------------------------------------------
 // MODULES
 //------------------------------------------------------------------------------
@@ -93,8 +94,7 @@ draw_duck #(
     .DUCK_WIDTH(DUCK_WIDTH),
     .DUCK_HEIGHT(DUCK_HEIGHT)
 ) u_draw_duck (
-    .game_enable(start_screen_enable),
-    //.game_enable(game_enable),
+    .game_enable(game_enable || start_screen_enable),
     .clk(clk),
     .rst(rst),
     .xpos(duck_xpos),
@@ -102,13 +102,21 @@ draw_duck #(
     .rgb_pixel(rgb),
     .pixel_addr(pixel_addr),
     .in(start_screen_if),
-    .out(out)
+    .out(duck_if)
 );
 
 duck_rom u_duck_rom(
     .clk,
     .address(pixel_addr),
     .rgb(rgb)
+);
+
+grass_draw u_grass_draw (
+    .game_enable(start_screen_enable || game_enable),
+    .clk(clk),
+    .rst(rst),
+    .in(duck_if),
+    .out(out)
 );
 //---------------------------------//
 endmodule

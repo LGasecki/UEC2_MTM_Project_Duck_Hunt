@@ -2,7 +2,7 @@
  * Copyright (C) 2025  AGH University of Science and Technology
  * MTM UEC2
  * Author: Piotr Kaczmarczyk
- * Modified by: Łukasz Gąsecki
+ * Modified by: Łukasz Gąsecki,Oliwia Szewczyk
  * Description:
  * Draw background.
  */
@@ -21,13 +21,13 @@
     import vga_pkg::*;
 
     // 128x96 = 12-288 pixels
-    logic [11:0] image_mem [0:12_287];
-    initial $readmemh("../../rtl/Background/duck_hunt_background_128x96.data", image_mem);
+    //logic [11:0] image_mem [0:12_287];
+    //initial $readmemh("../../rtl/Background/duck_hunt_background_128x96.data", image_mem);
 
     logic [11:0] rgb_nxt;
-    logic [13:0] pixel_index;
-    logic [6:0] small_x;  // 0..127
-    logic [6:0] small_y;  // 0..96
+    //logic [13:0] pixel_index;
+    //logic [6:0] small_x;  // 0..127
+    //logic [6:0] small_y;  // 0..96
 
     always_ff @(posedge clk) begin : bg_ff_blk
         if (rst) begin
@@ -62,10 +62,11 @@
             else if (in.hcount == HOR_PIXELS - 1)   // - right edge:
                 rgb_nxt = 12'h0_0_f;                // - - make a blue line.
             else begin
-                small_x = in.hcount >> 3;  
-                small_y = in.vcount >> 3;  
-                pixel_index = small_y * 128 + small_x;
-                rgb_nxt = image_mem[pixel_index];
+                //small_x = in.hcount >> 3;  
+                //small_y = in.vcount >> 3;  
+                //pixel_index = small_y * 128 + small_x;
+                //rgb_nxt = image_mem[pixel_index];
+                rgb_nxt = 12'h2_b_e; // light blue
             end
         end
     end

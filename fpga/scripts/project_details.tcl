@@ -51,6 +51,7 @@ set sv_files {
     ../rtl/Game_Control/duck_ctl.sv \
     ../rtl/Game_Control/draw_files/draw_duck.sv \
     ../rtl/Game_Control/draw_files/duck_rom.sv \
+    ../rtl/Background/grass_draw.sv\
     rtl/top_vga_basys3.sv
 }
 

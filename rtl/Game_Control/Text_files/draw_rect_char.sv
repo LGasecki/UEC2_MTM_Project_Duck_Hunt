@@ -92,7 +92,7 @@ module draw_rect_char
             pixel_index = (hcount_III - CHAR_XPOS) >> 2; // dzielenie przez 4
             bit_index = 7 - 3'(pixel_index[2:0]);
             if (char_line_pixels[bit_index]) begin
-                rgb_nxt = 12'hAAA; // biały
+                rgb_nxt = 12'h111; // czarny
             end else begin
                 rgb_nxt = rgb_III;
             end
