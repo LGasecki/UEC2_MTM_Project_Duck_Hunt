@@ -36,7 +36,7 @@ draw_rect_char
     .CHAR_XPOS(START_CHAR_XPOS),    
     .CHAR_YPOS(START_CHAR_YPOS)
     
-)u_draw_rect_char (
+)u_draw_rect_char_start_screen (
     .clk(clk),
     .rst,
 
@@ -53,7 +53,7 @@ char_rom
 #(
     .TEXT({"START GAME"})
 )
-u_char_rom (
+u_char_rom_start_screen (
     .clk(clk),
     .char_xy(char_xy),  
     .char_code(char_code)

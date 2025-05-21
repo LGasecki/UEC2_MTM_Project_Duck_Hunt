@@ -15,7 +15,8 @@ module duck_ctl
     input  wire  [9:0] lfsr_number,
     
     output logic [11:0] xpos,
-    output logic [11:0] ypos
+    output logic [11:0] ypos,
+    output logic duck_direction
 );
 
 //------------------------------------------------------------------------------
@@ -30,8 +31,8 @@ localparam DUCK_WIDTH = 96;
 localparam [11:0] GROUND = 620; // maximum Y position
 localparam [35:0] GROUND_Q12_24 = GROUND << 24; //maximum Y position in q12.24 format
 
-localparam X_SPEED = 627; // x speed in q12.24 format
-localparam Y_SPEED = 627; // y speed in q12.24 format
+localparam X_SPEED = 310; // x speed in q12.24 format
+localparam Y_SPEED = 200; // y speed in q12.24 format
 
 // localparam X_SPEED = 1 << 24; //for testbench
 // localparam Y_SPEED = 1 << 24; 
@@ -99,10 +100,12 @@ always_ff @(posedge clk) begin : out_reg_blk
     if(rst) begin : out_reg_rst_blk
         {xpos, ypos} <= 0;
         {xpos_q12_24, ypos_q12_24} <= 0;
+        duck_direction <= 0;
     end
     else begin : out_reg_run_blk
         {xpos, ypos} <= {xpos_nxt_q12_24[35:24], ypos_nxt_q12_24[35:24]};
         {xpos_q12_24, ypos_q12_24} <= {xpos_nxt_q12_24, ypos_nxt_q12_24};
+        duck_direction <= (state == UP_LEFT || state == DOWN_LEFT) ? 1 : 0;
     end
 end
 //------------------------------------------------------------------------------

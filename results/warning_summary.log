@@ -1,6 +1,10 @@
 Warnings, critical warnings and errors from synthesis and implementation
 
+<<<<<<< HEAD
 Created: 2025-05-21 15:24:15
+=======
+Created: 2025-05-21 16:18:04
+>>>>>>> LGasecki
 
 ----SYNTHESIS----
 CRITICAL WARNING: [Synth 8-4445] could not open $readmem data file '../../rtl/Game_Control/draw_files/duck_96x60.data'; please make sure the file is added to project and has read permission, ignoring [C:/Users/Oliwia/Desktop/duckhunt/UEC2_MTM_Project_Duck_Hunt-1/rtl/Game_Control/draw_files/duck_rom.sv:36]
