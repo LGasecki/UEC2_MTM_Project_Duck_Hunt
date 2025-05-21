@@ -30,8 +30,8 @@ localparam DUCK_WIDTH = 96;
 localparam [11:0] GROUND = 620; // maximum Y position
 localparam [35:0] GROUND_Q12_24 = GROUND << 24; //maximum Y position in q12.24 format
 
-localparam X_SPEED = 628; // x speed in q12.24 format
-localparam Y_SPEED = 628; // y speed in q12.24 format
+localparam X_SPEED = 627; // x speed in q12.24 format
+localparam Y_SPEED = 627; // y speed in q12.24 format
 
 // localparam X_SPEED = 1 << 24; //for testbench
 // localparam Y_SPEED = 1 << 24; 
@@ -66,6 +66,7 @@ end
 // next state logic
 //------------------------------------------------------------------------------
 always_comb begin : state_comb_blk
+    state_nxt = state;  // domyślna wartość
     case(state)
         IDLE:    state_nxt = game_enable ?  SIDE : IDLE;
         SIDE:    state_nxt = (xpos_q12_24[35:24] >= X_MAX>>2) ? UP_LEFT : UP_RIGHT;
@@ -74,29 +75,21 @@ always_comb begin : state_comb_blk
                 state_nxt = UP_LEFT;
             else if(ypos_q12_24[35:24] <= 0)
                 state_nxt = DOWN_RIGHT;
-            else
-                state_nxt = UP_RIGHT;
         UP_LEFT:
             if(xpos_q12_24[35:24] <= 0) 
                 state_nxt = UP_RIGHT;
             else if(ypos_q12_24[35:24] <= 0)
                 state_nxt = DOWN_LEFT;
-            else
-                state_nxt = UP_LEFT;
         DOWN_RIGHT:
             if(xpos_q12_24[35:24] >= X_MAX - DUCK_WIDTH) 
                 state_nxt = DOWN_LEFT;
             else if(ypos_q12_24[35:24] >= GROUND - DUCK_HEIGHT)
                 state_nxt = UP_RIGHT;
-            else
-                state_nxt = DOWN_RIGHT;
         DOWN_LEFT:
             if(xpos_q12_24[35:24] <= 0) 
                 state_nxt = DOWN_RIGHT;
-            else if(ypos_q12_24[35:24] >= GROUND- DUCK_HEIGHT)
+            else if(ypos_q12_24[35:24] >= GROUND - DUCK_HEIGHT)
                 state_nxt = UP_LEFT;
-            else
-                state_nxt = DOWN_LEFT;
     endcase
 end
 //------------------------------------------------------------------------------
@@ -116,13 +109,13 @@ end
 // output logic
 //------------------------------------------------------------------------------
 always_comb begin : out_comb_blk
+    xpos_nxt_q12_24 = xpos_q12_24;
+    ypos_nxt_q12_24 = ypos_q12_24;
+    // default values
     case(state_nxt)
         IDLE: begin
-            if(lfsr_number[9:0] >= X_MAX - DUCK_WIDTH)
-                xpos_nxt_q12_24 = {2'b0,(lfsr_number[9:0] - DUCK_WIDTH), 24'b0};
-            else
-                xpos_nxt_q12_24 = {2'b0,lfsr_number[9:0], 24'b0};
-            ypos_nxt_q12_24 = GROUND_Q12_24 - (DUCK_HEIGHT << 24);
+            xpos_nxt_q12_24 = 512 << 24;
+            ypos_nxt_q12_24 = GROUND_Q12_24;
         end
         UP_RIGHT: begin
             xpos_nxt_q12_24 = xpos_q12_24 + X_SPEED;
@@ -141,8 +134,11 @@ always_comb begin : out_comb_blk
             ypos_nxt_q12_24 = ypos_q12_24 + Y_SPEED;
         end
         SIDE: begin
-            xpos_nxt_q12_24 = xpos_q12_24;
-            ypos_nxt_q12_24 = ypos_q12_24;
+            if(lfsr_number[9:0] >= X_MAX - DUCK_WIDTH)
+                xpos_nxt_q12_24 = {2'b0,(lfsr_number[9:0] - DUCK_WIDTH), 24'b0};
+            else
+                xpos_nxt_q12_24 = {2'b0,lfsr_number[9:0], 24'b0};
+            ypos_nxt_q12_24 = GROUND_Q12_24 - (DUCK_HEIGHT << 24);
         end
 
     endcase
