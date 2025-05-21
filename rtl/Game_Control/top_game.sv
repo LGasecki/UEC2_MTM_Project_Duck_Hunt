@@ -35,7 +35,10 @@ localparam logic [3:0] LFSR_WIDTH = 10; // Width of the LFSR
 // LOCAL VARIABLES
 logic [LFSR_WIDTH-1:0] random_number;
 logic start_screen_enable, game_enable, game_end_enable;
+logic start_delay, delay_finished, duck_direction;
 logic [11:0] duck_xpos, duck_ypos;
+logic [12:0] pixel_addr;
+logic [11:0] rgb;
 
 vga_if start_screen_if();
 //------------------------------------------------------------------------------
@@ -58,10 +61,13 @@ game_control_fsm u_game_control_fsm (
     .mouse_xpos(mouse_xpos),
     .mouse_ypos(mouse_ypos),
     .game_finished(1'b0), // Placeholder for game finished signal
-
+    .delay_finished(delay_finished), // Placeholder for delay finished signal
+    
+    .start_delay(start_delay), // Placeholder for start delay signal
     .start_screen_enable(start_screen_enable),
     .game_enable(game_enable),
     .game_end_enable(game_end_enable)
+
 );
 
 //START SCREEN
@@ -73,6 +79,16 @@ start_screen u_start_screen (
     .in(in),
     .out(start_screen_if)
 );
+//DELAY
+delay_ms #(
+    .DELAY_MS(3000)
+) u_delay (
+    .clk(clk),
+    .rst(rst),
+    .start(start_delay),
+    .done(delay_finished)
+);
+
 
 //GAME
 
@@ -83,21 +99,32 @@ duck_ctl u_duck_ctl (
     .lfsr_number(random_number),
 
     .xpos(duck_xpos),
-    .ypos(duck_ypos)
+    .ypos(duck_ypos),
+    .duck_direction(duck_direction)
 );
 
 draw_duck #(
     .DUCK_WIDTH(DUCK_WIDTH),
     .DUCK_HEIGHT(DUCK_HEIGHT)
 ) u_draw_duck (
-    .game_enable(game_enable),
+    .game_enable(start_screen_enable),
+    // .game_enable(game_enable),
     .clk(clk),
     .rst(rst),
     .xpos(duck_xpos),
     .ypos(duck_ypos),
+    .rgb_pixel(rgb),
+    .duck_direction(duck_direction), // Placeholder for duck direction signal
 
+    .pixel_addr(pixel_addr),
     .in(start_screen_if),
     .out(out)
+);
+
+duck_rom u_duck_rom(
+    .clk,
+    .address(pixel_addr),
+    .rgb(rgb)
 );
 //---------------------------------//
 endmodule

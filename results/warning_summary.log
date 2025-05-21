@@ -1,6 +1,6 @@
 Warnings, critical warnings and errors from synthesis and implementation
 
-Created: 2025-05-20 23:34:39
+Created: 2025-05-21 16:18:04
 
 ----SYNTHESIS----
 WARNING: [Synth 8-7129] Port right_mouse in module top_game is either unconnected or has no load
