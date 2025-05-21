@@ -25,6 +25,7 @@ sv work ../../rtl/Timing/vga_pkg.sv \
         ../../rtl/Game_Control/Text_files/font_rom.sv \
         ../../rtl/Game_Control/duck_ctl.sv \
         ../../rtl/Game_Control/draw_files/draw_duck.sv \
+        ../../rtl\Game_Control\draw_files\duck_rom.sv \
         ../common/tiff_writer.sv \
         top_vga_tb.sv
 
