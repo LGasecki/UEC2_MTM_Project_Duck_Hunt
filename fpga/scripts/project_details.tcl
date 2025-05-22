@@ -45,10 +45,13 @@ set sv_files {
     ../rtl/Game_Control/Text_files/char_rom.sv \
     ../rtl/Game_Control/Text_files/draw_rect_char.sv \
     ../rtl/Game_Control/Text_files/font_rom.sv \
+    ../rtl/Game_Control/Text_files/bcd_to_string.sv \
+    ../rtl/Game_Control/Text_files/char_ram.sv \
     ../rtl/Game_Control/lfsr_random.sv\
     ../rtl/Game_Control/duck_game_logic.sv \
     ../rtl/Game_Control/duck_ctl.sv \
     ../rtl/Game_Control/delay_ms.sv \
+    ../rtl/Draw_files/draw_2_numbers.sv \
     ../rtl/Draw_files/Game_Background.sv \
     ../rtl/Draw_files/draw_duck.sv \
     ../rtl/Draw_files/duck_rom.sv \

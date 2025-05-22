@@ -31,8 +31,8 @@ localparam DUCK_WIDTH = 96;
 localparam [11:0] GROUND = 620; // maximum Y position
 localparam [35:0] GROUND_Q12_24 = GROUND << 24; //maximum Y position in q12.24 format
 
-localparam X_SPEED = 310; // x speed in q12.24 format
-localparam Y_SPEED = 280; // y speed in q12.24 format
+localparam X_SPEED = 100; // x speed in q12.24 format
+localparam Y_SPEED = 95; // y speed in q12.24 format
 
 // localparam X_SPEED = 1 << 24; //for testbench
 // localparam Y_SPEED = 1 << 24; 

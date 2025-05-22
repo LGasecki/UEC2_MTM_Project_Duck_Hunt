@@ -40,8 +40,8 @@ module duck_game_logic_tb;
     always #8 clk = ~clk;
 
     task print_state;
-        $display("Time: %10t | Score: %0d | Mag: %0d | Left: %0d | Reload: %b | Hunt: %b", 
-                  $time, my_score, bullets_in_magazine, bullets_left, show_reload_char, hunt_start);
+        $display("Time: %10t |State: %s|  Score: %0d | Mag: %0d | Left: %0d | Reload: %b | Hunt: %b", 
+                  $time, my_score, dut.state, bullets_in_magazine, bullets_left, show_reload_char, hunt_start);
     endtask
 
     initial begin
@@ -109,8 +109,17 @@ module duck_game_logic_tb;
         right_mouse = 1;
         #20;
         right_mouse = 0;
+        #20;
+        print_state();
         repeat (300_000) @(posedge clk); // wait for RELOAD_TIME
         #40
+        print_state();
+
+        // No bullets left
+        $display(">>> No bullets left...");
+        force dut.bullets_left = 0;
+        force dut.bullets_in_magazine = 0;
+        #40;
         print_state();
 
         $display("=== Testbench finished ===");

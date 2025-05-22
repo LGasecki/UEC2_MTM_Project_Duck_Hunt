@@ -46,4 +46,8 @@
     localparam BULLET_HEIGHT = 16;
     localparam BULLET_WIDTH = 48;
 
+    //score parameters
+    localparam SCORE_XPOS = 20;
+    localparam SCORE_YPOS = 700;
+
 endpackage
