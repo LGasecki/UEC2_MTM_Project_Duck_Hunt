@@ -28,7 +28,7 @@ module mouse_shape (
     // Wymiary plusa
     localparam PLUS_SIZE = 16;       // Rozmiar plusa (15x15 pikseli)
     localparam LINE_WIDTH = 5;      // Szerokość linii plusa
-    localparam RECT_COLOR = 12'hFFF; // Kolor plusa (biały)
+    localparam RECT_COLOR = 12'hF00; // Kolor plusa (czerwony)
 
     /**
      * Internal logic

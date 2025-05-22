@@ -57,9 +57,9 @@ module top_vga (
      * Signals assignments
      */
     
-    assign vs = game_if.vsync;
-    assign hs = game_if.hsync;
-    assign {r,g,b} = game_if.rgb;
+    assign vs = mouse_shape_if.vsync;
+    assign hs = mouse_shape_if.hsync;
+    assign {r,g,b} = mouse_shape_if.rgb;
     
     
     /**
@@ -100,22 +100,12 @@ module top_vga (
         .out(background_if)
     );
 
-    draw_mouse u_draw_mouse(
-        .rst,   
-        .clk(clk65),
-        .xpos(xpos),
-        .ypos(ypos),
-        
-        .in(mouse_shape_if),
-        .out(draw_mouse_if)        
-    );
-
     mouse_shape u_mouse_shape (
         .clk(clk65),
         .rst,
         .xpos (xpos),
         .ypos (ypos),
-        .in(background_if),
+        .in(game_if),
         .out(mouse_shape_if)
 
     );
@@ -128,7 +118,7 @@ module top_vga (
         .left_mouse(left_mouse),
         .right_mouse(right_mouse),
 
-        .in(mouse_shape_if),
+        .in(background_if),
         .out(game_if)
     );
 

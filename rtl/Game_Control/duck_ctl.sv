@@ -99,7 +99,8 @@ end
 always_ff @(posedge clk) begin : out_reg_blk
     if(rst) begin : out_reg_rst_blk
         {xpos, ypos} <= 0;
-        {xpos_q12_24, ypos_q12_24} <= 0;
+        xpos_q12_24 <= 512 << 24;
+        ypos_q12_24 <= 0;
         duck_direction <= 0;
     end
     else begin : out_reg_run_blk
@@ -117,7 +118,10 @@ always_comb begin : out_comb_blk
     // default values
     case(state_nxt)
         IDLE: begin
-            xpos_nxt_q12_24 = 512 << 24;
+            if(lfsr_number[9:0] >= X_MAX - DUCK_WIDTH)
+                xpos_nxt_q12_24 = {2'b0,(lfsr_number[9:0] - DUCK_WIDTH), 24'b0};
+            else
+                xpos_nxt_q12_24 = {2'b0,lfsr_number[9:0], 24'b0};
             ypos_nxt_q12_24 = GROUND_Q12_24;
         end
         UP_RIGHT: begin

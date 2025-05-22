@@ -50,7 +50,7 @@ lfsr_random #(
 ) lfsr (
     .clk(clk),
     .rst(rst),
-    .enable(game_enable),
+    .enable(game_enable || start_screen_enable),
     .random(random_number)
 );
 

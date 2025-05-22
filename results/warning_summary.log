@@ -1,11 +1,17 @@
 Warnings, critical warnings and errors from synthesis and implementation
 
-Created: 2025-05-22 08:05:58
+Created: 2025-05-22 13:52:35
 
 ----SYNTHESIS----
+WARNING: [Synth 8-6014] Unused sequential element set_x.inc_reg was removed.  [rtl/Mouse_Control/MouseCtl.vhd:450]
+WARNING: [Synth 8-6014] Unused sequential element set_x.x_inter_reg was removed.  [rtl/Mouse_Control/MouseCtl.vhd:456]
+WARNING: [Synth 8-6014] Unused sequential element set_y.inc_reg was removed.  [rtl/Mouse_Control/MouseCtl.vhd:514]
+WARNING: [Synth 8-6014] Unused sequential element set_y.y_inter_reg was removed.  [rtl/Mouse_Control/MouseCtl.vhd:520]
 WARNING: [Synth 8-7129] Port right_mouse in module top_game is either unconnected or has no load
 WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
 WARNING: [Synth 8-7129] Port right_mouse in module top_game is either unconnected or has no load
 
 ----IMPLEMENTATION----
-CLEAR :)
+WARNING: [DRC DPIP-1] Input pipelining: DSP u_top_vga/u_top_game/u_draw_duck/pixel_addr_reg input u_top_vga/u_top_game/u_draw_duck/pixel_addr_reg/A[29:0] is not pipelined. Pipelining DSP48 input will improve performance.
+WARNING: [DRC DPIP-1] Input pipelining: DSP u_top_vga/u_top_game/u_draw_duck/pixel_addr_reg input u_top_vga/u_top_game/u_draw_duck/pixel_addr_reg/C[47:0] is not pipelined. Pipelining DSP48 input will improve performance.
+WARNING: [DRC DPOP-2] MREG Output pipelining: DSP u_top_vga/u_top_game/u_draw_duck/pixel_addr_reg multiplier stage u_top_vga/u_top_game/u_draw_duck/pixel_addr_reg/P[47:0] is not pipelined (MREG=0). Pipelining the multiplier function will improve performance and will save significant power so it is suggested whenever possible to fully pipeline this function.  If this multiplier was inferred, it is suggested to describe an additional register stage after this function.  If there is no registered adder/accumulator following the multiply function, two pipeline stages are suggested to allow both the MREG and PREG registers to be used.  If the DSP48 was instantiated in the design, it is suggested to set both the MREG and PREG attributes to 1 when performing multiply functions.
