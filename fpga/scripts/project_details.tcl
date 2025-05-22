@@ -36,7 +36,6 @@ set sv_files {
     ../rtl/Timing/vga_timing.sv \
     ../rtl/vga_if.sv \
     ../rtl/top_vga.sv \
-    ../rtl/Background/Game_Background.sv \
     ../rtl/Mouse_Control/draw_mouse.sv\
     ../rtl/Mouse_Control/mouse_shape.sv\
     ../rtl/Game_Control/top_game.sv \
@@ -49,10 +48,11 @@ set sv_files {
     ../rtl/Game_Control/lfsr_random.sv\
     ../rtl/Game_Control/duck_game_logic.sv \
     ../rtl/Game_Control/duck_ctl.sv \
-    ../rtl/Game_Control/draw_files/draw_duck.sv \
     ../rtl/Game_Control/delay_ms.sv \
-    ../rtl/Game_Control/draw_files/duck_rom.sv \
-    ../rtl/Background/grass_draw.sv\
+    ../rtl/Draw_files/Game_Background.sv \
+    ../rtl/Draw_files/draw_duck.sv \
+    ../rtl/Draw_files/duck_rom.sv \
+    ../rtl/Draw_files/grass_draw.sv\
     rtl/top_vga_basys3.sv
 }
 

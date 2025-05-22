@@ -13,12 +13,12 @@ module duck_game_logic
     input  wire         game_enable,
     input  wire         left_mouse,
     input  wire         right_mouse,
-    input  wire  [15:0] lfsr_number, 
+    input  wire  [9:0] lfsr_number, 
     input  wire  [11:0] mouse_xpos,
     input  wire  [11:0] mouse_ypos,
+    input logic [11:0] target_xpos,
+    input logic [11:0] target_ypos,
 
-    output logic [11:0] target_xpos,
-    output logic [11:0] target_ypos,
     output logic [3:0]  bullets_count,
     output logic        reload_enable,
     output logic [6:0]  score
@@ -34,13 +34,7 @@ timeprecision 1ps;
 //------------------------------------------------------------------------------
 localparam DUCK_HEIGHT = 32;
 localparam DUCK_WIDTH = 96;
-localparam [35:0] DUCK_WIDTH_q12_24 = DUCK_WIDTH << 24; // width of the duck in q12.24 format
-localparam [35:0] DUCK_HEIGHT_q12_24 = DUCK_HEIGHT << 24; // height of the duck in q12.24 format
 
-localparam SPEED_q12_24 = 258;
-
-localparam [11:0] LOWEST_POINT = 668; // maximum Y position
-localparam [35:0] LOWEST_POINT_q12_24 = LOWEST_POINT << 24; //maximum Y position in q12.24 format
 localparam STATE_BITS   = 3; // number of bits used for state register
 // localparam COUNTDOWN    = 4000 * 65_000; // countdown value at start of the game T - 4000ms
 // localparam DEATH_TIME   = 2000 * 65_000; // time for duck fall after death T - 2000ms
@@ -55,8 +49,6 @@ localparam RELOAD_TIME  = 1;
 // local variables
 //------------------------------------------------------------------------------
 logic      [31:0] delay_ms, delay_ms_nxt;
-logic      [35:0] xpos_nxt_q12_24, ypos_nxt_q12_24;
-logic      [35:0] xpos_q12_24, ypos_q12_24;
 logic      [6:0]  score_nxt;
 logic      [3:0]  bullets_count_nxt;
 logic      reload_enable_nxt;
@@ -98,20 +90,16 @@ end
 //------------------------------------------------------------------------------
 always_ff @(posedge clk) begin : out_reg_blk
     if(rst) begin : out_reg_rst_blk
-        {target_xpos, target_ypos, score,bullets_count, reload_enable} <= 0;
+        {score, bullets_count, reload_enable} <= 0;
         delay_ms <= COUNTDOWN;
-        {xpos_q12_24, ypos_q12_24} <= 0;
         left_mouse_prev <= 0;
         right_mouse_prev <= 0;
     end
     else begin : out_reg_run_blk
-        target_xpos <= xpos_nxt_q12_24[35:24];
-        target_ypos <= ypos_nxt_q12_24[35:24];
         score       <= score_nxt;
         delay_ms    <= delay_ms_nxt;
         bullets_count <= bullets_count_nxt;
         reload_enable <= reload_enable_nxt;
-        {xpos_q12_24, ypos_q12_24} <= {xpos_nxt_q12_24, ypos_nxt_q12_24};
         left_mouse_prev <= left_mouse;
         right_mouse_prev <= right_mouse;
     end
@@ -124,24 +112,18 @@ always_comb begin : out_comb_blk
     right_mouse_posedge = (right_mouse == 1 && right_mouse_prev == 0);
     case(state_nxt)
         WAIT_FOR_START: begin
-            xpos_nxt_q12_24 = {2'd0,lfsr_number[9:0], 24'd0};
-            ypos_nxt_q12_24 = LOWEST_POINT_q12_24;
             score_nxt       = 0;
             delay_ms_nxt    = COUNTDOWN;
             bullets_count_nxt = 8;
             reload_enable_nxt   = 0;
         end
         DELAY: begin
-            xpos_nxt_q12_24 = xpos_q12_24;
-            ypos_nxt_q12_24 = ypos_q12_24;
             score_nxt       = score;
             delay_ms_nxt    = delay_ms - 1;
             bullets_count_nxt = bullets_count;
             reload_enable_nxt   = reload_enable;
         end
         RELOADING: begin
-            xpos_nxt_q12_24 = xpos_q12_24;
-            ypos_nxt_q12_24 = ypos_q12_24;
             bullets_count_nxt = bullets_count;
             if (left_mouse_posedge) begin
                 if (bullets_count == 0) begin : no_bullets
@@ -152,8 +134,6 @@ always_comb begin : out_comb_blk
                              mouse_ypos >= target_ypos && mouse_ypos <= target_ypos + DUCK_HEIGHT) begin : hit_target_with_bullets
                     bullets_count_nxt = bullets_count - 1;
                     score_nxt = score + 1;
-                    xpos_nxt_q12_24 = {2'd0,lfsr_number[9:0], 24'd0};
-                    ypos_nxt_q12_24 = LOWEST_POINT_q12_24;
                     delay_ms_nxt = DEATH_TIME;
                     reload_enable_nxt = 0;
                 end else begin : miss_target

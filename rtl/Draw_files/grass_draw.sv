@@ -23,7 +23,7 @@
 
     //128 x 35 = 4480
     logic [11:0] image_mem [0:4479];
-    initial $readmemh("../../rtl/Background/grass_128x35.data", image_mem);
+    initial $readmemh("../../rtl/Draw_files/grass_128x35.data", image_mem);
 
     logic [11:0] rgb_nxt;
     logic [13:0] pixel_index;
@@ -57,7 +57,7 @@ always_comb begin : bg_comb_bg_photo_blk
         small_y = (in.vcount - 488) >> 3; // przesunięcie względem dolnej granicy
         pixel_index = small_y * 128 + small_x;
 
-        if(pixel_index == 12'h2BE )begin
+        if(image_mem[pixel_index] == 12'h2BE )begin
             rgb_nxt = in.rgb; 
         end else begin
             rgb_nxt = image_mem[pixel_index];

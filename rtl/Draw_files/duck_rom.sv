@@ -33,8 +33,7 @@ logic [11:0] duck_rom [0:5759]; // 96x60 = 5760 pixels
  */
 
 /* Relative path from the simulation or synthesis working directory */
-initial $readmemh("../../../rtl/Game_Control/draw_files/duck_96x60.data", rom);
-//initial $readmemh("../../rtl/Game_Control/draw_files/duck_96x60.data", rom);
+initial $readmemh("../../rtl/Draw_files/duck_96x60.data", duck_rom);
 
 /**
  * Internal logic
