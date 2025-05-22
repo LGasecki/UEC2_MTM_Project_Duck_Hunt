@@ -45,7 +45,7 @@ set sv_files {
     ../rtl/Game_Control/Text_files/char_rom.sv \
     ../rtl/Game_Control/Text_files/draw_rect_char.sv \
     ../rtl/Game_Control/Text_files/font_rom.sv \
-    ../rtl/Game_Control/Text_files/bcd_to_string.sv \
+    ../rtl/Game_Control/Text_files/bin_to_ascii.sv \
     ../rtl/Game_Control/Text_files/char_ram.sv \
     ../rtl/Game_Control/lfsr_random.sv\
     ../rtl/Game_Control/duck_game_logic.sv \

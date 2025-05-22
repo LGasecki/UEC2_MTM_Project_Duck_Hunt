@@ -29,7 +29,7 @@ logic [7:0] char_xy;
 logic [6:0] char_code;
 logic [3:0] char_line;
 logic [7:0] char_line_pixels;
-logic [7:0] my_score_str_1, my_score_str_0;
+logic [6:0] my_score_str_1, my_score_str_0;
 
 
 draw_rect_char 

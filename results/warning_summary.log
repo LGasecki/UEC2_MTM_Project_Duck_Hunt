@@ -1,12 +1,9 @@
 Warnings, critical warnings and errors from synthesis and implementation
 
-Created: 2025-05-22 21:33:04
+Created: 2025-05-22 23:06:12
 
 ----SYNTHESIS----
-WARNING: [Synth 8-3936] Found unconnected internal register 'ram_reg[1]' and it is trimmed from '8' to '7' bits. [C:/Users/gasec/Desktop/IV_SEM/UEC2_MTM_Project_Duck_Hunt/rtl/Game_Control/Text_files/char_ram.sv:14]
-WARNING: [Synth 8-3936] Found unconnected internal register 'ram_reg[0]' and it is trimmed from '8' to '7' bits. [C:/Users/gasec/Desktop/IV_SEM/UEC2_MTM_Project_Duck_Hunt/rtl/Game_Control/Text_files/char_ram.sv:14]
-WARNING: [Synth 8-7129] Port text_in[15] in module char_ram_char is either unconnected or has no load
-WARNING: [Synth 8-7129] Port text_in[7] in module char_ram_char is either unconnected or has no load
+WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
 
 ----IMPLEMENTATION----
-No implementation log file found!
+CLEAR :)
