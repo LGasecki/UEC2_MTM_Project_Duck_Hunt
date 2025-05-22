@@ -1,0 +1,18 @@
+module bin_to_ascii (
+    input  logic [7:0] bin_in,          // binarna liczba 0–99
+    output logic [7:0] ascii_tens,      // ASCII znak dziesiątek
+    output logic [7:0] ascii_ones       // ASCII znak jedności
+);
+
+    logic [3:0] tens, ones;
+
+    always_comb begin
+        tens  = bin_in / 10;
+        ones  = bin_in % 10;
+
+        ascii_tens = 8'h30 + tens;      // '0' + dziesiątki
+        ascii_ones = 8'h30 + ones;      // '0' + jedności
+    end
+
+endmodule
+    

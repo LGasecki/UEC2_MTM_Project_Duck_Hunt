@@ -28,13 +28,13 @@
     localparam DUCK_WIDTH = 96;
     localparam STATE_BITS = 2; // number of bits used for state register
 
-    localparam COUNTDOWN    = 2000 * 65_000; // countdown value at start of the game T - 4000ms
-    localparam DEATH_TIME   = 200 * 65_000; // time for duck fall after death T - 2000ms
-    localparam RELOAD_TIME  = 1 * 65_000; // time for reloading T - 100ms
+    // localparam COUNTDOWN    = 2000 * 65_000; // countdown value at start of the game T - 4000ms
+    // localparam DEATH_TIME   = 200 * 65_000; // time for duck fall after death T - 2000ms
+    // localparam RELOAD_TIME  = 1 * 65_000; // time for reloading T - 100ms
     //FOR TESTS
-    // localparam COUNTDOWN    = 40; 
-    // localparam DEATH_TIME   = 20; 
-    // localparam RELOAD_TIME  = 1; 
+    localparam COUNTDOWN    = 40; 
+    localparam DEATH_TIME   = 20; 
+    localparam RELOAD_TIME  = 1; 
     //------------------------------------------------------------------------------
     // local variables
     //------------------------------------------------------------------------------
@@ -43,7 +43,7 @@
     logic left_mouse_prev, left_mouse_posedge, right_mouse_posedge, right_mouse_prev;
     logic [31:0] delay_ms, delay_ms_nxt;
     logic [6:0] my_score_nxt;
-    logic hunt_start_nxt, show_reload_char_nxt, duck_killed;
+    logic hunt_start_nxt, show_reload_char_nxt;
     
     enum logic [STATE_BITS-1 :0] {
         WAIT_FOR_START = 2'b00,
@@ -70,13 +70,10 @@
         case(state)
             WAIT_FOR_START: state_nxt = (game_enable) ? DELAY : WAIT_FOR_START;
             DELAY:          state_nxt = (delay_ms == 0) ? HUNTING : DELAY;
-            HUNTING:
-                if (right_mouse_posedge) 
-                    state_nxt = RELOADING;
-                else if (duck_killed)
-                    state_nxt = DELAY;
-                else 
-                    state_nxt = HUNTING;
+            HUNTING:    if (right_mouse_posedge) 
+                            state_nxt = RELOADING;
+                        else 
+                            state_nxt = HUNTING;
 
             RELOADING:      state_nxt = DELAY;
         endcase
@@ -102,7 +99,7 @@
             right_mouse_prev <= right_mouse;
             my_score <= my_score_nxt;
             hunt_start <= hunt_start_nxt;
-            show_reload_char <= show_reload_char_nxt;
+            show_reload_char <= !bullets_in_magazine_nxt;
         end
     end
     //------------------------------------------------------------------------------
@@ -118,7 +115,6 @@
         my_score_nxt             = my_score;
         left_mouse_posedge = (left_mouse == 1 && left_mouse_prev == 0);
         right_mouse_posedge = (right_mouse == 1 && right_mouse_prev == 0);
-        duck_killed = 0;
 
         case(state_nxt)
             WAIT_FOR_START: begin
@@ -144,7 +140,6 @@
                 bullets_left_nxt = bullets_left;
                 show_reload_char_nxt = 0;
                 my_score_nxt = my_score;
-                duck_killed = 0;
 
                 if (left_mouse_posedge) begin
                     if (bullets_in_magazine > 0) begin
@@ -154,7 +149,6 @@
                             mouse_ypos >= duck_ypos && mouse_ypos <= duck_ypos + DUCK_HEIGHT) begin
                             my_score_nxt = my_score + 1;
                             delay_ms_nxt = DEATH_TIME;
-                            duck_killed = 1;
                         end
                     end else begin
                         show_reload_char_nxt = 1;

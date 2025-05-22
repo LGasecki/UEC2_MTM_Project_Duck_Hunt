@@ -11,7 +11,6 @@
 
 sv work ../../rtl/Timing/vga_pkg.sv \
         ../../rtl/Timing/vga_timing.sv \
-
         ../../rtl/vga_if.sv \
         ../../rtl/top_vga.sv \
         ../../rtl/Mouse_Control/draw_mouse.sv \
@@ -27,7 +26,7 @@ sv work ../../rtl/Timing/vga_pkg.sv \
         ../../rtl/Game_Control/Text_files/char_rom.sv \
         ../../rtl/Game_Control/Text_files/draw_rect_char.sv \
         ../../rtl/Game_Control/Text_files/font_rom.sv \
-        ../../rtl/Game_Control/Text_files/bcd_to_string.sv \
+        ../../rtl/Game_Control/Text_files/bin_to_ascii.sv \
         ../../rtl/Game_Control/Text_files/char_ram.sv \
         ../../rtl/Draw_files/Game_Background.sv \
         ../../rtl/Draw_files/draw_duck.sv \

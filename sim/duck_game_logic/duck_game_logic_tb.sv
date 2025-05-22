@@ -40,8 +40,8 @@ module duck_game_logic_tb;
     always #8 clk = ~clk;
 
     task print_state;
-        $display("Time: %10t |State: %s|  Score: %0d | Mag: %0d | Left: %0d | Reload: %b | Hunt: %b", 
-                  $time, my_score, dut.state, bullets_in_magazine, bullets_left, show_reload_char, hunt_start);
+        $display("Time: %10t | Score: %0d | Mag: %0d | Left: %0d | Reload: %b | Hunt: %b", 
+                  $time, my_score,  bullets_in_magazine, bullets_left, show_reload_char, hunt_start);
     endtask
 
     initial begin
@@ -61,10 +61,11 @@ module duck_game_logic_tb;
 
         // Simulate miss (click outside duck)
         $display(">>> Simulating miss...");
-        left_mouse = 1;
         mouse_xpos = 1200;
         mouse_ypos = 800;
-        #20;
+        #80;
+        left_mouse = 1;
+        #40;
         left_mouse = 0;
         repeat (10) @(posedge clk);
         #40
@@ -76,7 +77,7 @@ module duck_game_logic_tb;
         mouse_ypos = duck_ypos + 2;
         #100;
         left_mouse = 1;
-        #20;
+        #60;
         left_mouse = 0;
         repeat (10) @(posedge clk);
         #40
@@ -85,11 +86,11 @@ module duck_game_logic_tb;
         // Deplete magazine
         $display(">>> Depleting magazine...");
         repeat (3) begin
-            mouse_xpos = duck_xpos + 1;
-            mouse_ypos = duck_ypos + 1;
+            mouse_xpos = duck_xpos - 1;
+            mouse_ypos = duck_ypos - 1;
             #100;
             left_mouse = 1;
-            #20;
+            #60;
             left_mouse = 0;
             repeat (10) @(posedge clk);
             #40
@@ -106,11 +107,10 @@ module duck_game_logic_tb;
 
         // Reload
         $display(">>> Reloading...");
+        print_state();
         right_mouse = 1;
         #20;
         right_mouse = 0;
-        #20;
-        print_state();
         repeat (300_000) @(posedge clk); // wait for RELOAD_TIME
         #40
         print_state();

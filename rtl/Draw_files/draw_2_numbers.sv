@@ -8,7 +8,7 @@
 module draw_2_numbers(
     input logic clk,
     input logic rst,
-    input logic [6:0] my_score, // 7-bitowy kod BCD
+    input logic [6:0] my_score, // 7-bitowy kod BIN
     input logic game_enable,
     
     vga_if.in in,
@@ -51,14 +51,16 @@ draw_rect_char
     .out(out)
 );
 
-bcd_to_string u_bcd_to_string (
-    .bcd_in({1'b0,my_score}), // 7-bitowy kod BCD
-    .ascii_out({my_score_str_1, my_score_str_0}) // dwa znaki ASCII: [15:8] i [7:0]
+bin_to_ascii u_bin_to_ascii (
+    .bin_in({1'b0,my_score}), // 7-bitowy kod BIN
+    .ascii_tens(my_score_str_1),     // ASCII kod cyfry dziesiątek
+    .ascii_ones(my_score_str_0)      // ASCII kod cyfry jedności
 );
 
 
-char_ram_char u_char_ram (
+char_ram u_char_ram (
     .clk(clk),
+    .load_text(game_enable), // sygnał załadunku dwóch znaków
     .text_in({my_score_str_1, my_score_str_0}), // dwa znaki ASCII: [15:8] i [7:0]
     .char_xy(char_xy),          // indeks znaku: 0 lub 1
     .char_code(char_code)       // wyjście: 7-bitowy kod ASCII
