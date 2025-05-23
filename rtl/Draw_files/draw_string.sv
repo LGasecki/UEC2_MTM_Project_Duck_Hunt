@@ -12,7 +12,10 @@ module draw_string
     CHAR_XPOS = START_CHAR_XPOS, // X position
     CHAR_YPOS = START_CHAR_YPOS, // Y position
     WIDTH = 10, // number of characters in the horizontal direction
-    TEXT = "START GAME" // text to be displayed
+    SIZE = 2, // 2^POWER_OF_2 = 4
+    TEXT = "START GAME", // text to be displayed
+    COLOUR = RGB_BLACK // RGB color for the character
+
 )(
     input logic clk,
     input logic rst,
@@ -41,7 +44,9 @@ draw_rect_char
 #( 
     .WIDTH(WIDTH),         // ilość znaków w poziomie
     .CHAR_XPOS(CHAR_XPOS), // X pozycja znaku
-    .CHAR_YPOS(CHAR_YPOS) // Y pozycja znaku
+    .CHAR_YPOS(CHAR_YPOS), // Y pozycja znaku
+    .COLOUR(COLOUR), // RGB color for the character
+    .SCALE_POWER_OF_2(SIZE) // 2^POWER_OF_2 = 4
     
 )u_draw_rect_char_start_screen (
     .clk(clk),
@@ -58,7 +63,8 @@ draw_rect_char
 
 char_rom 
 #(
-    .TEXT(TEXT)
+    .TEXT(TEXT),
+    .TEXT_SIZE(WIDTH)
 )
 u_char_rom_start_screen (
     .clk(clk),

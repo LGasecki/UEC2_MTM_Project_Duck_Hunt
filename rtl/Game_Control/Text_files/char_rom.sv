@@ -3,7 +3,8 @@ module char_rom
    //"--------------------------------",//
     {
     "START GAME"
-}
+},
+    parameter TEXT_SIZE = 10 // rozmiar tekstu
 ) 
 (
     input  logic       clk,
@@ -11,7 +12,6 @@ module char_rom
     output logic [6:0] char_code    // 7-bit ASCII output
 );
 
-    localparam TEXT_SIZE = 10; // rozmiar tekstu
     logic [6:0] char_code_nxt;
 
     logic [7:0] rom [0:TEXT_SIZE - 1];

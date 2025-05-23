@@ -8,8 +8,10 @@
 import vga_pkg::*;
 module draw_2_numbers
     #(parameter 
-        NUMB_XPOS = SCORE_XPOS, // X position 
-        NUMB_YPOS = SCORE_YPOS // Y position 
+        NUMB_XPOS = MY_SCORE_XPOS, // X position 
+        NUMB_YPOS = MY_SCORE_YPOS, // Y position 
+        SCALE_POWER_OF_2 = 2, // 2^POWER_OF_2 = 4
+        COLOUR = RGB_BLACK // RGB color for the character
     )
     (
     input logic clk,
@@ -41,7 +43,9 @@ draw_rect_char
 #( 
     .WIDTH(2),         // ilość znaków w poziomie
     .CHAR_XPOS(NUMB_XPOS), // X pozycja znaku
-    .CHAR_YPOS(NUMB_YPOS) // Y pozycja znaku
+    .CHAR_YPOS(NUMB_YPOS), // Y pozycja znaku
+    .SCALE_POWER_OF_2(SCALE_POWER_OF_2), // 2^POWER_OF_2 = 4
+    .COLOUR(COLOUR) // RGB color for the character
     
 )u_draw_rect_char_2_numbers (
     .clk(clk),

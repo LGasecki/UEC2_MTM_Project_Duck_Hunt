@@ -2,7 +2,9 @@ module draw_rect_char
     #(parameter 
         WIDTH = 32,         
         CHAR_XPOS = 450,    
-        CHAR_YPOS = 370
+        CHAR_YPOS = 370,
+        SCALE_POWER_OF_2 = 2,  // 2^POWER_OF_2 = 2
+        COLOUR = 12'hF00 // RGB color for the character
     )
     (
         input logic clk,
@@ -19,9 +21,8 @@ module draw_rect_char
 
     import vga_pkg::*;
 
-    localparam SCALE_X = 4;
-    localparam FULL_WIDTH = CHAR_XPOS + WIDTH * 8 * SCALE_X; 
-    localparam CHAR_YPOS_MAX = CHAR_YPOS + AREA_HEIGHT; 
+    localparam FULL_WIDTH = CHAR_XPOS + ((WIDTH << 3) << SCALE_POWER_OF_2); 
+    localparam CHAR_YPOS_MAX = CHAR_YPOS + (AREA_HEIGHT << SCALE_POWER_OF_2); 
 
     logic [11:0] rgb_I, rgb_II, rgb_III, rgb_nxt;
     logic [10:0] vcount_I, vcount_II, vcount_III;
@@ -38,11 +39,11 @@ module draw_rect_char
 
     // Zoptymalizowane obliczenia bez dzielenia
     assign char_xy_nxt = (in.hcount >= CHAR_XPOS) 
-                         ? ((in.hcount - CHAR_XPOS) >> 5) // dzielenie przez 32
+                         ? (((in.hcount - CHAR_XPOS) >> 3) >> SCALE_POWER_OF_2) // dzielenie przez 32
                          : 0;
 
     assign char_line_nxt = (vcount_I >= CHAR_YPOS) 
-                           ? ((vcount_I - CHAR_YPOS) >> 2) // dzielenie przez 4
+                           ? ((vcount_I - CHAR_YPOS) >> SCALE_POWER_OF_2) // dzielenie przez 4
                            : 0;
 
     always_ff @(posedge clk) begin
@@ -89,10 +90,10 @@ module draw_rect_char
         if (hcount_III >= CHAR_XPOS && hcount_III < FULL_WIDTH &&
             vcount_III >= CHAR_YPOS && vcount_III < CHAR_YPOS_MAX && enable) begin
 
-            pixel_index = (hcount_III - CHAR_XPOS) >> 2; // dzielenie przez 4
+            pixel_index = (hcount_III - CHAR_XPOS) >> SCALE_POWER_OF_2; 
             bit_index = 7 - 3'(pixel_index[2:0]);
             if (char_line_pixels[bit_index]) begin
-                rgb_nxt = 12'h111; // czarny
+                rgb_nxt = COLOUR; 
             end else begin
                 rgb_nxt = rgb_III;
             end

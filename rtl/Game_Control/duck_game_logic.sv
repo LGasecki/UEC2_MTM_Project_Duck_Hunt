@@ -15,7 +15,7 @@
         input  wire  [11:0] duck_ypos,
 
         output logic [2:0] bullets_in_magazine,
-        output logic [5:0] bullets_left,
+        output logic [6:0] bullets_left,
         output logic [6:0] my_score,
         output logic hunt_start,
         output logic show_reload_char,
@@ -40,7 +40,7 @@
     // local variables
     //------------------------------------------------------------------------------
     logic [2:0] bullets_in_magazine_nxt;
-    logic [5:0] bullets_left_nxt;
+    logic [6:0] bullets_left_nxt;
     logic left_mouse_prev, left_mouse_posedge, right_mouse_posedge, right_mouse_prev;
     logic [31:0] delay_ms, delay_ms_nxt;
     logic [6:0] my_score_nxt;

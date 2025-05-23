@@ -40,7 +40,7 @@ logic [11:0] duck_xpos, duck_ypos;
 logic [12:0] pixel_addr;
 logic [11:0] rgb;
 logic [2:0] bullets_in_magazine;
-logic [5:0] bullets_left;
+logic [6:0] bullets_left;
 logic [6:0] my_score;
 logic hunt_start;
 logic show_reload_char;
@@ -49,6 +49,12 @@ logic target_killed;
 vga_if start_screen_if();
 vga_if duck_if();
 vga_if grass_if();
+vga_if bullets_if();
+vga_if slash_if();
+vga_if bullets_left_if();
+vga_if your_points_if();
+vga_if enemy_points_if();
+vga_if my_score_if();
 //------------------------------------------------------------------------------
 // MODULES
 //------------------------------------------------------------------------------
@@ -77,11 +83,12 @@ game_control_fsm u_game_control_fsm (
 );
 
 //START SCREEN
-draw_string 
-#(
+draw_string #(
     .CHAR_XPOS(START_CHAR_XPOS), // X position 
     .CHAR_YPOS(START_CHAR_YPOS), // Y position 
     .WIDTH(10), // number of characters in the horizontal direction
+    .SIZE(START_CHAR_SIZE), // 2^POWER_OF_2 = 4
+    .COLOUR(RGB_BLACK), // RGB color for the character
     .TEXT("START GAME") // text to be displayed
 )u_start_screen (
     .clk(clk),
@@ -158,19 +165,108 @@ grass_draw u_grass_draw (
     .out(grass_if)
 );
 
-draw_2_numbers 
-#(
-    .NUMB_XPOS(SCORE_XPOS), // X position 
-    .NUMB_YPOS(SCORE_YPOS) // Y position 
-)
-u_draw_score (
+draw_bullets u_draw_bullets (
+    .game_enable(start_screen_enable || game_enable),
+    .clk(clk),
+    .rst(rst),
+    .bullets_in_magazine(bullets_in_magazine),
+
+    .in(grass_if),
+    .out(bullets_if)
+);
+
+draw_string #(
+    .CHAR_XPOS(168), 
+    .CHAR_YPOS(MY_SCORE_YPOS - 6), 
+    .WIDTH(2), 
+    .SIZE(2), // 2^POWER_OF_2 = 4
+    .COLOUR(RGB_BLACK), 
+    .TEXT("/ ")
+)u_draw_slash (
+    .clk(clk),
+    .rst(rst),
+    .enable(start_screen_enable || game_enable),
+
+    .in(bullets_if),
+    .out(slash_if)
+); 
+
+draw_2_numbers #(
+    .NUMB_XPOS(200), 
+    .NUMB_YPOS(MY_SCORE_YPOS), 
+    .COLOUR(RGB_BLACK), // RGB color for the character
+    .SCALE_POWER_OF_2(2) // 2^POWER_OF_2 = 4
+)u_draw_bullets_left (
+    .clk(clk),
+    .rst(rst),
+
+    .game_enable(start_screen_enable || game_enable),
+    .bin_number(bullets_left),
+    .in(slash_if),
+    .out(bullets_left_if)
+);
+    
+
+draw_string #(
+    .CHAR_XPOS(MY_SCORE_XPOS + 8), 
+    .CHAR_YPOS(MY_SCORE_YPOS - 20), 
+    .WIDTH(3), 
+    .SIZE(1), // 2^POWER_OF_2 = 4
+    .COLOUR(RGB_GREEN), 
+    .TEXT("YOU")
+)u_draw_score_your_points (
+    .clk(clk),
+    .rst(rst),
+    .enable(start_screen_enable || game_enable),
+
+    .in(bullets_left_if),
+    .out(your_points_if)
+);
+
+draw_string #(
+    .CHAR_XPOS(ENEMY_SCORE_XPOS - 8), 
+    .CHAR_YPOS(ENEMY_SCORE_YPOS - 20), 
+    .WIDTH(5), 
+    .SIZE(1), 
+    .COLOUR(RGB_RED), 
+    .TEXT("ENEMY") 
+)u_draw_score_enemy_points (
+    .clk(clk),
+    .rst(rst),
+    .enable(start_screen_enable || game_enable),
+
+    .in(your_points_if),
+    .out(enemy_points_if)
+);
+draw_2_numbers #(
+    .NUMB_XPOS(MY_SCORE_XPOS), 
+    .NUMB_YPOS(MY_SCORE_YPOS), 
+    .COLOUR(RGB_BLUE), // RGB color for the character
+    .SCALE_POWER_OF_2(2) // 2^POWER_OF_2 = 4
+)u_draw_my_score (
     .clk(clk),
     .rst(rst),
 
     .game_enable(start_screen_enable || game_enable),
     .bin_number(my_score),
-    .in(grass_if),
+    .in(enemy_points_if),
+    .out(my_score_if)
+);
+
+draw_2_numbers #(
+    .NUMB_XPOS(ENEMY_SCORE_XPOS), 
+    .NUMB_YPOS(ENEMY_SCORE_YPOS), 
+    .COLOUR(RGB_BLACK), // RGB color for the character
+    .SCALE_POWER_OF_2(2) // 2^POWER_OF_2 = 4
+)u_draw_enemy_score (
+    .clk(clk),
+    .rst(rst),
+
+    .game_enable(start_screen_enable || game_enable),
+    .bin_number(7'd11),
+    .in(my_score_if),
     .out(out)
 );
+
 //---------------------------------//
 endmodule
