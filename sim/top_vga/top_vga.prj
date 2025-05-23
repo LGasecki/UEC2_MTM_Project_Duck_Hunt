@@ -18,7 +18,6 @@ sv work ../../rtl/Timing/vga_pkg.sv \
         ../../rtl/Mouse_Control/mouse_shape.sv \
         ../../rtl/Game_Control/top_game.sv \
         ../../rtl/Game_Control/game_control_fsm.sv \
-        ../../rtl/Game_Control/start_screen.sv \
         ../../rtl/Game_Control/lfsr_random.sv \
         ../../rtl/Game_Control/duck_ctl.sv \
         ../../rtl/Game_Control/delay_ms.sv \
@@ -28,6 +27,7 @@ sv work ../../rtl/Timing/vga_pkg.sv \
         ../../rtl/Game_Control/Text_files/font_rom.sv \
         ../../rtl/Game_Control/Text_files/bin_to_ascii.sv \
         ../../rtl/Game_Control/Text_files/char_ram.sv \
+        ../../rtl/Draw_files/draw_string.sv \
         ../../rtl/Draw_files/Game_Background.sv \
         ../../rtl/Draw_files/draw_duck.sv \
         ../../rtl/Draw_files/duck_rom.sv \

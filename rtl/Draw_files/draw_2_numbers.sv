@@ -5,17 +5,22 @@
 # Description: 
 # This module implements the drawing of two numbers on the screen.
 */
-module draw_2_numbers(
+import vga_pkg::*;
+module draw_2_numbers
+    #(parameter 
+        NUMB_XPOS = SCORE_XPOS, // X position 
+        NUMB_YPOS = SCORE_YPOS // Y position 
+    )
+    (
     input logic clk,
     input logic rst,
-    input logic [6:0] my_score, // 7-bitowy kod BIN
+    input logic [6:0] bin_number, // 7-bitowy kod BIN
     input logic game_enable,
     
     vga_if.in in,
     vga_if.out out
 );
     
-import vga_pkg::*;
 
 
 //------------------------------------------------------------------------------
@@ -29,14 +34,14 @@ logic [7:0] char_xy;
 logic [6:0] char_code;
 logic [3:0] char_line;
 logic [7:0] char_line_pixels;
-logic [6:0] my_score_str_1, my_score_str_0;
+logic [6:0] tens_ascii, ones_ascii;
 
 
 draw_rect_char 
 #( 
     .WIDTH(2),         // ilość znaków w poziomie
-    .CHAR_XPOS(SCORE_XPOS),    
-    .CHAR_YPOS(SCORE_YPOS)
+    .CHAR_XPOS(NUMB_XPOS), // X pozycja znaku
+    .CHAR_YPOS(NUMB_YPOS) // Y pozycja znaku
     
 )u_draw_rect_char_2_numbers (
     .clk(clk),
@@ -52,16 +57,16 @@ draw_rect_char
 );
 
 bin_to_ascii u_bin_to_ascii (
-    .bin_in({1'b0,my_score}), // 7-bitowy kod BIN
-    .ascii_tens(my_score_str_1),     // ASCII kod cyfry dziesiątek
-    .ascii_ones(my_score_str_0)      // ASCII kod cyfry jedności
+    .bin_in({1'b0,bin_number}), // 7-bitowy kod BIN
+    .ascii_tens(tens_ascii),     // ASCII kod cyfry dziesiątek
+    .ascii_ones(ones_ascii)      // ASCII kod cyfry jedności
 );
 
 
 char_ram u_char_ram (
     .clk(clk),
     .load_text(game_enable), // sygnał załadunku dwóch znaków
-    .text_in({my_score_str_1, my_score_str_0}), // dwa znaki ASCII: [15:8] i [7:0]
+    .text_in({tens_ascii, ones_ascii}), // dwa znaki ASCII: [15:8] i [7:0]
     .char_xy(char_xy),          // indeks znaku: 0 lub 1
     .char_code(char_code)       // wyjście: 7-bitowy kod ASCII
 );

@@ -17,6 +17,7 @@ module duck_game_logic_tb;
     logic [6:0] my_score;
     logic hunt_start;
     logic show_reload_char;
+    logic duck_killed;
 
     // Instantiate DUT
     duck_game_logic dut (
@@ -32,16 +33,17 @@ module duck_game_logic_tb;
         .bullets_in_magazine(bullets_in_magazine),
         .bullets_left(bullets_left),
         .my_score(my_score),
-        .hunt_start(hunt_start),
-        .show_reload_char(show_reload_char)
+        .show_reload_char(show_reload_char),
+        .duck_killed(duck_killed),
+        .hunt_start(hunt_start)
     );
 
     // Clock generation
     always #8 clk = ~clk;
 
     task print_state;
-        $display("Time: %10t | Score: %0d | Mag: %0d | Left: %0d | Reload: %b | Hunt: %b", 
-                  $time, my_score,  bullets_in_magazine, bullets_left, show_reload_char, hunt_start);
+        $display("Time: %10t | Score: %0d | Mag: %0d | Left: %0d | Reload: %b | Hunt: %b | killed: %b", 
+                  $time, my_score,  bullets_in_magazine, bullets_left, show_reload_char, hunt_start, duck_killed);
     endtask
 
     initial begin
@@ -93,7 +95,7 @@ module duck_game_logic_tb;
             #60;
             left_mouse = 0;
             repeat (10) @(posedge clk);
-            #40
+            #400
             print_state();
         end
 

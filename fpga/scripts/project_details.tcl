@@ -40,7 +40,6 @@ set sv_files {
     ../rtl/Mouse_Control/mouse_shape.sv\
     ../rtl/Game_Control/top_game.sv \
     ../rtl/Game_Control/game_control_fsm.sv \
-    ../rtl/Game_Control/start_screen.sv \
     ../rtl/Game_Control/lfsr_random.sv \
     ../rtl/Game_Control/Text_files/char_rom.sv \
     ../rtl/Game_Control/Text_files/draw_rect_char.sv \
@@ -51,6 +50,7 @@ set sv_files {
     ../rtl/Game_Control/duck_game_logic.sv \
     ../rtl/Game_Control/duck_ctl.sv \
     ../rtl/Game_Control/delay_ms.sv \
+    ../rtl/Draw_files/draw_string.sv \
     ../rtl/Draw_files/draw_2_numbers.sv \
     ../rtl/Draw_files/Game_Background.sv \
     ../rtl/Draw_files/draw_duck.sv \

@@ -5,16 +5,23 @@
 # Description: 
 # This module implements the start screen for the game.
 */
-module start_screen(
+import vga_pkg::*;
+
+module draw_string
+    #(parameter
+    CHAR_XPOS = START_CHAR_XPOS, // X position
+    CHAR_YPOS = START_CHAR_YPOS, // Y position
+    WIDTH = 10, // number of characters in the horizontal direction
+    TEXT = "START GAME" // text to be displayed
+)(
     input logic clk,
     input logic rst,
-    input logic start_screen_enable,
+    input logic enable,
     
     vga_if.in in,
     vga_if.out out
 );
     
-import vga_pkg::*;
 
 
 //------------------------------------------------------------------------------
@@ -32,15 +39,15 @@ logic [7:0] char_line_pixels;
 
 draw_rect_char 
 #( 
-    .WIDTH(10),         // ilość znaków w poziomie
-    .CHAR_XPOS(START_CHAR_XPOS),    
-    .CHAR_YPOS(START_CHAR_YPOS)
+    .WIDTH(WIDTH),         // ilość znaków w poziomie
+    .CHAR_XPOS(CHAR_XPOS), // X pozycja znaku
+    .CHAR_YPOS(CHAR_YPOS) // Y pozycja znaku
     
 )u_draw_rect_char_start_screen (
     .clk(clk),
     .rst,
 
-    .enable(start_screen_enable),
+    .enable(enable),
     .char_line_pixels(char_line_pixels), 
     .char_xy(char_xy),
     .char_line(char_line),
@@ -51,7 +58,7 @@ draw_rect_char
 
 char_rom 
 #(
-    .TEXT({"START GAME"})
+    .TEXT(TEXT)
 )
 u_char_rom_start_screen (
     .clk(clk),

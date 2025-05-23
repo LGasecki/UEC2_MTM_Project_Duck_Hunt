@@ -44,6 +44,7 @@ logic [5:0] bullets_left;
 logic [6:0] my_score;
 logic hunt_start;
 logic show_reload_char;
+logic target_killed;
 
 vga_if start_screen_if();
 vga_if duck_if();
@@ -76,10 +77,16 @@ game_control_fsm u_game_control_fsm (
 );
 
 //START SCREEN
-start_screen u_start_screen (
+draw_string 
+#(
+    .CHAR_XPOS(START_CHAR_XPOS), // X position 
+    .CHAR_YPOS(START_CHAR_YPOS), // Y position 
+    .WIDTH(10), // number of characters in the horizontal direction
+    .TEXT("START GAME") // text to be displayed
+)u_start_screen (
     .clk(clk),
     .rst(rst),
-    .start_screen_enable(start_screen_enable),
+    .enable(start_screen_enable),
 
     .in(in),
     .out(start_screen_if)
@@ -93,6 +100,7 @@ duck_ctl u_duck_ctl (
     .clk(clk),
     .rst(rst),
     .lfsr_number(random_number),
+    .target_killed(target_killed),
 
     .xpos(duck_xpos),
     .ypos(duck_ypos),
@@ -114,7 +122,8 @@ duck_game_logic u_duck_game_logic (
     .bullets_in_magazine(bullets_in_magazine),
     .bullets_left(bullets_left),
     .show_reload_char(show_reload_char),
-    .hunt_start(hunt_start)
+    .hunt_start(hunt_start),
+    .duck_killed(target_killed)
 );
 
 //drawing
@@ -122,13 +131,13 @@ draw_duck #(
     .DUCK_WIDTH(DUCK_WIDTH),
     .DUCK_HEIGHT(DUCK_HEIGHT)
 ) u_draw_duck (
-    .game_enable(hunt_start),
+    .game_enable(hunt_start || target_killed),
     .clk(clk),
     .rst(rst),
     .xpos(duck_xpos),
     .ypos(duck_ypos),
     .rgb_pixel(rgb),
-    .duck_direction(duck_direction), // Placeholder for duck direction signal
+    .duck_direction(duck_direction), 
 
     .pixel_addr(pixel_addr),
     .in(start_screen_if),
@@ -149,12 +158,17 @@ grass_draw u_grass_draw (
     .out(grass_if)
 );
 
-draw_2_numbers u_draw_2_numbers (
+draw_2_numbers 
+#(
+    .NUMB_XPOS(SCORE_XPOS), // X position 
+    .NUMB_YPOS(SCORE_YPOS) // Y position 
+)
+u_draw_score (
     .clk(clk),
     .rst(rst),
 
     .game_enable(start_screen_enable || game_enable),
-    .my_score(my_score),
+    .bin_number(my_score),
     .in(grass_if),
     .out(out)
 );
