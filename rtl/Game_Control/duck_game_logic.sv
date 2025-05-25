@@ -86,7 +86,8 @@
     //------------------------------------------------------------------------------
     always_ff @(posedge clk) begin : out_reg_blk
         if(rst) begin : out_reg_rst_blk
-            {bullets_in_magazine, bullets_left} <= 0;
+            bullets_in_magazine <= 3;
+            bullets_left <= 27;
             delay_ms <= COUNTDOWN;
             left_mouse_prev <= 0;
             right_mouse_prev <= 0;

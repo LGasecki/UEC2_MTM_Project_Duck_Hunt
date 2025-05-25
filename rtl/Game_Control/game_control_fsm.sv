@@ -26,8 +26,8 @@ import vga_pkg::*;
 
 enum logic [1:0] {
     START_SCREEN = 2'b00,
-    GAME_RUNNING = 2'b01
-//    GAME_OVER = 2'b10
+    GAME_RUNNING = 2'b01,
+    GAME_OVER    = 2'b10
 } state;
 
 //------------------------------------------------------------------------------
@@ -70,11 +70,11 @@ always_ff @(posedge clk) begin : seq_blk
                 end
             end
 
-            // GAME_OVER: begin
-            //     start_screen_enable <= 1'b0;
-            //     game_enable <= 1'b0;
-            //     game_end_enable <= 1'b1;
-            // end
+            GAME_OVER: begin
+                start_screen_enable <= 1'b0;
+                game_enable <= 1'b0;
+                game_end_enable <= 1'b1;
+            end
 
             default: begin
                 state <= START_SCREEN; // Default state
