@@ -108,7 +108,7 @@ u_start_screen (
 //GAME
 //control
 duck_ctl u_duck_ctl (   // Odpowiedzialne za poruszanie celu
-    .game_enable(hunt_start),
+    .game_enable(hunt_start && game_enable),
     .clk(clk),
     .rst(rst),
     .lfsr_number(random_number),
