@@ -42,7 +42,7 @@
     // GAME CONSTANTS
     // start screen parameters
     localparam START_CHAR_SIZE = 2;
-    localparam START_CHAR_HEIGHT = 16 << START_CHAR_SIZE;
+    localparam START_CHAR_HEIGHT = 16 << START_CHAR_SIZE; // 16 pixels, 4x scaling
     localparam START_AREA_WIDTH = (10 * 8) << START_CHAR_SIZE; 
     localparam START_CHAR_XPOS = (HOR_PIXELS / 2) - (START_AREA_WIDTH / 2); //X_CENTER
     localparam START_CHAR_YPOS = 420;
@@ -54,7 +54,7 @@
     localparam KILLED_DUCK_WIDTH = 96;
     
     //score parameters
-    localparam CHAR_HEIGHT = 16; // 16 pixels
+    localparam CHAR_HEIGHT = 16;
     localparam MY_SCORE_XPOS = HOR_PIXELS / 2 - 72;
     localparam MY_SCORE_YPOS = 710;
     localparam SCORE_SIZE = 2; // 2^SIZE = 4

@@ -17,6 +17,8 @@
  module duck_rom (
     input  logic clk,
     input  logic [12:0] address,  //
+    input  logic duck_killed,
+
     output logic [11:0] rgb
 );
 
@@ -26,6 +28,7 @@
  */
 
 logic [11:0] duck_rom [0:5759]; // 96x60 = 5760 pixels
+logic [11:0] dead_duck_rom [0:5759];
 
 
 /**
@@ -34,12 +37,16 @@ logic [11:0] duck_rom [0:5759]; // 96x60 = 5760 pixels
 
 /* Relative path from the simulation or synthesis working directory */
 initial $readmemh("../../rtl/Draw_files/duck_96x60.data", duck_rom);
+initial $readmemh("../../rtl/Draw_files/dead_duck_96x60.data", dead_duck_rom);
 
 /**
  * Internal logic
  */
 
 always_ff @(posedge clk)
-    rgb <= duck_rom[address];
+    if(duck_killed)
+        rgb <= dead_duck_rom[address];
+    else
+        rgb <= duck_rom[address];
 
 endmodule

@@ -82,6 +82,8 @@
                             state_nxt = RELOADING;
                         else if(duck_killed)
                             state_nxt = DELAY;
+                        // else if (!bullets_in_magazine && !bullets_left && left_mouse_posedge && ENEMYPOITS = 0)
+                        //     state_nxt = WAIT_FOR_START;
                         else 
                             state_nxt = HUNTING;
 
@@ -161,7 +163,7 @@
                 my_score_nxt = my_score;
                 duck_killed_nxt = 0;
 
-                if (left_mouse_posedge) begin
+                if (left_mouse_posedge && game_enable) begin
                     if (bullets_in_magazine > 0) begin
                         bullets_in_magazine_nxt = bullets_in_magazine - 1;
                         bullets_left_nxt = bullets_left;
@@ -179,7 +181,7 @@
 
             RELOADING: begin
                 hunt_start_nxt = 1;
-                delay_ms_nxt = RELOAD_TIME;
+                delay_ms_nxt = delay_ms;
                 bullets_in_magazine_nxt = 3;
                 bullets_left_nxt = bullets_left + bullets_in_magazine - 3;
                 show_reload_char_nxt = show_reload_char;

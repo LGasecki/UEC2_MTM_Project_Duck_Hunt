@@ -74,8 +74,6 @@ always_ff @(posedge clk) begin : seq_blk
                 start_screen_enable <= 1'b0;
                 game_enable <= 1'b0;
                 game_end_enable <= 1'b1;
-                if(left_mouse)
-                    state <= START_SCREEN;
             end
 
             default: begin
