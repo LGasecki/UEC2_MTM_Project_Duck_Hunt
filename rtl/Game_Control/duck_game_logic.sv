@@ -70,7 +70,14 @@
     always_comb begin : state_comb_blk
         case(state)
             WAIT_FOR_START: state_nxt = (game_enable) ? DELAY : WAIT_FOR_START;
-            DELAY:          state_nxt = (delay_ms == 0) ? HUNTING : DELAY;
+            
+            DELAY:      if (right_mouse_posedge)
+                            state_nxt = RELOADING;
+                        else if (delay_ms == 0)
+                            state_nxt = HUNTING;
+                        else
+                            state_nxt = DELAY;
+            
             HUNTING:    if (right_mouse_posedge) 
                             state_nxt = RELOADING;
                         else if(duck_killed)

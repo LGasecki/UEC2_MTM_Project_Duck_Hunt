@@ -41,8 +41,8 @@
 
     // GAME CONSTANTS
     // start screen parameters
-    localparam AREA_HEIGHT = 16; // 16 pixels, 4x scaling
     localparam START_CHAR_SIZE = 2;
+    localparam AREA_HEIGHT = 16 << START_CHAR_SIZE; // 16 pixels, 4x scaling
     localparam START_AREA_WIDTH = (10 * 8) << START_CHAR_SIZE; 
     localparam START_CHAR_XPOS = (HOR_PIXELS / 2) - (START_AREA_WIDTH / 2); //X_CENTER
     localparam START_CHAR_YPOS = 420;

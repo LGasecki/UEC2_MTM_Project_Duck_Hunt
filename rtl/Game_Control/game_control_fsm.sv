@@ -66,7 +66,7 @@ always_ff @(posedge clk) begin : seq_blk
                 game_enable <= 1'b1;
                 game_end_enable <= 1'b0;
                 if(game_finished) begin
-                    state <= START_SCREEN;
+                    state <= GAME_OVER;
                 end
             end
 
