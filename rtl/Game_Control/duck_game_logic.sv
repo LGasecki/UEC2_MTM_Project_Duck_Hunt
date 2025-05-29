@@ -164,7 +164,7 @@
                 if (left_mouse_posedge) begin
                     if (bullets_in_magazine > 0) begin
                         bullets_in_magazine_nxt = bullets_in_magazine - 1;
-                        bullets_left_nxt = bullets_left - 1;
+                        bullets_left_nxt = bullets_left;
                         if (mouse_xpos >= duck_xpos && mouse_xpos <= duck_xpos + DUCK_WIDTH &&
                             mouse_ypos >= duck_ypos && mouse_ypos <= duck_ypos + DUCK_HEIGHT) begin
                             my_score_nxt = my_score + 1;
