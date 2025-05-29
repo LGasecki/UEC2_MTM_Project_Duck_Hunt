@@ -38,7 +38,7 @@ logic start_screen_enable, game_enable, game_end_enable;
 logic duck_direction;
 logic [11:0] duck_xpos, duck_ypos;
 logic [12:0] pixel_addr;
-logic [11:0] rgb;
+logic [11:0] rgb_pixel;
 logic [2:0] bullets_in_magazine;
 logic [6:0] bullets_left;
 logic [6:0] my_score;
@@ -77,7 +77,7 @@ game_control_fsm u_game_control_fsm (  //Sterowanie etapami gry: Ekran startowy 
     .left_mouse(left_mouse),
     .mouse_xpos(mouse_xpos),
     .mouse_ypos(mouse_ypos),
-    .game_finished(!bullets_left),
+    .game_finished(!bullets_left && !bullets_in_magazine),
     
     .start_screen_enable(start_screen_enable),
     .game_enable(game_enable),
@@ -150,8 +150,8 @@ u_draw_duck (
     .rst(rst),
     .xpos(duck_xpos),
     .ypos(duck_ypos),
-    .rgb_pixel(rgb),
-    .duck_direction(duck_direction), 
+    .duck_direction(duck_direction),
+    .rgb_pixel(rgb_pixel),
 
     .pixel_addr(pixel_addr),
     .in(start_screen_if),
@@ -161,11 +161,12 @@ u_draw_duck (
 duck_rom u_duck_rom(
     .clk,
     .address(pixel_addr),
-    .rgb(rgb)
+    .duck_killed(target_killed),
+    .rgb(rgb_pixel)
 );
 
 grass_draw u_grass_draw (
-    .game_enable(start_screen_enable || game_enable),
+    .game_enable(1'b1),
     .clk(clk),
     .rst(rst),
     .in(duck_if),

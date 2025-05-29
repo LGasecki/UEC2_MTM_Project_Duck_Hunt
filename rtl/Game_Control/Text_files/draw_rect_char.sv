@@ -22,7 +22,7 @@ module draw_rect_char
     import vga_pkg::*;
 
     localparam FULL_WIDTH = CHAR_XPOS + ((WIDTH << 3) << SCALE_POWER_OF_2); 
-    localparam CHAR_YPOS_MAX = CHAR_YPOS + (AREA_HEIGHT << SCALE_POWER_OF_2); 
+    localparam CHAR_YPOS_MAX = CHAR_YPOS + (CHAR_HEIGHT << SCALE_POWER_OF_2); 
 
     logic [11:0] rgb_I, rgb_II, rgb_III, rgb_nxt;
     logic [10:0] vcount_I, vcount_II, vcount_III;

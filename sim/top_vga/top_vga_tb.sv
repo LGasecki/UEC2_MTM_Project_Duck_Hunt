@@ -98,8 +98,10 @@ module top_vga_tb;
         force dut.u_top_game.u_duck_ctl.ypos = 12'd500;
         force dut.u_top_game.u_draw_my_score.bin_number = 7'd30;
         force dut.u_top_game.u_draw_bullets.bullets_in_magazine = 3'd3;
-        force dut.u_top_game.random_number = 10'h111;
-        force dut.u_top_game.duck_ypos = 300;
+        force dut.u_top_game.u_draw_duck.xpos = 200;
+        force dut.u_top_game.u_draw_duck.ypos = 300;
+        force dut.u_top_game.target_killed = 1;
+        force dut.u_top_game.u_duck_rom.duck_killed = 1;
 
         $display("If simulation ends before the testbench");
         $display("completes, use the menu option to run all.");
