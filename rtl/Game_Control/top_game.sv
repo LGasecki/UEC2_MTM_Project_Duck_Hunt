@@ -362,7 +362,7 @@ u_draw_your_score_end (
 
 draw_2_numbers 
 #(
-    .NUMB_XPOS(ENEMY_SCORE_XPOS + 70), 
+    .NUMB_XPOS(ENEMY_SCORE_XPOS_END + 70), 
     .NUMB_YPOS(ENEMY_SCORE_YPOS_END + 100), 
     .COLOUR(RGB_BLACK), // RGB color for the character
     .SCALE_POWER_OF_2(3) // 2^POWER_OF_2 = 4
@@ -376,5 +376,7 @@ u_draw_enemy_score_end (
     .in(my_score_if),
     .out(out)
 );
+
+
 //---------------------------------//
 endmodule
