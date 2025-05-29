@@ -56,7 +56,7 @@ always_ff @(posedge clk) begin : seq_blk
                 game_enable <= 1'b0;
                 game_end_enable <= 1'b0;
                 if(left_mouse && (mouse_xpos >= START_CHAR_XPOS) && (mouse_xpos < START_CHAR_XPOS + START_AREA_WIDTH) &&
-                   (mouse_ypos >= START_CHAR_YPOS) && (mouse_ypos < START_CHAR_YPOS + AREA_HEIGHT)) begin
+                   (mouse_ypos >= START_CHAR_YPOS) && (mouse_ypos < START_CHAR_YPOS + START_CHAR_HEIGHT)) begin
                     state <= GAME_RUNNING;
                 end
             end

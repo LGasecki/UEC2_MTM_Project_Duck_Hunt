@@ -165,7 +165,7 @@ duck_rom u_duck_rom(
 );
 
 grass_draw u_grass_draw (
-    .game_enable(start_screen_enable || game_enable),
+    .game_enable(start_screen_enable || game_enable || game_end_enable),
     .clk(clk),
     .rst(rst),
     .in(duck_if),
@@ -306,5 +306,75 @@ u_draw_enemy_score (
 
 //GAME_END
 
+
+draw_string 
+#(
+    .CHAR_XPOS(MY_SCORE_XPOS_END), 
+    .CHAR_YPOS(MY_SCORE_YPOS_END), 
+    .WIDTH(3), 
+    .SIZE(3), // 2^POWER_OF_2 = 4
+    .COLOUR(RGB_GREEN), 
+    .TEXT("YOU")
+)
+u_draw_score_your_points_end (
+    .clk(clk),
+    .rst(rst),
+    .enable(game_end_enable),
+
+    .in(bullets_left_if),
+    .out(your_points_if)
+);
+
+draw_string 
+#(
+    .CHAR_XPOS(ENEMY_SCORE_XPOS_END), 
+    .CHAR_YPOS(ENEMY_SCORE_YPOS_END), 
+    .WIDTH(5), 
+    .SIZE(3), 
+    .COLOUR(RGB_RED), 
+    .TEXT("ENEMY") 
+)
+u_draw_score_enemy_points_end (
+    .clk(clk),
+    .rst(rst),
+    .enable(game_end_enable),
+
+    .in(your_points_if),
+    .out(enemy_points_if)
+);
+
+draw_2_numbers 
+#(
+    .NUMB_XPOS(MY_SCORE_XPOS_END + 40), 
+    .NUMB_YPOS(MY_SCORE_YPOS_END + 100), 
+    .COLOUR(RGB_BLUE), // RGB color for the character
+    .SCALE_POWER_OF_2(3) // 2^POWER_OF_2 = 4
+)
+u_draw_your_score_end (
+    .clk(clk),
+    .rst(rst),
+
+    .game_enable(game_end_enable),
+    .bin_number(my_score),
+    .in(enemy_points_if),
+    .out(my_score_if)
+);
+
+draw_2_numbers 
+#(
+    .NUMB_XPOS(ENEMY_SCORE_XPOS + 70), 
+    .NUMB_YPOS(ENEMY_SCORE_YPOS_END + 100), 
+    .COLOUR(RGB_BLACK), // RGB color for the character
+    .SCALE_POWER_OF_2(3) // 2^POWER_OF_2 = 4
+)
+u_draw_enemy_score_end (
+    .clk(clk),
+    .rst(rst),
+
+    .game_enable(game_end_enable),
+    .bin_number(7'd11),
+    .in(my_score_if),
+    .out(out)
+);
 //---------------------------------//
 endmodule

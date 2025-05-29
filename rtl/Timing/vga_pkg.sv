@@ -42,18 +42,19 @@
     // GAME CONSTANTS
     // start screen parameters
     localparam START_CHAR_SIZE = 2;
-    localparam AREA_HEIGHT = 16 << START_CHAR_SIZE; // 16 pixels, 4x scaling
+    localparam START_CHAR_HEIGHT = 16 << START_CHAR_SIZE;
     localparam START_AREA_WIDTH = (10 * 8) << START_CHAR_SIZE; 
     localparam START_CHAR_XPOS = (HOR_PIXELS / 2) - (START_AREA_WIDTH / 2); //X_CENTER
     localparam START_CHAR_YPOS = 420;
-
+    
     //duck parameters
     localparam DUCK_HEIGHT = 60;
     localparam DUCK_WIDTH = 96;
     localparam KILLED_DUCK_HEIGHT = 96;
     localparam KILLED_DUCK_WIDTH = 96;
-
+    
     //score parameters
+    localparam CHAR_HEIGHT = 16; // 16 pixels
     localparam MY_SCORE_XPOS = HOR_PIXELS / 2 - 72;
     localparam MY_SCORE_YPOS = 710;
     localparam SCORE_SIZE = 2; // 2^SIZE = 4
@@ -61,4 +62,9 @@
     localparam ENEMY_SCORE_XPOS = HOR_PIXELS / 2 + 8;
     localparam ENEMY_SCORE_YPOS = 710;
 
+    
+    localparam MY_SCORE_XPOS_END = HOR_PIXELS / 2 - 250;
+    localparam MY_SCORE_YPOS_END = 20;
+    localparam ENEMY_SCORE_XPOS_END = HOR_PIXELS / 2 - 5;
+    localparam ENEMY_SCORE_YPOS_END = 20;
 endpackage
