@@ -1,9 +1,9 @@
 Warnings, critical warnings and errors from synthesis and implementation
 
-Created: 2025-05-29 12:19:49
+Created: 2025-05-31 19:02:59
 
 ----SYNTHESIS----
-WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+No synthesis log file found!
 
 ----IMPLEMENTATION----
-CLEAR :)
+No implementation log file found!

@@ -37,7 +37,9 @@ logic [LFSR_WIDTH-1:0] random_number;
 logic start_screen_enable, game_enable, game_end_enable, game_enable_posedge;
 logic duck_direction;
 logic [11:0] duck_xpos, duck_ypos, dog_xpos, dog_ypos;
-logic [12:0] pixel_addr, pixel_addr_dog;
+logic [12:0] pixel_addr;
+logic [11:0] pixel_addr_dog;
+logic [11:0] pixel_addr_dog_grass;
 logic [11:0] rgb_pixel, dog_rgb_pixel;
 logic [2:0] bullets_in_magazine;
 logic [6:0] bullets_left;
@@ -46,9 +48,11 @@ logic hunt_start;
 logic show_reload_char;
 logic target_killed;
 logic [3:0] dog_photo_index;
+logic dog_on_kill_enable;
 
 vga_if start_screen_if();
 vga_if duck_if();
+vga_if dog_behind_grass_if();
 vga_if grass_if();
 vga_if dog_if();
 vga_if bullets_if();
@@ -58,6 +62,10 @@ vga_if bullets_left_if();
 vga_if your_points_if();
 vga_if enemy_points_if();
 vga_if my_score_if();
+vga_if enemy_score_if();
+vga_if your_points_if_end();
+vga_if enemy_points_if_end();
+vga_if my_score_if_end();
 //------------------------------------------------------------------------------
 // MODULES
 //------------------------------------------------------------------------------
@@ -119,7 +127,8 @@ duck_ctl u_duck_ctl (   // Odpowiedzialne za poruszanie celu
 
     .xpos(duck_xpos),
     .ypos(duck_ypos),
-    .duck_direction(duck_direction)
+    .duck_direction(duck_direction),
+    .duck_on_ground(dog_on_kill_enable)
 );
 
 duck_game_logic u_duck_game_logic (     // Odpowiedzialne za logikę gry oraz dane
@@ -178,18 +187,31 @@ duck_rom u_duck_rom(
     .rgb(rgb_pixel)
 );
 
+draw_moving_rect u_draw_dog_behind_grass (
+    .clk(clk),
+    .rst(rst),
+    .game_enable(game_enable && dog_photo_index == 8),
+    .xpos(dog_xpos),
+    .ypos(dog_ypos),
+    .rgb_pixel(dog_rgb_pixel),
+
+    .pixel_addr(pixel_addr_dog_grass),
+    .in(duck_if),
+    .out(dog_behind_grass_if)
+);
+
 grass_draw u_grass_draw (
     .game_enable(start_screen_enable || game_enable || game_end_enable),
     .clk(clk),
     .rst(rst),
-    .in(duck_if),
+    .in(dog_behind_grass_if),
     .out(grass_if)
 );
 
-draw_dog u_draw_dog (
+draw_moving_rect u_draw_dog (
     .clk(clk),
     .rst(rst),
-    .game_enable(game_enable),
+    .game_enable(game_enable && dog_photo_index != 8),
     .xpos(dog_xpos),
     .ypos(dog_ypos),
     .rgb_pixel(dog_rgb_pixel),
@@ -201,7 +223,7 @@ draw_dog u_draw_dog (
 
 dog_rom u_dog_rom (
     .clk(clk),
-    .address(pixel_addr_dog),
+    .address(pixel_addr_dog | pixel_addr_dog_grass),
     .dog_select(dog_photo_index),
     .rgb(dog_rgb_pixel)
 );
@@ -335,7 +357,7 @@ u_draw_enemy_score (
     .game_enable(game_enable),
     .bin_number(7'd11),
     .in(my_score_if),
-    .out(out)
+    .out(enemy_score_if)
 );
 
 //GAME_END
@@ -355,8 +377,8 @@ u_draw_score_your_points_end (
     .rst(rst),
     .enable(game_end_enable),
 
-    .in(bullets_left_if),
-    .out(your_points_if)
+    .in(enemy_score_if),
+    .out(your_points_if_end)
 );
 
 draw_string 
@@ -373,8 +395,8 @@ u_draw_score_enemy_points_end (
     .rst(rst),
     .enable(game_end_enable),
 
-    .in(your_points_if),
-    .out(enemy_points_if)
+    .in(your_points_if_end),
+    .out(enemy_points_if_end)
 );
 
 draw_2_numbers 
@@ -390,8 +412,8 @@ u_draw_your_score_end (
 
     .game_enable(game_end_enable),
     .bin_number(my_score),
-    .in(enemy_points_if),
-    .out(my_score_if)
+    .in(enemy_points_if_end),
+    .out(my_score_if_end)
 );
 
 draw_2_numbers 
@@ -407,7 +429,7 @@ u_draw_enemy_score_end (
 
     .game_enable(game_end_enable),
     .bin_number(7'd11),
-    .in(my_score_if),
+    .in(my_score_if_end),
     .out(out)
 );
 //---------------------------------//

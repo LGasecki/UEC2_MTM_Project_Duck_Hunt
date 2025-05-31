@@ -29,7 +29,7 @@
     localparam DUCK_WIDTH = 96;
     localparam STATE_BITS = 2; // number of bits used for state register
 
-    localparam COUNTDOWN    = 2000 * 65_000; // countdown value at start of the game T - 4000ms
+    localparam COUNTDOWN    = 8000 * 65_000; // countdown value at start of the game T - 5000ms
     localparam DEATH_TIME   = 2000 * 65_000; // time for duck fall after death T - 2000ms
     localparam RELOAD_TIME  = 1 * 65_000; // time for reloading T - 100ms
     //FOR TESTS

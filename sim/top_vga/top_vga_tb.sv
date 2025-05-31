@@ -91,8 +91,9 @@ module top_vga_tb;
 
         //ustawianie etapu gry
         force dut.u_top_game.start_screen_enable = 1'b0;
-        force dut.u_top_game.game_enable = 1'b0;
-        force dut.u_top_game.game_end_enable = 1'b1;
+        force dut.u_top_game.game_enable = 1'b1;
+        force dut.u_top_game.game_enable_posedge = 1'b1;
+        force dut.u_top_game.game_end_enable = 1'b0;
         //zmienne do testu
         force dut.xpos = 12'd100;
         force dut.ypos = 12'd200;
@@ -103,6 +104,9 @@ module top_vga_tb;
         force dut.u_top_game.u_draw_duck.ypos = 300;
         force dut.u_top_game.target_killed = 1;
         force dut.u_top_game.u_duck_rom.duck_killed = 1;
+        force dut.u_top_game.u_draw_dog.xpos = 12'd700;
+        force dut.u_top_game.u_draw_dog.ypos = 12'd500;
+        force dut.u_top_game.u_dog_rom.dog_select = 4'd8;
 
         $display("If simulation ends before the testbench");
         $display("completes, use the menu option to run all.");

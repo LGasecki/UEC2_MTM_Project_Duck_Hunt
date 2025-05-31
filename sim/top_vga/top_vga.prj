@@ -33,6 +33,9 @@ sv work ../../rtl/Timing/vga_pkg.sv \
         ../../rtl/Draw_files/grass_draw.sv\
         ../../rtl/Draw_files/draw_2_numbers.sv \
         ../../rtl/Draw_files/draw_bullets.sv \
+        ../../rtl/Draw_files/draw_dog_ctl.sv \
+        ../../rtl/Draw_files/draw_moving_rect.sv \
+        ../../rtl/Draw_files/dog_rom.sv \
         ../common/tiff_writer.sv \
         top_vga_tb.sv
 

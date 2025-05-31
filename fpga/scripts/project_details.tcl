@@ -56,6 +56,9 @@ set sv_files {
     ../rtl/Draw_files/duck_rom.sv \
     ../rtl/Draw_files/grass_draw.sv\
     ../rtl/Draw_files/draw_bullets.sv \
+    ../rtl/Draw_files/draw_dog_ctl.sv \
+    ../rtl/Draw_files/draw_moving_rect.sv \
+    ../rtl/Draw_files/dog_rom.sv \
     rtl/top_vga_basys3.sv
 }
 

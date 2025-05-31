@@ -48,11 +48,11 @@
     always_comb begin : state_comb_blk
         case(state)
             IDLE: state_nxt = (game_enable) ? LEFT_MOVE : IDLE;
-            LEFT_MOVE: state_nxt = (dog_xpos_q12_24[35:24] >= 12'd700) ? LEFT_MOVE : SPOT_DUCK;
-            SPOT_DUCK: state_nxt = (dog_xpos_q12_24[35:24] < 12'd702) ? SPOT_DUCK : JUMP;
-            JUMP: state_nxt = (dog_ypos_q12_24[35:24] > 12'd500) ? JUMP : JUMP_FALL;
+            LEFT_MOVE: state_nxt = (dog_xpos_q12_24[35:24] >= 12'd650) ? LEFT_MOVE : SPOT_DUCK;
+            SPOT_DUCK: state_nxt = (dog_xpos_q12_24[35:24] < 12'd653) ? SPOT_DUCK : JUMP;
+            JUMP: state_nxt = (dog_ypos_q12_24[35:24] > 12'd450) ? JUMP : JUMP_FALL;
             JUMP_FALL: state_nxt = (dog_ypos_q12_24[35:24] < 12'd600) ? JUMP_FALL : IDLE;
-                
+            default: state_nxt = IDLE; // Default case to handle unexpected states
         endcase
     end
     //------------------------------------------------------------------------------
@@ -60,8 +60,8 @@
     //------------------------------------------------------------------------------
     always_ff @(posedge clk) begin : out_reg_blk
         if(rst) begin : out_reg_rst_blk
-            {dog_xpos_q12_24, dog_ypos_q12_24} <= {36'd1024<<24, 36'd600<<24};
-            {dog_xpos, dog_ypos} <= {12'd1024, 12'd600}; // Initial position of the dog
+            {dog_xpos_q12_24, dog_ypos_q12_24} <= {36'd1024<<24, 36'd595<<24};
+            {dog_xpos, dog_ypos} <= {12'd1024, 12'd595}; // Initial position of the dog
             photo_index <= 4'd0; // Initial photo index
             behind_grass <= 1'b0; //
         end
@@ -80,12 +80,12 @@
         case(state_nxt)
             IDLE: begin
                 dog_xpos_q12_24_nxt = 36'd1024 << 24; // Initial position of the dog
-                dog_ypos_q12_24_nxt = 36'd600 << 24; // Initial position of the dog
+                dog_ypos_q12_24_nxt = 36'd595 << 24; // Initial position of the dog
                 photo_index_nxt = 4'd0; // Initial photo index
 
             end
             LEFT_MOVE: begin
-                dog_xpos_q12_24_nxt = dog_xpos_q12_24 - 30;
+                dog_xpos_q12_24_nxt = dog_xpos_q12_24 - 26;
                 dog_ypos_q12_24_nxt = dog_ypos_q12_24;
                 photo_index_nxt = (dog_xpos_q12_24[35:24] >> 4) % 6;
 
@@ -97,13 +97,13 @@
 
             end
             JUMP: begin
-                dog_xpos_q12_24_nxt = dog_xpos_q12_24 - 30;
-                dog_ypos_q12_24_nxt = dog_ypos_q12_24 - 50;
+                dog_xpos_q12_24_nxt = dog_xpos_q12_24 - 20;
+                dog_ypos_q12_24_nxt = dog_ypos_q12_24 - 70;
                 photo_index_nxt = 4'd7; // Index for the jumping photo
             end
             JUMP_FALL: begin
-                dog_xpos_q12_24_nxt = dog_xpos_q12_24 - 25;
-                dog_ypos_q12_24_nxt = dog_ypos_q12_24 + 25;
+                dog_xpos_q12_24_nxt = dog_xpos_q12_24 - 20;
+                dog_ypos_q12_24_nxt = dog_ypos_q12_24 + 50;
                 photo_index_nxt = 4'd8; // Index for the falling photo
                 behind_grass_nxt = 1'b1; 
             end

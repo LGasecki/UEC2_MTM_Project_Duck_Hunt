@@ -1,6 +1,12 @@
 
 
-module draw_dog (
+module draw_moving_rect 
+    #(parameter 
+        WIDTH = 55, 
+        HEIGHT = 48,
+        SIZE = 1
+    )
+    (  
     input  logic clk,
     input  logic rst,
     input  logic [11:0] rgb_pixel,
@@ -8,7 +14,7 @@ module draw_dog (
     input  logic [11:0] xpos,
     input  logic [11:0] ypos,
 
-    output logic [12:0] pixel_addr,
+    output logic [11:0] pixel_addr,
 
     vga_if.in in,
     vga_if.out out
@@ -17,8 +23,6 @@ module draw_dog (
     timeprecision 1ps;
 
 //---LOCAL_VARIABLES_&_SIGNALS---//
-    localparam REC_WIDTH = 55<<1;
-    localparam REC_HEIGHT = 48<<1;
 
     logic [11:0] rgb_nxt;
     
@@ -30,8 +34,8 @@ module draw_dog (
     logic [10:0] vcount_II, hcount_II;
     logic        vsync_II, vblnk_II, hsync_II, hblnk_II;
 
+    logic [11:0] pixel_x, pixel_y;
 
-    
     
     always_ff @(posedge clk) begin : bg_ff_blk_I
         if (rst) begin
@@ -56,20 +60,32 @@ module draw_dog (
             {out.vcount, out.vsync, out.vblnk, out.hcount, out.hsync, out.hblnk, out.rgb} <= {vcount_II, vsync_II, vblnk_II, hcount_II, hsync_II, hblnk_II, rgb_nxt};
         end
     end
+
+    always_comb begin
+        pixel_addr = 0;
+        rgb_nxt = rgb_II;
     
-    always_comb begin : bg_comb_blk_I
-        //DRAWING
-        if (in.vblnk || in.hblnk) begin
+        if (vblnk_II || hblnk_II) begin
             rgb_nxt = '0;
         end else begin
-            if ((in.hcount >= xpos) && (in.hcount < (xpos + REC_WIDTH)) &&
-            (in.vcount >= ypos) && (in.vcount < (ypos + REC_HEIGHT))) begin
-                rgb_nxt = 12'hFFF;;
-            end else begin
-                rgb_nxt = rgb_II;
+            if ((hcount_II >= xpos) && (hcount_II < (xpos + (WIDTH<<SIZE))) &&
+                (vcount_II >= ypos) && (vcount_II < (ypos + (HEIGHT<<SIZE))) && game_enable) begin
+                
+                // tylko tutaj liczymy pixel_x/y
+                pixel_y = ((vcount_II - ypos) >> SIZE) * WIDTH;
+                pixel_x = WIDTH - 1 - ((hcount_II - xpos) >> SIZE);
+                pixel_addr = pixel_y + pixel_x;
+    
+                if (pixel_addr < (WIDTH * HEIGHT)) begin
+                    if (rgb_pixel == 12'hf08)
+                        rgb_nxt = rgb_II;
+                    else
+                        rgb_nxt = rgb_pixel;
+                end else begin
+                    rgb_nxt = rgb_II;
+                end
             end
         end
-        pixel_addr = {6'((in.vcount - ypos)>>1), 6'((in.hcount - xpos)>>1)};   //---PIXEL_TO_COLOR_ADRESS---//
     end
     
 endmodule
