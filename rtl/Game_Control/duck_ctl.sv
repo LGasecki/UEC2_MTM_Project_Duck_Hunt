@@ -2,7 +2,7 @@
 # Copyright (C) 2025  AGH University of Science and Technology
 # MTM UEC2
 # Author: Łukasz Gąsecki
-# Description: 
+# Description: Duck controller for game logic, controlling duck movement and state transitions
 # 
 */
 module duck_ctl

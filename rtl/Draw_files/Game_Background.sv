@@ -53,15 +53,15 @@
         if (in.vblnk || in.hblnk) begin
             rgb_nxt = 12'h000;
         end else begin
-            if (in.vcount == 0)                     // - top edge:
-                rgb_nxt = 12'hf_f_0;                // - - make a yellow line.
-            else if (in.vcount == VER_PIXELS - 1)   // - bottom edge:
-                rgb_nxt = 12'hf_0_0;                // - - make a red line.
-            else if (in.hcount == 0)                // - left edge:
-                rgb_nxt = 12'h0_f_0;                // - - make a green line.
-            else if (in.hcount == HOR_PIXELS - 1)   // - right edge:
-                rgb_nxt = 12'h0_0_f;                // - - make a blue line.
-            else if(in.hcount >= 406 && in.vcount >=64 && in.hcount < 918 && in.vcount < 200) begin
+            // if (in.vcount == 0)                     // - top edge:
+            //     rgb_nxt = 12'hf_f_0;                // - - make a yellow line.
+            // else if (in.vcount == VER_PIXELS - 1)   // - bottom edge:
+            //     rgb_nxt = 12'hf_0_0;                // - - make a red line.
+            // else if (in.hcount == 0)                // - left edge:
+            //     rgb_nxt = 12'h0_f_0;                // - - make a green line.
+            // else if (in.hcount == HOR_PIXELS - 1)   // - right edge:
+            //     rgb_nxt = 12'h0_0_f;                // - - make a blue line.
+            if(in.hcount >= 406 && in.vcount >=64 && in.hcount < 918 && in.vcount < 200) begin
                 small_x = (in.hcount + 100) >> 3;  
                 small_y = (in.vcount - 64) >> 3;  
                 pixel_index = small_y * 64 + small_x;

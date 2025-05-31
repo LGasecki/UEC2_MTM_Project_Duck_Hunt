@@ -1,10 +1,10 @@
 Warnings, critical warnings and errors from synthesis and implementation
 
-Created: 2025-05-31 22:03:37
+Created: 2025-05-31 23:32:58
 
 ----SYNTHESIS----
-WARNING: [Synth 8-315] illegal expression in output port connection [C:/Users/gasec/Desktop/IV_SEM/UEC2_MTM_Project_Duck_Hunt/rtl/Game_Control/top_game.sv:219]
 WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+WARNING: [Synth 8-7129] Port dog_bird_address[11] in module dog_rom is either unconnected or has no load
 
 ----IMPLEMENTATION----
 WARNING: [Route 35-328] Router estimated timing not met.

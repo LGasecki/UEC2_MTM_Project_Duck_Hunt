@@ -42,7 +42,8 @@ logic [12:0] pixel_addr;
 logic [11:0] pixel_addr_dog_bird;
 logic [11:0] pixel_addr_dog;
 logic [11:0] pixel_addr_dog_grass;
-logic [11:0] rgb_pixel, dog_rgb_pixel;
+logic [15:0] pixel_addr_grass;
+logic [11:0] rgb_pixel, dog_rgb_pixel, rgb_grass;
 logic [11:0] dog_bird_rgb_pixel;
 logic [2:0] bullets_in_magazine;
 logic [6:0] bullets_left;
@@ -207,14 +208,15 @@ draw_moving_rect
 #(
     .WIDTH(43),
     .HEIGHT(40),
-    .SIZE(2)
+    .SIZE(2),
+    .PIXEL_ADDR_WIDTH(12)
 )u_draw_dog_bird (
     .clk(clk),
     .rst(rst),
     .game_enable(game_enable),
     .xpos(dog_bird_xpos),
     .ypos(dog_bird_ypos),
-    .rgb_pixel({dog_bird_rgb_pixel}),
+    .rgb_pixel(dog_bird_rgb_pixel),
 
     .pixel_addr(pixel_addr_dog_bird),
     .in(duck_if),
@@ -234,13 +236,40 @@ draw_moving_rect u_draw_dog_behind_grass (
     .out(dog_behind_grass_if)
 );
 
-grass_draw u_grass_draw (
-    .game_enable(start_screen_enable || game_enable || game_end_enable),
+// grass_draw u_grass_draw (
+//     .game_enable(start_screen_enable || game_enable || game_end_enable),
+//     .clk(clk),
+//     .rst(rst),
+//     .in(dog_behind_grass_if),
+//     .out(grass_if)
+// );
+
+draw_moving_rect 
+#(
+    .WIDTH(256),
+    .HEIGHT(70),
+    .SIZE(2),
+    .PIXEL_ADDR_WIDTH(16) 
+) u_grass_draw (
     .clk(clk),
     .rst(rst),
+    .game_enable(start_screen_enable || game_enable || game_end_enable),
+    .xpos(12'd0),
+    .ypos(12'd488),
+    .rgb_pixel(rgb_grass),
+
+    .pixel_addr(pixel_addr_grass),
     .in(dog_behind_grass_if),
     .out(grass_if)
 );
+
+grass_rom u_grass_rom (
+    .clk(clk),
+    .address(pixel_addr_grass),
+
+    .rgb(rgb_grass)
+);
+
 
 draw_moving_rect u_draw_dog (
     .clk(clk),

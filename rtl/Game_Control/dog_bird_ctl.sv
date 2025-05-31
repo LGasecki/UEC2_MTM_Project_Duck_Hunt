@@ -1,4 +1,13 @@
-
+/**
+# Copyright (C) 2025  AGH University of Science and Technology
+# MTM UEC2
+# Author: Łukasz Gąsecki
+# Description: Dog and bird controller for game logic# 
+# This module controls the vertical movement of a dog or bird character in a game.
+# It uses a simple state machine to move the character up, wait, and then move down,
+# synchronizing the horizontal position with the duck's x position.
+# 
+*/
  module dog_bird_ctl
     (
         input  wire  clk,  

@@ -1,4 +1,10 @@
-
+/**
+# Copyright (C) 2025  AGH University of Science and Technology
+# MTM UEC2
+# Author: Łukasz Gąsecki
+# Description: Dog movement and animation state machine controller for game logic
+# 
+*/
  module draw_dog_ctl
     (
         input  wire  clk,  
@@ -20,6 +26,7 @@
     //------------------------------------------------------------------------------
     logic [35:0] dog_xpos_q12_24_nxt, dog_ypos_q12_24_nxt, dog_xpos_q12_24, dog_ypos_q12_24;
     logic [3:0] photo_index_nxt;
+    logic [2:0] anim_index;
     
     enum logic [STATE_BITS-1 :0] {
         IDLE = 3'b000,
@@ -82,7 +89,8 @@
             LEFT_MOVE: begin
                 dog_xpos_q12_24_nxt = dog_xpos_q12_24 - 26;
                 dog_ypos_q12_24_nxt = dog_ypos_q12_24;
-                photo_index_nxt = (dog_xpos_q12_24[35:24] >> 4) % 6;
+                anim_index = dog_xpos_q12_24[20:18];
+                // photo_index_nxt = (dog_xpos_q12_24[35:24] >> 4) % 6;
 
             end
             SPOT_DUCK: begin
@@ -106,6 +114,16 @@
                 dog_ypos_q12_24_nxt = dog_ypos_q12_24;
                 photo_index_nxt = photo_index; // Maintain current photo index
             end
+        endcase
+
+        case (anim_index)
+            3'd0: photo_index_nxt = 0;
+            3'd1: photo_index_nxt = 1;
+            3'd2: photo_index_nxt = 2;
+            3'd3: photo_index_nxt = 3;
+            3'd4: photo_index_nxt = 4;
+            3'd5: photo_index_nxt = 5;
+            default: photo_index_nxt = 0;
         endcase
     end
     

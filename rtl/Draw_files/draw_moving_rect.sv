@@ -1,10 +1,17 @@
-
+/**
+# Copyright (C) 2025  AGH University of Science and Technology
+# MTM UEC2
+# Author: Łukasz Gąsecki
+# Description: Draws a moving rectangle on the VGA display, mapping its pixels from a memory array using provided coordinates and scaling.
+# 
+*/
 
 module draw_moving_rect 
     #(parameter 
         WIDTH = 55, 
         HEIGHT = 48,
-        SIZE = 1
+        SIZE = 1,
+        PIXEL_ADDR_WIDTH = 12
     )
     (  
     input  logic clk,
@@ -14,7 +21,7 @@ module draw_moving_rect
     input  logic [11:0] xpos,
     input  logic [11:0] ypos,
 
-    output logic [11:0] pixel_addr,
+    output logic [PIXEL_ADDR_WIDTH - 1:0] pixel_addr,
 
     vga_if.in in,
     vga_if.out out
@@ -34,7 +41,7 @@ module draw_moving_rect
     logic [10:0] vcount_II, hcount_II;
     logic        vsync_II, vblnk_II, hsync_II, hblnk_II;
 
-    logic [11:0] pixel_x, pixel_y;
+    logic [PIXEL_ADDR_WIDTH - 1:0] pixel_x, pixel_y;
 
     
     always_ff @(posedge clk) begin : bg_ff_blk_I

@@ -1,4 +1,10 @@
-
+/**
+# Copyright (C) 2025  AGH University of Science and Technology
+# MTM UEC2
+# Author: Łukasz Gąsecki
+# Description: Duck game logic controller for a shooting game 
+# 
+*/
  module duck_game_logic
 
     (
@@ -30,8 +36,8 @@
     localparam DUCK_WIDTH = 96;
     localparam STATE_BITS = 2; // number of bits used for state register
 
-    localparam COUNTDOWN    = 8000 * 65_000; // countdown value at start of the game T - 5000ms
-    localparam DEATH_TIME   = 6000 * 65_000; // time for duck fall after death T - 2000ms
+    localparam COUNTDOWN    = 8000 * 65_000; // countdown value at start of the game T - 8000ms
+    localparam DEATH_TIME   = 6000 * 65_000; // time for duck fall after death T - 6000ms
     //FOR TESTS
     // localparam COUNTDOWN    = 40; 
     // localparam DEATH_TIME   = 20; 
