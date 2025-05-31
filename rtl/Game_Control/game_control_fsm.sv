@@ -15,7 +15,7 @@ module game_control_fsm
     input logic [11:0] mouse_ypos,
     input logic game_finished,
 
-
+    output logic game_enable_posedge,
     output logic start_screen_enable,
     output logic game_enable,
     output logic game_end_enable
@@ -39,6 +39,7 @@ enum logic [1:0] {
 // local variables
 //------------------------------------------------------------------------------
 
+logic game_enable_prev;
 //------------------------------------------------------------------------------
 // state sequential with synchronous reset
 //------------------------------------------------------------------------------
@@ -48,8 +49,12 @@ always_ff @(posedge clk) begin : seq_blk
         start_screen_enable <= 1'b1;
         game_enable <= 1'b0;
         game_end_enable <= 1'b0;
+        game_enable_prev <= 1'b0;
+        game_enable_posedge <= 1'b0;
     end
     else begin : seq_run_blk
+        game_enable_prev <= game_enable;
+        game_enable_posedge <= game_enable && !game_enable_prev;
         case(state)
             START_SCREEN: begin
                 start_screen_enable <= 1'b1;

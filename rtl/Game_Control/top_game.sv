@@ -34,21 +34,23 @@ localparam logic [3:0] LFSR_WIDTH = 10; // Width of the LFSR
 //--------------------------------//
 // LOCAL VARIABLES
 logic [LFSR_WIDTH-1:0] random_number;
-logic start_screen_enable, game_enable, game_end_enable;
+logic start_screen_enable, game_enable, game_end_enable, game_enable_posedge;
 logic duck_direction;
-logic [11:0] duck_xpos, duck_ypos;
-logic [12:0] pixel_addr;
-logic [11:0] rgb_pixel;
+logic [11:0] duck_xpos, duck_ypos, dog_xpos, dog_ypos;
+logic [12:0] pixel_addr, pixel_addr_dog;
+logic [11:0] rgb_pixel, dog_rgb_pixel;
 logic [2:0] bullets_in_magazine;
 logic [6:0] bullets_left;
 logic [6:0] my_score;
 logic hunt_start;
 logic show_reload_char;
 logic target_killed;
+logic [3:0] dog_photo_index;
 
 vga_if start_screen_if();
 vga_if duck_if();
 vga_if grass_if();
+vga_if dog_if();
 vga_if bullets_if();
 vga_if reload_if();
 vga_if slash_if();
@@ -80,6 +82,7 @@ game_control_fsm u_game_control_fsm (  //Sterowanie etapami gry: Ekran startowy 
     .game_finished(!bullets_left && !bullets_in_magazine),
     
     .start_screen_enable(start_screen_enable),
+    .game_enable_posedge(game_enable_posedge),
     .game_enable(game_enable),
     .game_end_enable(game_end_enable)
 
@@ -138,6 +141,16 @@ duck_game_logic u_duck_game_logic (     // Odpowiedzialne za logikę gry oraz da
     .duck_killed(target_killed)
 );
 
+draw_dog_ctl u_draw_dog_ctl ( 
+    .clk(clk),
+    .rst(rst),
+    .game_enable(game_enable_posedge),
+
+    .dog_xpos(dog_xpos),
+    .dog_ypos(dog_ypos),
+    .photo_index(dog_photo_index),
+    .behind_grass()
+);
 //drawing on screen
 draw_duck 
 #(
@@ -173,13 +186,33 @@ grass_draw u_grass_draw (
     .out(grass_if)
 );
 
+draw_dog u_draw_dog (
+    .clk(clk),
+    .rst(rst),
+    .game_enable(game_enable),
+    .xpos(dog_xpos),
+    .ypos(dog_ypos),
+    .rgb_pixel(dog_rgb_pixel),
+
+    .pixel_addr(pixel_addr_dog),
+    .in(grass_if),
+    .out(dog_if)
+);
+
+dog_rom u_dog_rom (
+    .clk(clk),
+    .address(pixel_addr_dog),
+    .dog_select(dog_photo_index),
+    .rgb(dog_rgb_pixel)
+);
+
 draw_bullets u_draw_bullets (
     .game_enable(game_enable),
     .clk(clk),
     .rst(rst),
     .bullets_in_magazine(bullets_in_magazine),
 
-    .in(grass_if),
+    .in(dog_if),
     .out(bullets_if)
 );
 

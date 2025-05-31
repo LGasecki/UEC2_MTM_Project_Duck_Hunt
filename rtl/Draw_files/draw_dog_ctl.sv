@@ -1,0 +1,120 @@
+
+ module draw_dog_ctl
+    (
+        input  wire  clk,  
+        input  wire  rst,  
+        input  wire  game_enable,
+
+        output logic [11:0] dog_xpos,
+        output logic [11:0] dog_ypos,
+        output logic [3:0] photo_index, // Index for the dog photo in the ROM
+        output logic behind_grass
+    );
+    
+    //------------------------------------------------------------------------------
+    // local parameters
+    //------------------------------------------------------------------------------
+    localparam STATE_BITS = 3; // number of bits used for state register
+
+    //------------------------------------------------------------------------------
+    // local variables
+    //------------------------------------------------------------------------------
+    logic [35:0] dog_xpos_q12_24_nxt, dog_ypos_q12_24_nxt, dog_xpos_q12_24, dog_ypos_q12_24;
+    logic [3:0] photo_index_nxt;
+    logic behind_grass_nxt;
+    
+    enum logic [STATE_BITS-1 :0] {
+        IDLE = 3'b000,
+        LEFT_MOVE      = 3'b001,
+        SPOT_DUCK      = 3'b010,
+        JUMP          = 3'b011,
+        JUMP_FALL     = 3'b100
+    } state, state_nxt;
+    
+    //------------------------------------------------------------------------------
+    // state sequential with synchronous reset
+    //------------------------------------------------------------------------------
+    always_ff @(posedge clk) begin : state_seq_blk
+        if(rst)begin : state_seq_rst_blk
+            state <= IDLE;
+        end
+        else begin : state_seq_run_blk
+            state <= state_nxt;
+        end
+    end
+    //------------------------------------------------------------------------------
+    // next state logic
+    //------------------------------------------------------------------------------
+    always_comb begin : state_comb_blk
+        case(state)
+            IDLE: state_nxt = (game_enable) ? LEFT_MOVE : IDLE;
+            LEFT_MOVE: state_nxt = (dog_xpos_q12_24[35:24] >= 12'd700) ? LEFT_MOVE : SPOT_DUCK;
+            SPOT_DUCK: state_nxt = (dog_xpos_q12_24[35:24] < 12'd702) ? SPOT_DUCK : JUMP;
+            JUMP: state_nxt = (dog_ypos_q12_24[35:24] > 12'd500) ? JUMP : JUMP_FALL;
+            JUMP_FALL: state_nxt = (dog_ypos_q12_24[35:24] < 12'd600) ? JUMP_FALL : IDLE;
+                
+        endcase
+    end
+    //------------------------------------------------------------------------------
+    // output register
+    //------------------------------------------------------------------------------
+    always_ff @(posedge clk) begin : out_reg_blk
+        if(rst) begin : out_reg_rst_blk
+            {dog_xpos_q12_24, dog_ypos_q12_24} <= {36'd1024<<24, 36'd600<<24};
+            {dog_xpos, dog_ypos} <= {12'd1024, 12'd600}; // Initial position of the dog
+            photo_index <= 4'd0; // Initial photo index
+            behind_grass <= 1'b0; //
+        end
+        else begin : out_reg_run_blk
+            {dog_xpos_q12_24, dog_ypos_q12_24} <= {dog_xpos_q12_24_nxt, dog_ypos_q12_24_nxt};
+            {dog_xpos, dog_ypos} <= {dog_xpos_q12_24_nxt[35:24], dog_ypos_q12_24_nxt[35:24]};
+            photo_index <= photo_index_nxt;
+            behind_grass <= behind_grass_nxt;
+        end
+    end
+    //------------------------------------------------------------------------------
+    // output logic
+    //------------------------------------------------------------------------------
+    always_comb begin : out_comb_blk
+        behind_grass_nxt = 1'b0; 
+        case(state_nxt)
+            IDLE: begin
+                dog_xpos_q12_24_nxt = 36'd1024 << 24; // Initial position of the dog
+                dog_ypos_q12_24_nxt = 36'd600 << 24; // Initial position of the dog
+                photo_index_nxt = 4'd0; // Initial photo index
+
+            end
+            LEFT_MOVE: begin
+                dog_xpos_q12_24_nxt = dog_xpos_q12_24 - 30;
+                dog_ypos_q12_24_nxt = dog_ypos_q12_24;
+                photo_index_nxt = (dog_xpos_q12_24[35:24] >> 4) % 6;
+
+            end
+            SPOT_DUCK: begin
+                dog_xpos_q12_24_nxt = dog_xpos_q12_24 + 1;
+                dog_ypos_q12_24_nxt = dog_ypos_q12_24;
+                photo_index_nxt = 4'd6; 
+
+            end
+            JUMP: begin
+                dog_xpos_q12_24_nxt = dog_xpos_q12_24 - 30;
+                dog_ypos_q12_24_nxt = dog_ypos_q12_24 - 50;
+                photo_index_nxt = 4'd7; // Index for the jumping photo
+            end
+            JUMP_FALL: begin
+                dog_xpos_q12_24_nxt = dog_xpos_q12_24 - 25;
+                dog_ypos_q12_24_nxt = dog_ypos_q12_24 + 25;
+                photo_index_nxt = 4'd8; // Index for the falling photo
+                behind_grass_nxt = 1'b1; 
+            end
+            default: begin
+                dog_xpos_q12_24_nxt = dog_xpos_q12_24;
+                dog_ypos_q12_24_nxt = dog_ypos_q12_24;
+                photo_index_nxt = photo_index; // Maintain current photo index
+                behind_grass_nxt = behind_grass;
+            end
+        endcase
+    end
+    
+    endmodule
+    
