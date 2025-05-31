@@ -1,9 +1,11 @@
 Warnings, critical warnings and errors from synthesis and implementation
 
-Created: 2025-05-31 19:02:59
+Created: 2025-05-31 22:03:37
 
 ----SYNTHESIS----
-No synthesis log file found!
+WARNING: [Synth 8-315] illegal expression in output port connection [C:/Users/gasec/Desktop/IV_SEM/UEC2_MTM_Project_Duck_Hunt/rtl/Game_Control/top_game.sv:219]
+WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
 
 ----IMPLEMENTATION----
-No implementation log file found!
+WARNING: [Route 35-328] Router estimated timing not met.
+CRITICAL WARNING: [Timing 38-282] The design failed to meet the timing requirements. Please see the timing summary report for details on the timing violations.

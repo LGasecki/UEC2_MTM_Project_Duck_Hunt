@@ -20,8 +20,7 @@ module duck_ctl
     
     output logic [11:0] xpos,
     output logic [11:0] ypos,
-    output logic duck_direction,
-    output logic duck_on_ground
+    output logic duck_direction
 );
 
 //------------------------------------------------------------------------------
@@ -123,13 +122,11 @@ always_ff @(posedge clk) begin : out_reg_blk
         xpos_q12_24 <= 512 << 24;
         ypos_q12_24 <= 0;
         duck_direction <= 0;
-        duck_on_ground <= 1'b0;
     end
     else begin : out_reg_run_blk
         {xpos, ypos} <= {xpos_nxt_q12_24[35:24], ypos_nxt_q12_24[35:24]};
         {xpos_q12_24, ypos_q12_24} <= {xpos_nxt_q12_24, ypos_nxt_q12_24};
         duck_direction <= (state == UP_LEFT || state == DOWN_LEFT) ? 1 : 0;
-        duck_on_ground <= (state == KILLED || ypos_q12_24[35:24] >= GROUND - DUCK_HEIGHT) ? 1'b1 : 1'b0;
     end
 end
 //------------------------------------------------------------------------------

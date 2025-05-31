@@ -10,7 +10,6 @@ module draw_dog_ctl_tb;
     logic [11:0] dog_xpos;
     logic [11:0] dog_ypos;
     logic [3:0] photo_index;
-    logic behind_grass;
 
     // Instancja modułu testowanego
     draw_dog_ctl dut (
@@ -19,8 +18,7 @@ module draw_dog_ctl_tb;
         .game_enable(game_enable),
         .dog_xpos(dog_xpos),
         .dog_ypos(dog_ypos),
-        .photo_index(photo_index),
-        .behind_grass(behind_grass)
+        .photo_index(photo_index)
     );
 
     // Generacja zegara 65 MHz (15.384 ns okres => ~7.692 ns półokres)
@@ -49,7 +47,7 @@ module draw_dog_ctl_tb;
         // Symulacja przez około 2 ms (130000 cykli przy 65 MHz)
         repeat (130000) begin
             @(posedge clk);
-            $fwrite(f, "%0t,%0d,%0d,%0d,%0d\n", $time, dog_xpos, dog_ypos, photo_index, behind_grass);
+            $fwrite(f, "%0t,%0d,%0d,%0d", $time, dog_xpos, dog_ypos, photo_index);
         end
 
         // Koniec

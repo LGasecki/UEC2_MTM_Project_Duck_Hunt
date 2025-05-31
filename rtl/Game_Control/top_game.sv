@@ -36,11 +36,14 @@ localparam logic [3:0] LFSR_WIDTH = 10; // Width of the LFSR
 logic [LFSR_WIDTH-1:0] random_number;
 logic start_screen_enable, game_enable, game_end_enable, game_enable_posedge;
 logic duck_direction;
-logic [11:0] duck_xpos, duck_ypos, dog_xpos, dog_ypos;
+logic [11:0] duck_xpos, duck_ypos, dog_xpos, dog_ypos, 
+             dog_bird_xpos, dog_bird_ypos;
 logic [12:0] pixel_addr;
+logic [11:0] pixel_addr_dog_bird;
 logic [11:0] pixel_addr_dog;
 logic [11:0] pixel_addr_dog_grass;
 logic [11:0] rgb_pixel, dog_rgb_pixel;
+logic [11:0] dog_bird_rgb_pixel;
 logic [2:0] bullets_in_magazine;
 logic [6:0] bullets_left;
 logic [6:0] my_score;
@@ -48,10 +51,11 @@ logic hunt_start;
 logic show_reload_char;
 logic target_killed;
 logic [3:0] dog_photo_index;
-logic dog_on_kill_enable;
+logic dog_bird_enable;
 
 vga_if start_screen_if();
 vga_if duck_if();
+vga_if dog_bird_if();
 vga_if dog_behind_grass_if();
 vga_if grass_if();
 vga_if dog_if();
@@ -127,8 +131,7 @@ duck_ctl u_duck_ctl (   // Odpowiedzialne za poruszanie celu
 
     .xpos(duck_xpos),
     .ypos(duck_ypos),
-    .duck_direction(duck_direction),
-    .duck_on_ground(dog_on_kill_enable)
+    .duck_direction(duck_direction)
 );
 
 duck_game_logic u_duck_game_logic (     // Odpowiedzialne za logikę gry oraz dane
@@ -147,7 +150,8 @@ duck_game_logic u_duck_game_logic (     // Odpowiedzialne za logikę gry oraz da
     .bullets_left(bullets_left),
     .show_reload_char(show_reload_char),
     .hunt_start(hunt_start),
-    .duck_killed(target_killed)
+    .duck_killed(target_killed),
+    .dog_bird_enable(dog_bird_enable)
 );
 
 draw_dog_ctl u_draw_dog_ctl ( 
@@ -157,9 +161,21 @@ draw_dog_ctl u_draw_dog_ctl (
 
     .dog_xpos(dog_xpos),
     .dog_ypos(dog_ypos),
-    .photo_index(dog_photo_index),
-    .behind_grass()
+    .photo_index(dog_photo_index)
 );
+
+
+dog_bird_ctl u_dog_bird_ctl ( // Odpowiedzialne za poruszanie psa po zabojstwie
+    .clk(clk),
+    .rst(rst),
+    .enable(dog_bird_enable),
+    .duck_xpos(duck_xpos),
+
+    .xpos(dog_bird_xpos),
+    .ypos(dog_bird_ypos)
+);
+
+//------------------------------------------------------------------------------
 //drawing on screen
 draw_duck 
 #(
@@ -187,6 +203,24 @@ duck_rom u_duck_rom(
     .rgb(rgb_pixel)
 );
 
+draw_moving_rect 
+#(
+    .WIDTH(43),
+    .HEIGHT(40),
+    .SIZE(2)
+)u_draw_dog_bird (
+    .clk(clk),
+    .rst(rst),
+    .game_enable(game_enable),
+    .xpos(dog_bird_xpos),
+    .ypos(dog_bird_ypos),
+    .rgb_pixel({dog_bird_rgb_pixel}),
+
+    .pixel_addr(pixel_addr_dog_bird),
+    .in(duck_if),
+    .out(dog_bird_if)
+);
+
 draw_moving_rect u_draw_dog_behind_grass (
     .clk(clk),
     .rst(rst),
@@ -196,7 +230,7 @@ draw_moving_rect u_draw_dog_behind_grass (
     .rgb_pixel(dog_rgb_pixel),
 
     .pixel_addr(pixel_addr_dog_grass),
-    .in(duck_if),
+    .in(dog_bird_if),
     .out(dog_behind_grass_if)
 );
 
@@ -224,7 +258,10 @@ draw_moving_rect u_draw_dog (
 dog_rom u_dog_rom (
     .clk(clk),
     .address(pixel_addr_dog | pixel_addr_dog_grass),
+    .dog_bird_address(pixel_addr_dog_bird),
+
     .dog_select(dog_photo_index),
+    .dog_bird_rgb(dog_bird_rgb_pixel),
     .rgb(dog_rgb_pixel)
 );
 

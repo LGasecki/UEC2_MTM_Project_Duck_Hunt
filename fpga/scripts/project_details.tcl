@@ -49,6 +49,7 @@ set sv_files {
     ../rtl/Game_Control/lfsr_random.sv\
     ../rtl/Game_Control/duck_game_logic.sv \
     ../rtl/Game_Control/duck_ctl.sv \
+    ../rtl/Game_Control/dog_bird_ctl.sv \
     ../rtl/Draw_files/draw_string.sv \
     ../rtl/Draw_files/draw_2_numbers.sv \
     ../rtl/Draw_files/Game_Background.sv \

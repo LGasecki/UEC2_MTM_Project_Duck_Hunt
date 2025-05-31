@@ -107,6 +107,8 @@ module top_vga_tb;
         force dut.u_top_game.u_draw_dog.xpos = 12'd700;
         force dut.u_top_game.u_draw_dog.ypos = 12'd500;
         force dut.u_top_game.u_dog_rom.dog_select = 4'd8;
+        force dut.u_top_game.dog_bird_xpos = 12'd500;
+        force dut.u_top_game.dog_bird_ypos = 12'd400;
 
         $display("If simulation ends before the testbench");
         $display("completes, use the menu option to run all.");

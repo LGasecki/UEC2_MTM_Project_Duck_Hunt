@@ -7,8 +7,7 @@
 
         output logic [11:0] dog_xpos,
         output logic [11:0] dog_ypos,
-        output logic [3:0] photo_index, // Index for the dog photo in the ROM
-        output logic behind_grass
+        output logic [3:0] photo_index
     );
     
     //------------------------------------------------------------------------------
@@ -21,7 +20,6 @@
     //------------------------------------------------------------------------------
     logic [35:0] dog_xpos_q12_24_nxt, dog_ypos_q12_24_nxt, dog_xpos_q12_24, dog_ypos_q12_24;
     logic [3:0] photo_index_nxt;
-    logic behind_grass_nxt;
     
     enum logic [STATE_BITS-1 :0] {
         IDLE = 3'b000,
@@ -63,20 +61,17 @@
             {dog_xpos_q12_24, dog_ypos_q12_24} <= {36'd1024<<24, 36'd595<<24};
             {dog_xpos, dog_ypos} <= {12'd1024, 12'd595}; // Initial position of the dog
             photo_index <= 4'd0; // Initial photo index
-            behind_grass <= 1'b0; //
         end
         else begin : out_reg_run_blk
             {dog_xpos_q12_24, dog_ypos_q12_24} <= {dog_xpos_q12_24_nxt, dog_ypos_q12_24_nxt};
             {dog_xpos, dog_ypos} <= {dog_xpos_q12_24_nxt[35:24], dog_ypos_q12_24_nxt[35:24]};
             photo_index <= photo_index_nxt;
-            behind_grass <= behind_grass_nxt;
         end
     end
     //------------------------------------------------------------------------------
     // output logic
     //------------------------------------------------------------------------------
     always_comb begin : out_comb_blk
-        behind_grass_nxt = 1'b0; 
         case(state_nxt)
             IDLE: begin
                 dog_xpos_q12_24_nxt = 36'd1024 << 24; // Initial position of the dog
@@ -105,13 +100,11 @@
                 dog_xpos_q12_24_nxt = dog_xpos_q12_24 - 20;
                 dog_ypos_q12_24_nxt = dog_ypos_q12_24 + 50;
                 photo_index_nxt = 4'd8; // Index for the falling photo
-                behind_grass_nxt = 1'b1; 
             end
             default: begin
                 dog_xpos_q12_24_nxt = dog_xpos_q12_24;
                 dog_ypos_q12_24_nxt = dog_ypos_q12_24;
                 photo_index_nxt = photo_index; // Maintain current photo index
-                behind_grass_nxt = behind_grass;
             end
         endcase
     end
