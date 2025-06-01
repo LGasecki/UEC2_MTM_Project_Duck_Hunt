@@ -34,7 +34,7 @@
   * Memory initialization from a file
   */
  
- initial $readmemh("../../rtl/Draw_files/grass_128x35.data", image_mem);
+ initial $readmemh("../../rtl/Data_files/grass_128x35.data", image_mem);
 
 /**
  * Internal logic

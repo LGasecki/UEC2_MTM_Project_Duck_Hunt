@@ -22,7 +22,7 @@
 
     // 4_352 pixels = 64x17
     logic [11:0] cloud_mem [0:1_087];
-    initial $readmemh("../../rtl/Draw_files/cloud_64x17.data", cloud_mem);
+    initial $readmemh("../../rtl/Data_files/cloud_64x17.data", cloud_mem);
 
     logic [11:0] rgb_nxt;
     logic [11:0] pixel_index;

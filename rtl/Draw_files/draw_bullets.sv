@@ -28,7 +28,7 @@ module draw_bullets (
     localparam GAP               = 6;
 
     logic [11:0] bullet_mem [0:783];
-    initial $readmemh("../../rtl/Draw_files/bullet_28x28.data", bullet_mem);
+    initial $readmemh("../../rtl/Data_files/bullet_28x28.data", bullet_mem);
 
     logic [11:0] rgb_nxt;
     logic [9:0] pixel_index;

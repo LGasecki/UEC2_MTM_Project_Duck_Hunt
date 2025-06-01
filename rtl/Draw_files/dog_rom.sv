@@ -15,7 +15,7 @@
  module dog_rom (
     input  logic clk,
     input  logic [11:0] address,  
-    input  logic [11:0] dog_bird_address,
+    input  logic [10:0] dog_bird_address,
     input  logic [3:0]  dog_select,
 
     output logic [11:0] rgb,
@@ -46,16 +46,16 @@ logic [11:0] dog_bird_rom [0:1719];
  */
 
 /* Relative path from the simulation or synthesis working directory */
-initial $readmemh("../../rtl/Draw_files/dog0.data", dog0_rom);
-initial $readmemh("../../rtl/Draw_files/dog1.data", dog1_rom);
-initial $readmemh("../../rtl/Draw_files/dog2.data", dog2_rom);
-initial $readmemh("../../rtl/Draw_files/dog3.data", dog3_rom);
-initial $readmemh("../../rtl/Draw_files/dog4.data", dog4_rom);
-initial $readmemh("../../rtl/Draw_files/dog5.data", dog5_rom);
-initial $readmemh("../../rtl/Draw_files/dog6.data", dog6_rom);
-initial $readmemh("../../rtl/Draw_files/dog7.data", dog7_rom);
-initial $readmemh("../../rtl/Draw_files/dog8.data", dog8_rom);
-initial $readmemh("../../rtl/Draw_files/dog_bird.data", dog_bird_rom);
+initial $readmemh("../../rtl/Data_files/dog0.data", dog0_rom);
+initial $readmemh("../../rtl/Data_files/dog1.data", dog1_rom);
+initial $readmemh("../../rtl/Data_files/dog2.data", dog2_rom);
+initial $readmemh("../../rtl/Data_files/dog3.data", dog3_rom);
+initial $readmemh("../../rtl/Data_files/dog4.data", dog4_rom);
+initial $readmemh("../../rtl/Data_files/dog5.data", dog5_rom);
+initial $readmemh("../../rtl/Data_files/dog6.data", dog6_rom);
+initial $readmemh("../../rtl/Data_files/dog7.data", dog7_rom);
+initial $readmemh("../../rtl/Data_files/dog8.data", dog8_rom);
+initial $readmemh("../../rtl/Data_files/dog_bird.data", dog_bird_rom);
 
 /**
  * Internal logic

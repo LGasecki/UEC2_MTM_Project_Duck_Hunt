@@ -36,8 +36,8 @@ logic [11:0] dead_duck_rom [0:5759];
  */
 
 /* Relative path from the simulation or synthesis working directory */
-initial $readmemh("../../rtl/Draw_files/duck_96x60.data", duck_rom);
-initial $readmemh("../../rtl/Draw_files/dead_duck_96x60.data", dead_duck_rom);
+initial $readmemh("../../rtl/Data_files/duck_96x60.data", duck_rom);
+initial $readmemh("../../rtl/Data_files/dead_duck_96x60.data", dead_duck_rom);
 
 /**
  * Internal logic

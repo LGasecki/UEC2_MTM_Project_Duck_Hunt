@@ -39,7 +39,7 @@ logic duck_direction;
 logic [11:0] duck_xpos, duck_ypos, dog_xpos, dog_ypos, 
              dog_bird_xpos, dog_bird_ypos;
 logic [12:0] pixel_addr;
-logic [11:0] pixel_addr_dog_bird;
+logic [10:0] pixel_addr_dog_bird;
 logic [11:0] pixel_addr_dog;
 logic [11:0] pixel_addr_dog_grass;
 logic [15:0] pixel_addr_grass;
@@ -209,7 +209,7 @@ draw_moving_rect
     .WIDTH(43),
     .HEIGHT(40),
     .SIZE(2),
-    .PIXEL_ADDR_WIDTH(12)
+    .PIXEL_ADDR_WIDTH(11)
 )u_draw_dog_bird (
     .clk(clk),
     .rst(rst),

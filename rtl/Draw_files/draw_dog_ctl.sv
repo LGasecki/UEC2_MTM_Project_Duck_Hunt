@@ -26,7 +26,10 @@
     //------------------------------------------------------------------------------
     logic [35:0] dog_xpos_q12_24_nxt, dog_ypos_q12_24_nxt, dog_xpos_q12_24, dog_ypos_q12_24;
     logic [3:0] photo_index_nxt;
-    logic [2:0] anim_index;
+    // logic [2:0] anim_index;
+    // logic [3:0] photo_index_ctr;
+    // logic [23:0] frame_divider; // dzieli 65MHz do np. ~15fps
+
     
     enum logic [STATE_BITS-1 :0] {
         IDLE = 3'b000,
@@ -79,6 +82,7 @@
     // output logic
     //------------------------------------------------------------------------------
     always_comb begin : out_comb_blk
+        // anim_index = 0;
         case(state_nxt)
             IDLE: begin
                 dog_xpos_q12_24_nxt = 36'd1024 << 24; // Initial position of the dog
@@ -89,8 +93,10 @@
             LEFT_MOVE: begin
                 dog_xpos_q12_24_nxt = dog_xpos_q12_24 - 26;
                 dog_ypos_q12_24_nxt = dog_ypos_q12_24;
-                anim_index = dog_xpos_q12_24[20:18];
-                // photo_index_nxt = (dog_xpos_q12_24[35:24] >> 4) % 6;
+                // anim_index = dog_xpos_q12_24[20:18];
+                 photo_index_nxt = dog_xpos_q12_24[35:20] % 6;
+                //photo_index_nxt = photo_index_ctr;
+
 
             end
             SPOT_DUCK: begin
@@ -116,16 +122,26 @@
             end
         endcase
 
-        case (anim_index)
-            3'd0: photo_index_nxt = 0;
-            3'd1: photo_index_nxt = 1;
-            3'd2: photo_index_nxt = 2;
-            3'd3: photo_index_nxt = 3;
-            3'd4: photo_index_nxt = 4;
-            3'd5: photo_index_nxt = 5;
-            default: photo_index_nxt = 0;
-        endcase
+        // case (anim_index)
+        //     3'd0: photo_index_nxt = 0;
+        //     3'd1: photo_index_nxt = 1;
+        //     3'd2: photo_index_nxt = 2;
+        //     3'd3: photo_index_nxt = 3;
+        //     3'd4: photo_index_nxt = 4;
+        //     3'd5: photo_index_nxt = 5;
+        //     default: photo_index_nxt = 0;
+        // endcase
     end
     
     endmodule
-    
+//     // clocked process (dodaj gdzieś do always_ff @posedge clk)
+// if (state == LEFT_MOVE) begin
+//     frame_divider <= frame_divider + 1;
+//     if (frame_divider == 24'd400_000) begin // ~6.15ms = ~162fps
+//         frame_divider <= 0;
+//         photo_index_ctr <= (photo_index_ctr == 5) ? 0 : photo_index_ctr + 1;
+//     end
+// end else begin
+//     frame_divider <= 0;
+//     photo_index_ctr <= 0;
+// end
