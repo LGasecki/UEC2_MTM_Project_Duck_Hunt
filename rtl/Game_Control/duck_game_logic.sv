@@ -183,8 +183,8 @@
             RELOADING: begin
                 hunt_start_nxt = 1;
                 delay_ms_nxt = delay_ms;
-                bullets_in_magazine_nxt = 3;
                 bullets_left_nxt = bullets_left + bullets_in_magazine - 3;
+                bullets_in_magazine_nxt = (bullets_left < 3) ? bullets_left[2:0]  : 3;
                 my_score_nxt = my_score;
                 duck_killed_nxt = duck_killed;
             end

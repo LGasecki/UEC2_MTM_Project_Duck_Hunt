@@ -92,7 +92,7 @@ game_control_fsm u_game_control_fsm (  //Sterowanie etapami gry: Ekran startowy 
     .left_mouse(left_mouse),
     .mouse_xpos(mouse_xpos),
     .mouse_ypos(mouse_ypos),
-    .game_finished(!bullets_left && !bullets_in_magazine),
+    .game_finished(bullets_left == 0 && bullets_in_magazine == 0),
     
     .start_screen_enable(start_screen_enable),
     .game_enable_posedge(game_enable_posedge),

@@ -57,6 +57,7 @@ module mouse_shape (
 
     // Combinational logic for drawing the plus
     always_comb begin : rect_comb_blk
+            
         // Sprawdzenie, czy piksel znajduje się w poziomej lub pionowej linii plusa
         if (
             // Pozioma linia plusa
@@ -72,6 +73,8 @@ module mouse_shape (
              (in.hcount < (xpos - 7) + PLUS_SIZE))))
          begin
             rgb_nxt = RECT_COLOR; // Piksel należy do plusa
+        end else if ((in.hcount == 0))   begin     
+            rgb_nxt = 12'h0_0_0;    
         end else begin
             rgb_nxt = in.rgb; // Piksel należy do tła
         end
