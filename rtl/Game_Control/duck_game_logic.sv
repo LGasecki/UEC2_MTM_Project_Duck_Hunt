@@ -36,8 +36,8 @@
     localparam DUCK_WIDTH = 96;
     localparam STATE_BITS = 2; // number of bits used for state register
 
-    localparam COUNTDOWN    = 8000 * 65_000; // countdown value at start of the game T - 8000ms
-    localparam DEATH_TIME   = 6000 * 65_000; // time for duck fall after death T - 6000ms
+    localparam COUNTDOWN    = 7500 * 65_000; // countdown value at start of the game T - 8000ms
+    localparam DEATH_TIME   = 4500 * 65_000; // time for duck fall after death T - 6000ms
     //FOR TESTS
     // localparam COUNTDOWN    = 40; 
     // localparam DEATH_TIME   = 20; 
@@ -101,7 +101,7 @@
     always_ff @(posedge clk) begin : out_reg_blk
         if(rst) begin : out_reg_rst_blk
             bullets_in_magazine <= 3;
-            bullets_left <= 27;
+            bullets_left <= 15;
             delay_ms <= COUNTDOWN;
             left_mouse_prev <= 0;
             right_mouse_prev <= 0;
@@ -121,7 +121,7 @@
             hunt_start <= hunt_start_nxt;
             show_reload_char <= !bullets_in_magazine_nxt;
             duck_killed <= duck_killed_nxt;
-            dog_bird_enable <= (duck_killed_nxt == 1 && delay_ms_nxt == 4000* 65_000) ? 1 : 0;
+            dog_bird_enable <= (duck_killed_nxt == 1 && delay_ms_nxt == 2500* 65_000) ? 1 : 0;
         end
     end
     //------------------------------------------------------------------------------
@@ -143,7 +143,7 @@
                 hunt_start_nxt = 0;
                 delay_ms_nxt = COUNTDOWN;
                 bullets_in_magazine_nxt = 3;
-                bullets_left_nxt = 27;
+                bullets_left_nxt = 15;
                 my_score_nxt = 0;
                 duck_killed_nxt = 0;
             end

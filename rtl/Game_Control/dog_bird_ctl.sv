@@ -82,13 +82,13 @@
                 ypos_q12_24_nxt = 36'd700<<24;
             end
             UP: begin
-                ypos_q12_24_nxt = ypos_q12_24 - 60; // Move up
+                ypos_q12_24_nxt = ypos_q12_24 - 90; // Move up
             end
             WAIT: begin
                 ypos_q12_24_nxt = ypos_q12_24 - 1;
             end
             DOWN: begin
-                ypos_q12_24_nxt = ypos_q12_24 + 60; // Move down
+                ypos_q12_24_nxt = ypos_q12_24 + 90; // Move down
             end
         endcase
     end

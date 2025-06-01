@@ -26,9 +26,8 @@
     //------------------------------------------------------------------------------
     logic [35:0] dog_xpos_q12_24_nxt, dog_ypos_q12_24_nxt, dog_xpos_q12_24, dog_ypos_q12_24;
     logic [3:0] photo_index_nxt;
-    // logic [2:0] anim_index;
-    // logic [3:0] photo_index_ctr;
-    // logic [23:0] frame_divider; // dzieli 65MHz do np. ~15fps
+    logic [3:0] photo_index_ctr;
+    logic [23:0] frame_divider, frame_divider_nxt; // dzieli 65MHz do np. ~15fps
 
     
     enum logic [STATE_BITS-1 :0] {
@@ -71,18 +70,24 @@
             {dog_xpos_q12_24, dog_ypos_q12_24} <= {36'd1024<<24, 36'd595<<24};
             {dog_xpos, dog_ypos} <= {12'd1024, 12'd595}; // Initial position of the dog
             photo_index <= 4'd0; // Initial photo index
+            frame_divider <= 24'd0;
         end
         else begin : out_reg_run_blk
             {dog_xpos_q12_24, dog_ypos_q12_24} <= {dog_xpos_q12_24_nxt, dog_ypos_q12_24_nxt};
             {dog_xpos, dog_ypos} <= {dog_xpos_q12_24_nxt[35:24], dog_ypos_q12_24_nxt[35:24]};
             photo_index <= photo_index_nxt;
+            frame_divider <= frame_divider_nxt;
         end
     end
     //------------------------------------------------------------------------------
     // output logic
     //------------------------------------------------------------------------------
     always_comb begin : out_comb_blk
-        // anim_index = 0;
+        dog_xpos_q12_24_nxt = dog_xpos_q12_24;
+        dog_ypos_q12_24_nxt = dog_ypos_q12_24;
+        photo_index_nxt = photo_index;
+        frame_divider_nxt = frame_divider;
+        photo_index_ctr = photo_index;
         case(state_nxt)
             IDLE: begin
                 dog_xpos_q12_24_nxt = 36'd1024 << 24; // Initial position of the dog
@@ -90,31 +95,38 @@
                 photo_index_nxt = 4'd0; // Initial photo index
 
             end
+
             LEFT_MOVE: begin
                 dog_xpos_q12_24_nxt = dog_xpos_q12_24 - 26;
                 dog_ypos_q12_24_nxt = dog_ypos_q12_24;
-                // anim_index = dog_xpos_q12_24[20:18];
-                 photo_index_nxt = dog_xpos_q12_24[35:20] % 6;
-                //photo_index_nxt = photo_index_ctr;
-
+                frame_divider_nxt = frame_divider_nxt + 1;
+                if (frame_divider >= 24'd8_000_000) begin // ~6.15ms = ~162fps
+                    frame_divider_nxt = 0;
+                    photo_index_ctr = (photo_index_ctr == 5) ? 0 : photo_index_ctr + 1;
+                end 
+                photo_index_nxt = photo_index_ctr;
 
             end
+
             SPOT_DUCK: begin
                 dog_xpos_q12_24_nxt = dog_xpos_q12_24 + 1;
                 dog_ypos_q12_24_nxt = dog_ypos_q12_24;
                 photo_index_nxt = 4'd6; 
 
             end
+
             JUMP: begin
                 dog_xpos_q12_24_nxt = dog_xpos_q12_24 - 20;
                 dog_ypos_q12_24_nxt = dog_ypos_q12_24 - 70;
                 photo_index_nxt = 4'd7; // Index for the jumping photo
             end
+
             JUMP_FALL: begin
                 dog_xpos_q12_24_nxt = dog_xpos_q12_24 - 20;
                 dog_ypos_q12_24_nxt = dog_ypos_q12_24 + 50;
                 photo_index_nxt = 4'd8; // Index for the falling photo
             end
+
             default: begin
                 dog_xpos_q12_24_nxt = dog_xpos_q12_24;
                 dog_ypos_q12_24_nxt = dog_ypos_q12_24;
@@ -122,26 +134,7 @@
             end
         endcase
 
-        // case (anim_index)
-        //     3'd0: photo_index_nxt = 0;
-        //     3'd1: photo_index_nxt = 1;
-        //     3'd2: photo_index_nxt = 2;
-        //     3'd3: photo_index_nxt = 3;
-        //     3'd4: photo_index_nxt = 4;
-        //     3'd5: photo_index_nxt = 5;
-        //     default: photo_index_nxt = 0;
-        // endcase
     end
     
     endmodule
-//     // clocked process (dodaj gdzieś do always_ff @posedge clk)
-// if (state == LEFT_MOVE) begin
-//     frame_divider <= frame_divider + 1;
-//     if (frame_divider == 24'd400_000) begin // ~6.15ms = ~162fps
-//         frame_divider <= 0;
-//         photo_index_ctr <= (photo_index_ctr == 5) ? 0 : photo_index_ctr + 1;
-//     end
-// end else begin
-//     frame_divider <= 0;
-//     photo_index_ctr <= 0;
-// end
+
