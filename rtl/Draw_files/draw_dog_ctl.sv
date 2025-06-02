@@ -57,7 +57,7 @@
             IDLE: state_nxt = (game_enable) ? LEFT_MOVE : IDLE;
             LEFT_MOVE: state_nxt = (dog_xpos_q12_24[35:24] >= 12'd650) ? LEFT_MOVE : SPOT_DUCK;
             SPOT_DUCK: state_nxt = (dog_xpos_q12_24[35:24] < 12'd653) ? SPOT_DUCK : JUMP;
-            JUMP: state_nxt = (dog_ypos_q12_24[35:24] > 12'd450) ? JUMP : JUMP_FALL;
+            JUMP: state_nxt = (dog_ypos_q12_24[35:24] > 12'd390) ? JUMP : JUMP_FALL;
             JUMP_FALL: state_nxt = (dog_ypos_q12_24[35:24] < 12'd600) ? JUMP_FALL : IDLE;
             default: state_nxt = IDLE; // Default case to handle unexpected states
         endcase
@@ -67,8 +67,8 @@
     //------------------------------------------------------------------------------
     always_ff @(posedge clk) begin : out_reg_blk
         if(rst) begin : out_reg_rst_blk
-            {dog_xpos_q12_24, dog_ypos_q12_24} <= {36'd1024<<24, 36'd595<<24};
-            {dog_xpos, dog_ypos} <= {12'd1024, 12'd595}; // Initial position of the dog
+            {dog_xpos_q12_24, dog_ypos_q12_24} <= {36'd1024<<24, 36'd515<<24};
+            {dog_xpos, dog_ypos} <= {12'd1024, 12'd515}; // Initial position of the dog
             photo_index <= 4'd0; // Initial photo index
             frame_divider <= 24'd0;
         end
@@ -91,7 +91,7 @@
         case(state_nxt)
             IDLE: begin
                 dog_xpos_q12_24_nxt = 36'd1024 << 24; // Initial position of the dog
-                dog_ypos_q12_24_nxt = 36'd595 << 24; // Initial position of the dog
+                dog_ypos_q12_24_nxt = 36'd515 << 24; // Initial position of the dog
                 photo_index_nxt = 4'd0; // Initial photo index
 
             end

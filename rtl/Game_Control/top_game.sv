@@ -184,7 +184,7 @@ draw_duck
     .DUCK_HEIGHT(DUCK_HEIGHT)
 ) 
 u_draw_duck (
-    .game_enable(hunt_start || target_killed),
+    .game_enable((hunt_start || target_killed) && game_enable),
     .clk(clk),
     .rst(rst),
     .xpos(duck_xpos),
@@ -223,7 +223,14 @@ draw_moving_rect
     .out(dog_bird_if)
 );
 
-draw_moving_rect u_draw_dog_behind_grass (
+draw_moving_rect 
+#(
+    .WIDTH(55),
+    .HEIGHT(48),
+    .SIZE(2),
+    .PIXEL_ADDR_WIDTH(12)
+)
+u_draw_dog_behind_grass (
     .clk(clk),
     .rst(rst),
     .game_enable(game_enable && dog_photo_index == 8),
@@ -271,7 +278,13 @@ grass_rom u_grass_rom (
 );
 
 
-draw_moving_rect u_draw_dog (
+draw_moving_rect 
+#(
+    .WIDTH(55),
+    .HEIGHT(48),
+    .SIZE(2),
+    .PIXEL_ADDR_WIDTH(12)
+)u_draw_dog (
     .clk(clk),
     .rst(rst),
     .game_enable(game_enable && dog_photo_index != 8),
