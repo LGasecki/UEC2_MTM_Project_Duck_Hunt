@@ -11,7 +11,8 @@ module draw_moving_rect
         WIDTH = 55, 
         HEIGHT = 48,
         SIZE = 1,
-        PIXEL_ADDR_WIDTH = 12
+        PIXEL_ADDR_WIDTH = 12,
+        INVERTED = 1 // 1 - inverted, 0 - normal
     )
     (  
     input  logic clk,
@@ -79,12 +80,15 @@ module draw_moving_rect
                 (vcount_II >= ypos) && (vcount_II < (ypos + (HEIGHT<<SIZE))) && game_enable) begin
                 
                 // tylko tutaj liczymy pixel_x/y
+                if (INVERTED)
+                    pixel_x = WIDTH - 1 - ((hcount_II - xpos) >> SIZE);
+                else
+                    pixel_x = ((hcount_II - xpos) >> SIZE);
                 pixel_y = ((vcount_II - ypos) >> SIZE) * WIDTH;
-                pixel_x = WIDTH - 1 - ((hcount_II - xpos) >> SIZE);
                 pixel_addr = pixel_y + pixel_x;
     
                 if (pixel_addr < (WIDTH * HEIGHT)) begin
-                    if (rgb_pixel == 12'hf08)
+                    if (rgb_pixel == 12'hf08 | rgb_pixel == 12'h2be)
                         rgb_nxt = rgb_II;
                     else
                         rgb_nxt = rgb_pixel;

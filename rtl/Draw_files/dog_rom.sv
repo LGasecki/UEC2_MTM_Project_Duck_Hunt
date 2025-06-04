@@ -17,7 +17,9 @@
     input  logic [11:0] address,  
     input  logic [10:0] dog_bird_address,
     input  logic [3:0]  dog_select,
+    input  logic [15:0] start_logo_address,
 
+    output logic [11:0] start_logo_rgb,
     output logic [11:0] rgb,
     output logic [11:0] dog_bird_rgb
 );
@@ -37,6 +39,7 @@
  (* rom_style = "block" *) logic [11:0] dog7_rom [0:2639];
  (* rom_style = "block" *) logic [11:0] dog8_rom [0:2639];
  (* rom_style = "block" *) logic [11:0] dog_bird_rom [0:1719]; 
+ (* rom_style = "block" *) logic [11:0] start_logo_rom [0:200_703];
 
 
 
@@ -56,6 +59,7 @@ initial $readmemh("../../rtl/Data_files/dog6.data", dog6_rom);
 initial $readmemh("../../rtl/Data_files/dog7.data", dog7_rom);
 initial $readmemh("../../rtl/Data_files/dog8.data", dog8_rom);
 initial $readmemh("../../rtl/Data_files/dog_bird.data", dog_bird_rom);
+initial $readmemh("../../rtl/Data_files/Duckhunt_logo_256x192.data", start_logo_rom);
 
 /**
  * Internal logic
@@ -63,6 +67,7 @@ initial $readmemh("../../rtl/Data_files/dog_bird.data", dog_bird_rom);
 
 always_ff @(posedge clk)begin
     dog_bird_rgb <= dog_bird_rom[dog_bird_address];
+    start_logo_rgb <= start_logo_rom[start_logo_address];
     case (dog_select)
         4'd0: rgb <= dog0_rom[address];
         4'd1: rgb <= dog1_rom[address];

@@ -62,8 +62,11 @@ logic dog_bird_enable;
 logic start_pressed;
 logic game_finished;
 logic [1:0] winner_status; // 00: remis, 01: wygrana, 10: przegrana
+logic [15:0] start_logo_address;
+logic [11:0] start_logo_rgb;
 
 vga_if start_screen_if();
+vga_if logo_if();
 vga_if waiting_for_enemy_start_if();
 vga_if duck_if();
 vga_if dog_bird_if();
@@ -146,12 +149,32 @@ u_start_screen (
     .out(start_screen_if)
 );
 
+draw_moving_rect 
+#(
+    .WIDTH(256),
+    .HEIGHT(196),
+    .SIZE(1),
+    .PIXEL_ADDR_WIDTH(16), // 2^18 = 262144
+    .INVERTED(0) 
+)u_draw_logo (
+    .clk(clk),
+    .rst(rst),
+    .game_enable(start_screen_enable || start_pressed || game_finished),
+    .xpos(12'd256),
+    .ypos(12'd20),
+    .rgb_pixel(start_logo_rgb),
+
+    .pixel_addr(start_logo_address),
+    .in(start_screen_if),
+    .out(logo_if)
+);
+
 //WAITING FOR SECOND PLAYER TO START--------------------------------
 
 draw_string 
 #(
-    .CHAR_XPOS(250), 
-    .CHAR_YPOS(350), 
+    .CHAR_XPOS(244), // X position
+    .CHAR_YPOS(START_CHAR_YPOS), // Y position
     .WIDTH(17), 
     .SIZE(2), 
     .COLOUR(RGB_YELLOW), 
@@ -162,7 +185,7 @@ u_waiting_for_enemy_start (
     .rst(rst),
     .enable(start_pressed && !enemy_start_game),
 
-    .in(start_screen_if),
+    .in(logo_if),
     .out(waiting_for_enemy_start_if)
 );
 
@@ -339,7 +362,9 @@ dog_rom u_dog_rom (
     .clk(clk),
     .address(pixel_addr_dog | pixel_addr_dog_grass),
     .dog_bird_address(pixel_addr_dog_bird),
+    .start_logo_address(start_logo_address),
 
+    .start_logo_rgb(start_logo_rgb),
     .dog_select(dog_photo_index),
     .dog_bird_rgb(dog_bird_rgb_pixel),
     .rgb(dog_rgb_pixel)
@@ -480,8 +505,8 @@ u_draw_enemy_score (
 
 draw_string 
 #(
-    .CHAR_XPOS(250), 
-    .CHAR_YPOS(350), 
+    .CHAR_XPOS(244), 
+    .CHAR_YPOS(START_CHAR_YPOS), 
     .WIDTH(17), 
     .SIZE(2), 
     .COLOUR(RGB_YELLOW), 
