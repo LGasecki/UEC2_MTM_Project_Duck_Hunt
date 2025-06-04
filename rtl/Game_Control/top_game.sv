@@ -80,6 +80,9 @@ vga_if enemy_score_if();
 vga_if your_points_if_end();
 vga_if enemy_points_if_end();
 vga_if my_score_if_end();
+vga_if enemy_score_if_end();
+vga_if draw_winner_status_if_draw();
+vga_if draw_winner_status_if_winner();
 
 //UART LOGIC
 assign uart_data_out = {start_pressed, game_finished, my_score[5:0]}; // Send game status and score to UART POPRAWKA
@@ -87,9 +90,7 @@ assign enemy_score = {1'b0,uart_data_in[5:0]}; // Receive enemy score from UART
 assign enemy_ended_game = uart_data_in[6]; // Receive enemy ended game signal from UART
 assign enemy_start_game = uart_data_in[7]; // Receive enemy start game signal from UART
 
-vga_if enemy_score_if_end();
-vga_if draw_winner_status_if_draw();
-vga_if draw_winner_status_if_winner();
+
 
 //------------------------------------------------------------------------------
 // MODULES
@@ -115,7 +116,6 @@ game_control_fsm u_game_control_fsm (  //Sterowanie etapami gry: Ekran startowy-
     .game_finished(bullets_left == 0 && bullets_in_magazine == 0),
     .enemy_ended(enemy_ended_game),
     .enemy_start(enemy_start_game),
-
     .start_pressed(start_pressed),
     .game_ended(game_finished),
     .start_screen_enable(start_screen_enable),
