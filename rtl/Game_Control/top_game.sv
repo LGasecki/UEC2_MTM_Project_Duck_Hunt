@@ -15,6 +15,9 @@ module top_game(
     input logic [11:0] mouse_ypos,
     input logic left_mouse,
     input logic right_mouse,
+    input logic [7:0] uart_data_in,
+
+    output logic [7:0] uart_data_out,
 
     vga_if.in in,
     vga_if.out out
@@ -48,11 +51,16 @@ logic [11:0] dog_bird_rgb_pixel;
 logic [2:0] bullets_in_magazine;
 logic [6:0] bullets_left;
 logic [6:0] my_score;
+logic [6:0] enemy_score;
+logic enemy_start_game;
+logic enemy_ended_game;
 logic hunt_start;
 logic show_reload_char;
 logic target_killed;
 logic [3:0] dog_photo_index;
 logic dog_bird_enable;
+logic start_pressed;
+logic game_finished;
 logic [1:0] winner_status; // 00: remis, 01: wygrana, 10: przegrana
 
 vga_if start_screen_if();
@@ -72,6 +80,13 @@ vga_if enemy_score_if();
 vga_if your_points_if_end();
 vga_if enemy_points_if_end();
 vga_if my_score_if_end();
+
+//UART LOGIC
+assign uart_data_out = {start_pressed, game_finished, my_score[5:0]}; // Send game status and score to UART POPRAWKA
+assign enemy_score = {1'b0,uart_data_in[5:0]}; // Receive enemy score from UART
+assign enemy_ended_game = uart_data_in[6]; // Receive enemy ended game signal from UART
+assign enemy_start_game = uart_data_in[7]; // Receive enemy start game signal from UART
+
 vga_if enemy_score_if_end();
 vga_if draw_winner_status_if_draw();
 vga_if draw_winner_status_if_winner();
@@ -91,14 +106,18 @@ lfsr_random  // generator liczb pseudolosowych
 );
 
 // CONTROL
-game_control_fsm u_game_control_fsm (  //Sterowanie etapami gry: Ekran startowy -> Gra -> Ekran końcowy
+game_control_fsm u_game_control_fsm (  //Sterowanie etapami gry: Ekran startowy-> Czekanie na start 2 gracza -> Gra -> Czekanie na koniec 2 gracza -> Ekran końcowy
     .clk(clk),
     .rst(rst),
     .left_mouse(left_mouse),
     .mouse_xpos(mouse_xpos),
     .mouse_ypos(mouse_ypos),
     .game_finished(bullets_left == 0 && bullets_in_magazine == 0),
-    
+    .enemy_ended(enemy_ended_game),
+    .enemy_start(enemy_start_game),
+
+    .start_pressed(start_pressed),
+    .game_ended(game_finished),
     .start_screen_enable(start_screen_enable),
     .game_enable_posedge(game_enable_posedge),
     .game_enable(game_enable),
@@ -106,7 +125,7 @@ game_control_fsm u_game_control_fsm (  //Sterowanie etapami gry: Ekran startowy 
 
 );
 
-//START SCREEN
+//START SCREEN------------------------------------------------------
 draw_string 
 #(
     .CHAR_XPOS(START_CHAR_XPOS), // X position 
@@ -125,8 +144,11 @@ u_start_screen (
     .out(start_screen_if)
 );
 
+//WAITING FOR SECOND PLAYER TO START--------------------------------
 
-//GAME
+
+
+//GAME--------------------------------------------------------------
 //control
 duck_ctl u_duck_ctl (   // Odpowiedzialne za poruszanie celu
     .game_enable(hunt_start && game_enable),
@@ -248,14 +270,6 @@ u_draw_dog_behind_grass (
     .out(dog_behind_grass_if)
 );
 
-// grass_draw u_grass_draw (
-//     .game_enable(start_screen_enable || game_enable || game_end_enable),
-//     .clk(clk),
-//     .rst(rst),
-//     .in(dog_behind_grass_if),
-//     .out(grass_if)
-// );
-
 draw_moving_rect 
 #(
     .WIDTH(256),
@@ -265,7 +279,7 @@ draw_moving_rect
 ) u_grass_draw (
     .clk(clk),
     .rst(rst),
-    .game_enable(start_screen_enable || game_enable || game_end_enable),
+    .game_enable(1'b1),
     .xpos(12'd0),
     .ypos(12'd488),
     .rgb_pixel(rgb_grass),
@@ -439,14 +453,19 @@ u_draw_enemy_score (
     .rst(rst),
 
     .game_enable(game_enable),
-    .bin_number(7'd11),
+    .bin_number(enemy_score),
     .in(my_score_if),
     .out(enemy_score_if)
 );
+//WAITING FOR 2ND PLAYER TO END -----------------------------------
 
-//GAME_END
 
 
+
+
+
+
+//GAME_END---------------------------------------------------------
 draw_string 
 #(
     .CHAR_XPOS(MY_SCORE_XPOS_END), 
@@ -512,7 +531,7 @@ u_draw_enemy_score_end (
     .rst(rst),
 
     .game_enable(game_end_enable),
-    .bin_number(7'd11),
+    .bin_number(enemy_score),
     .in(my_score_if_end),
     .out(enemy_score_if_end)
 );

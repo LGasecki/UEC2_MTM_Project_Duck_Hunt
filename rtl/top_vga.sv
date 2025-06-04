@@ -16,12 +16,15 @@
 module top_vga (
         input  logic clk65,
         input  logic rst,
+        input  logic rx,
 
         output logic vs,
         output logic hs,
         output logic [3:0] r,
         output logic [3:0] g,
         output logic [3:0] b,
+        output logic tx,
+
         inout ps2_clk,
         inout ps2_data
 
@@ -51,6 +54,7 @@ module top_vga (
     logic [11:0]xpos;
     logic [11:0]ypos;
     logic left_mouse, right_mouse;
+    logic [7:0] uart_data_send, uart_data_recieved;
 
     
     /**
@@ -117,10 +121,25 @@ module top_vga (
         .mouse_ypos(ypos),
         .left_mouse(left_mouse),
         .right_mouse(right_mouse),
+        .uart_data_in(uart_data_recieved),
 
         .in(background_if),
-        .out(game_if)
+        .out(game_if),
+
+        .uart_data_out(uart_data_send)
     );
 
- 
+    /**
+     * Uart module instantiation
+     */
+
+     top_uart u_top_uart (
+        .clk(clk65),
+        .rst(rst),
+        .rx, 
+        .uart_data_send(uart_data_send),
+        .uart_data_recieved(uart_data_recieved),
+        .tx
+     );
+
 endmodule
