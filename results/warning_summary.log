@@ -1,9 +1,11 @@
 Warnings, critical warnings and errors from synthesis and implementation
 
-Created: 2025-06-02 13:20:19
+Created: 2025-06-04 19:01:52
 
 ----SYNTHESIS----
+WARNING: [Synth 8-7129] Port enable in module compare_scores is either unconnected or has no load
 WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+WARNING: [Synth 8-7129] Port enable in module compare_scores is either unconnected or has no load
 
 ----IMPLEMENTATION----
 CLEAR :)
