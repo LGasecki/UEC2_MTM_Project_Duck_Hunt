@@ -56,7 +56,7 @@ module top_uart
     //-----------------------------------------------------------------------
     
     uart 
-    #(.DBIT(8), .SB_TICK(16), .DVSR(106), .DVSR_BIT(7), .FIFO_W(1))
+    #(.DBIT(8), .SB_TICK(16), .DVSR(54), .DVSR_BIT(7), .FIFO_W(1))
     u_uart (
         .clk(clk),
         .reset(rst),

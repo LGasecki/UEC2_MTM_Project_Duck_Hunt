@@ -490,9 +490,9 @@ draw_string
 u_waiting_for_enemy_end (
     .clk(clk),
     .rst(rst),
-    .enable(start_pressed && !enemy_start_game),
+    .enable(game_finished && !enemy_ended_game),
 
-    .in(enemy_points_if),
+    .in(enemy_score_if),
     .out(waiting_for_enemy_end_if)
 );
 
