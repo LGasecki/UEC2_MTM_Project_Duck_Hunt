@@ -67,4 +67,8 @@
     localparam MY_SCORE_YPOS_END = 20;
     localparam ENEMY_SCORE_XPOS_END = HOR_PIXELS / 2 - 5;
     localparam ENEMY_SCORE_YPOS_END = 20;
+
+    localparam RESULT_XPOS = HOR_PIXELS / 2;
+    localparam RESULT_YPOS = 300;
+
 endpackage

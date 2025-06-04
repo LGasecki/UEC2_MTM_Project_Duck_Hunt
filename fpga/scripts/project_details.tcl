@@ -60,6 +60,7 @@ set sv_files {
     ../rtl/Draw_files/draw_moving_rect.sv \
     ../rtl/Draw_files/dog_rom.sv \
     ../rtl/Draw_files/grass_rom.sv \
+    ../rtl/Game_Control/compare_scores.sv\
     rtl/top_vga_basys3.sv
 }
 

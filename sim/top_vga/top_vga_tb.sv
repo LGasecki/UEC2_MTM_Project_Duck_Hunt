@@ -95,6 +95,7 @@ module top_vga_tb;
         force dut.u_top_game.game_enable_posedge = 1'b0;
         force dut.u_top_game.game_end_enable = 1'b1;
         //zmienne do testu
+        force dut.u_top_game.my_score = 7'd15;
         force dut.xpos = 12'd100;
         force dut.ypos = 12'd200;
         force dut.u_top_game.u_duck_ctl.ypos = 12'd500;

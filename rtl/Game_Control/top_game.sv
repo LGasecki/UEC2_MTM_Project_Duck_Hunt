@@ -53,6 +53,7 @@ logic show_reload_char;
 logic target_killed;
 logic [3:0] dog_photo_index;
 logic dog_bird_enable;
+logic [1:0] winner_status; // 00: remis, 01: wygrana, 10: przegrana
 
 vga_if start_screen_if();
 vga_if duck_if();
@@ -71,6 +72,10 @@ vga_if enemy_score_if();
 vga_if your_points_if_end();
 vga_if enemy_points_if_end();
 vga_if my_score_if_end();
+vga_if enemy_score_if_end();
+vga_if draw_winner_status_if_draw();
+vga_if draw_winner_status_if_winner();
+
 //------------------------------------------------------------------------------
 // MODULES
 //------------------------------------------------------------------------------
@@ -448,7 +453,7 @@ draw_string
     .CHAR_YPOS(MY_SCORE_YPOS_END), 
     .WIDTH(3), 
     .SIZE(3), // 2^POWER_OF_2 = 4
-    .COLOUR(RGB_GREEN), 
+    .COLOUR(RGB_BLACK), 
     .TEXT("YOU")
 )
 u_draw_score_your_points_end (
@@ -466,7 +471,7 @@ draw_string
     .CHAR_YPOS(ENEMY_SCORE_YPOS_END), 
     .WIDTH(5), 
     .SIZE(3), 
-    .COLOUR(RGB_RED), 
+    .COLOUR(RGB_BLACK), 
     .TEXT("ENEMY") 
 )
 u_draw_score_enemy_points_end (
@@ -482,7 +487,7 @@ draw_2_numbers
 #(
     .NUMB_XPOS(MY_SCORE_XPOS_END + 40), 
     .NUMB_YPOS(MY_SCORE_YPOS_END + 100), 
-    .COLOUR(RGB_BLUE), // RGB color for the character
+    .COLOUR(RGB_BLACK), // RGB color for the character
     .SCALE_POWER_OF_2(3) // 2^POWER_OF_2 = 4
 )
 u_draw_your_score_end (
@@ -509,9 +514,67 @@ u_draw_enemy_score_end (
     .game_enable(game_end_enable),
     .bin_number(7'd11),
     .in(my_score_if_end),
-    .out(out)
+    .out(enemy_score_if_end)
 );
 
+compare_scores u_compare_scores ( // Porównanie wyników
+    .my_score(my_score),
+    .enemy_score(7'd11), // Przeciwnik ma stały wynik 11
+    .enable(game_end_enable),
+    .winner_status(winner_status)
+);
+
+
+draw_string 
+#(
+    .CHAR_XPOS(RESULT_XPOS - 300),       // Pozycja X komunikatu
+    .CHAR_YPOS(RESULT_YPOS),       // Pozycja Y komunikatu
+    .WIDTH(10),                     // Liczba znaków w komunikacie
+    .SIZE(3),                      // Rozmiar tekstu
+    .COLOUR(RGB_BLUE),             // Kolor tekstu
+    .TEXT("IT'S A TIE") // Tekst do wyświetlenia
+)
+u_draw_winner_status_tie (
+    .clk(clk),
+    .rst(rst),
+    .enable(game_end_enable && (winner_status == 2'b00)),      // Wyświetlanie aktywne tylko na końcu gry
+    .in(enemy_score_if_end),                      // Wejście sygnału
+    .out(draw_winner_status_if_draw)                      // Wyjście sygnału
+);
+
+draw_string 
+#(
+    .CHAR_XPOS(RESULT_XPOS - 200),       // Pozycja X komunikatu
+    .CHAR_YPOS(RESULT_YPOS),       // Pozycja Y komunikatu
+    .WIDTH(7),                     // Liczba znaków w komunikacie
+    .SIZE(3),                      // Rozmiar tekstu
+    .COLOUR(RGB_GREEN),             // Kolor tekstu
+    .TEXT("YOU WIN") // Tekst do wyświetlenia
+)
+u_draw_winner_status_winner (
+    .clk(clk),
+    .rst(rst),
+    .enable(game_end_enable && (winner_status == 2'b01)),      // Wyświetlanie aktywne tylko na końcu gry
+    .in(draw_winner_status_if_draw),                      // Wejście sygnału
+    .out(draw_winner_status_if_winner)                      // Wyjście sygnału
+);
+
+draw_string 
+#(
+    .CHAR_XPOS(RESULT_XPOS - 230),       // Pozycja X komunikatu
+    .CHAR_YPOS(RESULT_YPOS),       // Pozycja Y komunikatu
+    .WIDTH(8),                     // Liczba znaków w komunikacie
+    .SIZE(3),                      // Rozmiar tekstu
+    .COLOUR(RGB_RED),             // Kolor tekstu
+    .TEXT("YOU LOST") // Tekst do wyświetlenia
+)
+u_draw_winner_status_losser (
+    .clk(clk),
+    .rst(rst),
+    .enable(game_end_enable && (winner_status == 2'b10)),      // Wyświetlanie aktywne tylko na końcu gry
+    .in(draw_winner_status_if_winner),                      // Wejście sygnału
+    .out(out)                      // Wyjście sygnału
+);
 
 //---------------------------------//
 endmodule
