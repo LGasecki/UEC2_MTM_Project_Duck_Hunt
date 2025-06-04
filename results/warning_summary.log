@@ -1,15 +1,9 @@
 Warnings, critical warnings and errors from synthesis and implementation
 
-<<<<<<< HEAD
-Created: 2025-06-04 19:01:52
-=======
-Created: 2025-06-04 17:25:57
->>>>>>> main
+Created: 2025-06-04 19:51:05
 
 ----SYNTHESIS----
-WARNING: [Synth 8-7129] Port enable in module compare_scores is either unconnected or has no load
 WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
-WARNING: [Synth 8-7129] Port enable in module compare_scores is either unconnected or has no load
 
 ----IMPLEMENTATION----
 WARNING: [Route 35-328] Router estimated timing not met.

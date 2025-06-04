@@ -570,7 +570,7 @@ u_draw_enemy_score_end (
 
 compare_scores u_compare_scores ( // Porównanie wyników
     .my_score(my_score),
-    .enemy_score(7'd11), // Przeciwnik ma stały wynik 11
+    .enemy_score(enemy_score), // Przeciwnik ma stały wynik 11
     .winner_status(winner_status)
 );
 
