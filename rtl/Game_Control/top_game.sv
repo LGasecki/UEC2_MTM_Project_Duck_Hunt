@@ -64,6 +64,7 @@ logic game_finished;
 logic [1:0] winner_status; // 00: remis, 01: wygrana, 10: przegrana
 
 vga_if start_screen_if();
+vga_if waiting_for_enemy_start_if();
 vga_if duck_if();
 vga_if dog_bird_if();
 vga_if dog_behind_grass_if();
@@ -77,6 +78,7 @@ vga_if your_points_if();
 vga_if enemy_points_if();
 vga_if my_score_if();
 vga_if enemy_score_if();
+vga_if waiting_for_enemy_end_if();
 vga_if your_points_if_end();
 vga_if enemy_points_if_end();
 vga_if my_score_if_end();
@@ -146,6 +148,23 @@ u_start_screen (
 
 //WAITING FOR SECOND PLAYER TO START--------------------------------
 
+draw_string 
+#(
+    .CHAR_XPOS(250), 
+    .CHAR_YPOS(350), 
+    .WIDTH(17), 
+    .SIZE(2), 
+    .COLOUR(RGB_YELLOW), 
+    .TEXT("WAITING FOR ENEMY")
+)
+u_waiting_for_enemy_start (
+    .clk(clk),
+    .rst(rst),
+    .enable(start_pressed && !enemy_start_game),
+
+    .in(start_screen_if),
+    .out(waiting_for_enemy_start_if)
+);
 
 
 //GAME--------------------------------------------------------------
@@ -220,7 +239,7 @@ u_draw_duck (
     .rgb_pixel(rgb_pixel),
 
     .pixel_addr(pixel_addr),
-    .in(start_screen_if),
+    .in(waiting_for_enemy_start_if),
     .out(duck_if)
 );
 
@@ -459,10 +478,23 @@ u_draw_enemy_score (
 );
 //WAITING FOR 2ND PLAYER TO END -----------------------------------
 
+draw_string 
+#(
+    .CHAR_XPOS(250), 
+    .CHAR_YPOS(350), 
+    .WIDTH(17), 
+    .SIZE(2), 
+    .COLOUR(RGB_YELLOW), 
+    .TEXT("WAITING FOR ENEMY")
+)
+u_waiting_for_enemy_end (
+    .clk(clk),
+    .rst(rst),
+    .enable(start_pressed && !enemy_start_game),
 
-
-
-
+    .in(enemy_points_if),
+    .out(waiting_for_enemy_end_if)
+);
 
 
 //GAME_END---------------------------------------------------------
@@ -480,7 +512,7 @@ u_draw_score_your_points_end (
     .rst(rst),
     .enable(game_end_enable),
 
-    .in(enemy_score_if),
+    .in(waiting_for_enemy_end_if),
     .out(your_points_if_end)
 );
 

@@ -13,6 +13,7 @@ sv work ../../rtl/Timing/vga_pkg.sv \
         ../../rtl/Timing/vga_timing.sv \
         ../../rtl/vga_if.sv \
         ../../rtl/top_vga.sv \
+        ../../rtl/top_uart.sv \
         ../../rtl/Mouse_Control/draw_mouse.sv \
         ../../rtl/Mouse_Control/mouse_shape.sv \
         ../../rtl/Mouse_Control/mouse_shape.sv \
@@ -42,7 +43,12 @@ sv work ../../rtl/Timing/vga_pkg.sv \
         top_vga_tb.sv
 
 verilog work ../../fpga/rtl/clk_wiz_project_clk_wiz.v\
-        ../../fpga/rtl/clk_wiz_project.v 
+        ../../fpga/rtl/clk_wiz_project.v \
+        ../../rtl/Uart_files/fifo.v \
+        ../../rtl/Uart_files/mod_m_counter.v \
+        ../../rtl/Uart_files/uart_rx.v \
+        ../../rtl/Uart_files/uart_tx.v \
+        ../../rtl/Uart_files/uart.v
 
 vhdl work ../../rtl/Mouse_Control/MouseCtl.vhd \
         ../../rtl/Mouse_Control/MouseDisplay.vhd \
