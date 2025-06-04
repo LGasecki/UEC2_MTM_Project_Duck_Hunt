@@ -36,6 +36,7 @@ set sv_files {
     ../rtl/Timing/vga_timing.sv \
     ../rtl/vga_if.sv \
     ../rtl/top_vga.sv \
+    ../rtl/top_uart.sv \
     ../rtl/Mouse_Control/draw_mouse.sv\
     ../rtl/Mouse_Control/mouse_shape.sv\
     ../rtl/Game_Control/top_game.sv \
@@ -65,8 +66,13 @@ set sv_files {
 
 # Specify Verilog design files location        
  set verilog_files {
-    rtl/clk_wiz_project.v
-    rtl/clk_wiz_project_clk_wiz.v
+    rtl/clk_wiz_project.v \
+    rtl/clk_wiz_project_clk_wiz.v \
+    ../rtl/Uart_files/fifo.v \
+    ../rtl/Uart_files/mod_m_counter.v \
+    ../rtl/Uart_files/uart_rx.v \
+    ../rtl/Uart_files/uart_tx.v \
+    ../rtl/Uart_files/uart.v
 }
 
 # Specify VHDL design files location           

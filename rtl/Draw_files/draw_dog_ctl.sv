@@ -100,7 +100,7 @@
                 dog_xpos_q12_24_nxt = dog_xpos_q12_24 - 26;
                 dog_ypos_q12_24_nxt = dog_ypos_q12_24;
                 frame_divider_nxt = frame_divider_nxt + 1;
-                if (frame_divider >= 24'd8_000_000) begin // ~6.15ms = ~162fps
+                if (frame_divider >= (8_388_608)) begin 
                     frame_divider_nxt = 0;
                     photo_index_ctr = (photo_index_ctr == 5) ? 0 : photo_index_ctr + 1;
                 end 
