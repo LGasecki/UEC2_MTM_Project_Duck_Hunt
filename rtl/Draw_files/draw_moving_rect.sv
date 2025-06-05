@@ -8,7 +8,7 @@
 
 module draw_moving_rect 
     #(parameter 
-        WIDTH = 55, 
+        WIDTH = 64, 
         HEIGHT = 48,
         SIZE = 1,
         PIXEL_ADDR_WIDTH = 12,

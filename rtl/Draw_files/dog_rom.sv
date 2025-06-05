@@ -29,17 +29,17 @@
  * Local variables and signals
  */
 
- (* rom_style = "block" *) logic [11:0] dog0_rom [0:2639]; 
- (* rom_style = "block" *) logic [11:0] dog1_rom [0:2639];
- (* rom_style = "block" *) logic [11:0] dog2_rom [0:2639];
- (* rom_style = "block" *) logic [11:0] dog3_rom [0:2639];
- (* rom_style = "block" *) logic [11:0] dog4_rom [0:2639];
- (* rom_style = "block" *) logic [11:0] dog5_rom [0:2639];
- (* rom_style = "block" *) logic [11:0] dog6_rom [0:2639];
- (* rom_style = "block" *) logic [11:0] dog7_rom [0:2639];
- (* rom_style = "block" *) logic [11:0] dog8_rom [0:2639];
+ (* rom_style = "block" *) logic [11:0] dog0_rom [0:3071]; 
+ (* rom_style = "block" *) logic [11:0] dog1_rom [0:3071];
+ (* rom_style = "block" *) logic [11:0] dog2_rom [0:3071];
+ (* rom_style = "block" *) logic [11:0] dog3_rom [0:3071];
+ (* rom_style = "block" *) logic [11:0] dog4_rom [0:3071];
+ (* rom_style = "block" *) logic [11:0] dog5_rom [0:3071];
+ (* rom_style = "block" *) logic [11:0] dog6_rom [0:3071];
+ (* rom_style = "block" *) logic [11:0] dog7_rom [0:3071];
+ (* rom_style = "block" *) logic [11:0] dog8_rom [0:3071];
  (* rom_style = "block" *) logic [11:0] dog_bird_rom [0:1719]; 
- (* rom_style = "block" *) logic [11:0] start_logo_rom [0:200_703];
+ (* rom_style = "block" *) logic [11:0] start_logo_rom [0:50_175]; 
 
 
 

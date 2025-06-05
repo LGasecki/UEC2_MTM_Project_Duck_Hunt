@@ -293,7 +293,7 @@ draw_moving_rect
 
 draw_moving_rect 
 #(
-    .WIDTH(55),
+    .WIDTH(64),
     .HEIGHT(48),
     .SIZE(2),
     .PIXEL_ADDR_WIDTH(12)
@@ -340,7 +340,7 @@ grass_rom u_grass_rom (
 
 draw_moving_rect 
 #(
-    .WIDTH(55),
+    .WIDTH(64),
     .HEIGHT(48),
     .SIZE(2),
     .PIXEL_ADDR_WIDTH(12)
