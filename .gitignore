@@ -30,9 +30,9 @@ results\frame000.tif
 results\frame001.tif
 results\warning_summary.log
 sh
-doc\lista_kontrolna_2025.docx
-doc\projekt_wymagania_2025.pdf
-doc\raport_template_2025.docx
+# doc\lista_kontrolna_2025.docx
+# doc\projekt_wymagania_2025.pdf
+# doc\raport_template_2025.docx
 vivado*
 xvlog*
 xelab*

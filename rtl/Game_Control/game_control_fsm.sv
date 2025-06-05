@@ -17,11 +17,11 @@ module game_control_fsm
     input logic enemy_start,
     input logic enemy_ended,
 
-    output logic start_pressed,
-    output logic game_ended,
-    output logic game_enable_posedge,
     output logic start_screen_enable,
+    output logic start_pressed,
+    output logic game_enable_posedge,
     output logic game_enable,
+    output logic game_ended,
     output logic game_end_enable
 
 );
@@ -87,7 +87,7 @@ always_ff @(posedge clk) begin : seq_blk
  
             GAME_RUNNING: begin
                 start_screen_enable <= 1'b0;
-                start_pressed       <= 1'b0;
+                start_pressed       <= 1'b1;
                 game_enable         <= 1'b1;
                 game_ended          <= 1'b0;
                 game_end_enable     <= 1'b0;
@@ -100,7 +100,7 @@ always_ff @(posedge clk) begin : seq_blk
                 game_enable         <= 1'b0;
                 game_ended          <= 1'b1;
                 game_end_enable     <= 1'b0;
-                if(enemy_ended || enemy_ended == 'z) begin
+                if(enemy_ended) begin
                     state <= GAME_OVER;
                 end
             end
@@ -109,7 +109,7 @@ always_ff @(posedge clk) begin : seq_blk
                 start_screen_enable <= 1'b0;
                 start_pressed       <= 1'b0;
                 game_enable         <= 1'b0;
-                game_ended          <= 1'b0;
+                game_ended          <= 1'b1;
                 game_end_enable     <= 1'b1;
             end
 

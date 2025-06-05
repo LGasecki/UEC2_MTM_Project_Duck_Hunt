@@ -81,7 +81,6 @@ vga_if your_points_if();
 vga_if enemy_points_if();
 vga_if my_score_if();
 vga_if enemy_score_if();
-vga_if waiting_for_enemy_end_if();
 vga_if your_points_if_end();
 vga_if enemy_points_if_end();
 vga_if my_score_if_end();
@@ -159,7 +158,7 @@ draw_moving_rect
 )u_draw_logo (
     .clk(clk),
     .rst(rst),
-    .game_enable(start_screen_enable || start_pressed || game_finished),
+    .game_enable(!game_end_enable && !game_enable),
     .xpos(12'd256),
     .ypos(12'd20),
     .rgb_pixel(start_logo_rgb),
@@ -169,7 +168,7 @@ draw_moving_rect
     .out(logo_if)
 );
 
-//WAITING FOR SECOND PLAYER TO START--------------------------------
+//WAITING FOR SECOND PLAYER--------------------------------
 
 draw_string 
 #(
@@ -183,7 +182,7 @@ draw_string
 u_waiting_for_enemy_start (
     .clk(clk),
     .rst(rst),
-    .enable(start_pressed && !enemy_start_game),
+    .enable(!start_screen_enable && !game_end_enable && !game_enable),
 
     .in(logo_if),
     .out(waiting_for_enemy_start_if)
@@ -503,24 +502,6 @@ u_draw_enemy_score (
 );
 //WAITING FOR 2ND PLAYER TO END -----------------------------------
 
-draw_string 
-#(
-    .CHAR_XPOS(244), 
-    .CHAR_YPOS(START_CHAR_YPOS), 
-    .WIDTH(17), 
-    .SIZE(2), 
-    .COLOUR(RGB_YELLOW), 
-    .TEXT("WAITING FOR ENEMY")
-)
-u_waiting_for_enemy_end (
-    .clk(clk),
-    .rst(rst),
-    .enable(game_finished && !enemy_ended_game),
-
-    .in(enemy_score_if),
-    .out(waiting_for_enemy_end_if)
-);
-
 
 //GAME_END---------------------------------------------------------
 draw_string 
@@ -537,7 +518,7 @@ u_draw_score_your_points_end (
     .rst(rst),
     .enable(game_end_enable),
 
-    .in(waiting_for_enemy_end_if),
+    .in(enemy_score_if),
     .out(your_points_if_end)
 );
 

@@ -153,6 +153,8 @@
                 bullets_left_nxt = bullets_left;
                 my_score_nxt = my_score;
                 duck_killed_nxt = duck_killed;
+                if(duck_killed && duck_ypos >= 600)
+                    delay_ms_nxt = 2600*65_000;
                 if (delay_ms == 0)
                     delay_ms_nxt = 0;
                 else 
