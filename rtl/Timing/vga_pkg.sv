@@ -71,4 +71,12 @@
     localparam RESULT_XPOS = HOR_PIXELS / 2;
     localparam RESULT_YPOS = 300;
 
+    // Restart parameters
+
+    localparam RESTART_CHAR_SIZE = 2;
+    localparam RESTART_CHAR_HEIGHT = 16 << RESTART_CHAR_SIZE; // 16 pixels, 4x scaling
+    localparam RESTART_AREA_WIDTH = (12 * 8) << RESTART_CHAR_SIZE;
+    localparam RESTART_CHAR_XPOS = (HOR_PIXELS / 2) - (RESTART_AREA_WIDTH / 2); //X_CENTER
+    localparam RESTART_CHAR_YPOS = 460;
+
 endpackage

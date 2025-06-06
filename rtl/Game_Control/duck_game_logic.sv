@@ -36,7 +36,7 @@
     localparam DUCK_WIDTH = 96;
     localparam STATE_BITS = 2; // number of bits used for state register
 
-    localparam COUNTDOWN    = 7500 * 65_000; // countdown value at start of the game T - 8000ms
+    localparam COUNTDOWN    = 6900 * 65_000; // countdown value at start of the game T - 8000ms
     localparam DEATH_TIME   = 4500 * 65_000; // time for duck fall after death T - 6000ms
     //FOR TESTS
     // localparam COUNTDOWN    = 40; 
@@ -121,7 +121,7 @@
             hunt_start <= hunt_start_nxt;
             show_reload_char <= !bullets_in_magazine_nxt;
             duck_killed <= duck_killed_nxt;
-            dog_bird_enable <= (duck_killed_nxt == 1 && delay_ms_nxt == 2500* 65_000) ? 1 : 0;
+            dog_bird_enable <= (duck_killed_nxt == 1 && delay_ms_nxt == 2400* 65_000) ? 1 : 0;
         end
     end
     //------------------------------------------------------------------------------
@@ -131,12 +131,12 @@
         // Domyślne przypisania — zapobiegają latchom!
         bullets_in_magazine_nxt = bullets_in_magazine;
         bullets_left_nxt         = bullets_left;
-        delay_ms_nxt             = delay_ms;
+        delay_ms_nxt             = (duck_killed && duck_ypos >= 560) ? 2600 * 65_000 : delay_ms;
         hunt_start_nxt           = hunt_start;
         my_score_nxt             = my_score;
         left_mouse_posedge = (left_mouse == 1 && left_mouse_prev == 0);
         right_mouse_posedge = (right_mouse == 1 && right_mouse_prev == 0);
-        duck_killed_nxt = 0;
+        duck_killed_nxt = duck_killed;
 
         case(state_nxt)
             WAIT_FOR_START: begin
@@ -153,8 +153,6 @@
                 bullets_left_nxt = bullets_left;
                 my_score_nxt = my_score;
                 duck_killed_nxt = duck_killed;
-                if(duck_killed && duck_ypos >= 570)
-                    delay_ms_nxt = 2700*65_000;
                 if (delay_ms == 0)
                     delay_ms_nxt = 0;
                 else 

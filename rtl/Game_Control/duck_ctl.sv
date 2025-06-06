@@ -34,9 +34,9 @@ localparam DUCK_WIDTH = 96;
 
 localparam [35:0] GROUND_Q12_24 = GROUND << 24; //maximum Y position in q12.24 format
 
-localparam X_SPEED = 100; // x speed in q12.24 format
-localparam Y_SPEED = 100; // y speed in q12.24 format
-localparam DEAD_SPEED = 90; // y speed for dead duck in q12.24 format
+localparam X_SPEED = 120; // x speed in q12.24 format
+localparam Y_SPEED = 120; // y speed in q12.24 format
+localparam DEAD_SPEED = 100; // y speed for dead duck in q12.24 format
 
 // localparam X_SPEED = 1 << 24; //for testbench
 // localparam Y_SPEED = 1 << 24; 
@@ -139,10 +139,11 @@ end
 always_comb begin : out_comb_blk
     xpos_nxt_q12_24 = xpos_q12_24;
     ypos_nxt_q12_24 = ypos_q12_24;
-    saved_number_nxt = (state != state_nxt) ? lfsr_number[9:0] : saved_number; // save lfsr number only when state changes
+    saved_number_nxt = (state != state_nxt && state_nxt != (IDLE || SIDE) && state != (IDLE || SIDE)) ? lfsr_number[9:0] : saved_number; 
     // default values
     case(state_nxt)
         IDLE: begin
+            saved_number_nxt = 10'b1111111111; 
             if(lfsr_number[9:0] >= X_MAX - DUCK_WIDTH)
                 xpos_nxt_q12_24 = {2'b0,(lfsr_number[9:0] - DUCK_WIDTH), 24'b0};
             else
@@ -152,6 +153,7 @@ always_comb begin : out_comb_blk
         UP_RIGHT: begin
             xpos_nxt_q12_24 = xpos_q12_24 + X_SPEED + saved_number[9:3];
             ypos_nxt_q12_24 = ypos_q12_24 - Y_SPEED - saved_number[6:0];
+            
         end
         UP_LEFT: begin
             xpos_nxt_q12_24 = xpos_q12_24 - X_SPEED - saved_number[9:3];
@@ -171,6 +173,7 @@ always_comb begin : out_comb_blk
             else
                 xpos_nxt_q12_24 = {2'b0,lfsr_number[9:0], 24'b0};
             ypos_nxt_q12_24 = GROUND_Q12_24 - (DUCK_HEIGHT << 24);
+            saved_number_nxt = 10'b1111111111;
         end
         KILLED: begin
             if(ypos_q12_24[35:24] >= GROUND - DUCK_HEIGHT) begin

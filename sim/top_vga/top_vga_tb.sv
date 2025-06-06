@@ -91,16 +91,17 @@ module top_vga_tb;
 
         //ustawianie etapu gry
         force dut.u_top_game.start_screen_enable = 1'b0;
-        force dut.u_top_game.start_pressed = 1'b1;
+        force dut.u_top_game.start_pressed = 1'b0;
         force dut.u_top_game.game_enable = 1'b0;
         force dut.u_top_game.game_enable_posedge = 1'b0;
-        force dut.u_top_game.game_finished = 1'b0;
-        force dut.u_top_game.game_end_enable = 1'b0;
+        force dut.u_top_game.game_finished = 1'b1;
+        force dut.u_top_game.game_end_enable = 1'b1;
 
         force dut.u_top_game.enemy_start_game = 1'b0;
         force dut.u_top_game.enemy_ended_game = 1'b0;
         //zmienne do testu
         force dut.u_top_game.my_score = 7'd15;
+        force dut.u_top_game.enemy_score = 7'd20;
         force dut.xpos = 12'd100;
         force dut.ypos = 12'd200;
         force dut.u_top_game.u_duck_ctl.ypos = 12'd500;

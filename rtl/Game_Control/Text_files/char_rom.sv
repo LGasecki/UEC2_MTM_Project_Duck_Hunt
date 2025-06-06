@@ -1,9 +1,6 @@
 module char_rom 
     #(parameter string TEXT = 
-   //"--------------------------------",//
-    {
-    "START GAME"
-},
+    {"START GAME"},
     parameter TEXT_SIZE = 10 // rozmiar tekstu
 ) 
 (

@@ -116,7 +116,7 @@ module top_vga (
 
     top_game u_top_game (
         .clk(clk65),
-        .rst(rst),
+        .rst,
         .mouse_xpos(xpos),
         .mouse_ypos(ypos),
         .left_mouse(left_mouse),

@@ -22,7 +22,8 @@ module game_control_fsm
     output logic game_enable_posedge,
     output logic game_enable,
     output logic game_ended,
-    output logic game_end_enable
+    output logic game_end_enable,
+    output logic rst_ctl
 
 );
 
@@ -34,7 +35,7 @@ enum logic [2:0] {
     GAME_RUNNING                    = 3'b010,
     WAITING_FOR_2ND_PLAYER_TO_END   = 3'b011,
     GAME_OVER                       = 3'b100
-} state;
+} state, state_prev;
 
 //------------------------------------------------------------------------------
 // local parameters
@@ -46,6 +47,7 @@ enum logic [2:0] {
 //------------------------------------------------------------------------------
 
 logic game_enable_prev;
+logic left_mouse_prev, left_mouse_posedge;
 //------------------------------------------------------------------------------
 // state sequential with synchronous reset
 //------------------------------------------------------------------------------
@@ -57,10 +59,20 @@ always_ff @(posedge clk) begin : seq_blk
         game_end_enable <= 1'b0;
         game_enable_prev <= 1'b0;
         game_enable_posedge <= 1'b0;
+        start_pressed <= 1'b0;
+        game_ended <= 1'b0;
+        rst_ctl <= 1'b0;
+        state_prev <= START_SCREEN;
+        left_mouse_prev <= 1'b0;
+        left_mouse_posedge <= 1'b0;
     end
     else begin : seq_run_blk
         game_enable_prev <= game_enable;
         game_enable_posedge <= game_enable && !game_enable_prev;
+        state_prev <= state;
+        rst_ctl <= (state_prev == GAME_OVER && state == START_SCREEN) ? 1'b1 : 1'b0;
+        left_mouse_prev <= left_mouse;
+        left_mouse_posedge <= left_mouse && !left_mouse_prev;
         case(state)
             START_SCREEN: begin
                 start_screen_enable <= 1'b1;
@@ -68,7 +80,7 @@ always_ff @(posedge clk) begin : seq_blk
                 game_enable         <= 1'b0;
                 game_ended          <= 1'b0;
                 game_end_enable     <= 1'b0;
-                if(left_mouse && (mouse_xpos >= START_CHAR_XPOS) && (mouse_xpos < START_CHAR_XPOS + START_AREA_WIDTH) &&
+                if(left_mouse_posedge && (mouse_xpos >= START_CHAR_XPOS) && (mouse_xpos < START_CHAR_XPOS + START_AREA_WIDTH) &&
                    (mouse_ypos >= START_CHAR_YPOS) && (mouse_ypos < START_CHAR_YPOS + START_CHAR_HEIGHT)) begin
                     state <= WAITING_FOR_2ND_PLAYER_TO_START;
                 end
@@ -111,6 +123,10 @@ always_ff @(posedge clk) begin : seq_blk
                 game_enable         <= 1'b0;
                 game_ended          <= 1'b1;
                 game_end_enable     <= 1'b1;
+                if(left_mouse_posedge && (mouse_xpos >= RESTART_CHAR_XPOS) && (mouse_xpos < RESTART_CHAR_XPOS + RESTART_AREA_WIDTH) &&
+                   (mouse_ypos >= RESTART_CHAR_YPOS) && (mouse_ypos < RESTART_CHAR_YPOS + RESTART_CHAR_HEIGHT)) begin
+                    state <= START_SCREEN;
+                end
             end
 
             default: begin

@@ -64,6 +64,7 @@ logic game_finished;
 logic [1:0] winner_status; // 00: remis, 01: wygrana, 10: przegrana
 logic [15:0] start_logo_address;
 logic [11:0] start_logo_rgb;
+logic rst_ctl; 
 
 vga_if start_screen_if();
 vga_if logo_if();
@@ -85,8 +86,9 @@ vga_if your_points_if_end();
 vga_if enemy_points_if_end();
 vga_if my_score_if_end();
 vga_if enemy_score_if_end();
-vga_if draw_winner_status_if_draw();
-vga_if draw_winner_status_if_winner();
+vga_if draw_status_tie_if();
+vga_if draw_status_win_if();
+vga_if draw_status_lose_if();
 
 //UART LOGIC
 assign uart_data_out = {start_pressed, game_finished, my_score[5:0]}; // Send game status and score to UART POPRAWKA
@@ -125,7 +127,8 @@ game_control_fsm u_game_control_fsm (  //Sterowanie etapami gry: Ekran startowy-
     .start_screen_enable(start_screen_enable),
     .game_enable_posedge(game_enable_posedge),
     .game_enable(game_enable),
-    .game_end_enable(game_end_enable)
+    .game_end_enable(game_end_enable),
+    .rst_ctl(rst_ctl)
 
 );
 
@@ -194,7 +197,7 @@ u_waiting_for_enemy_start (
 duck_ctl u_duck_ctl (   // Odpowiedzialne za poruszanie celu
     .game_enable(hunt_start && game_enable),
     .clk(clk),
-    .rst(rst),
+    .rst(rst | rst_ctl),
     .lfsr_number(random_number),
     .target_killed(target_killed),
 
@@ -205,7 +208,7 @@ duck_ctl u_duck_ctl (   // Odpowiedzialne za poruszanie celu
 
 duck_game_logic u_duck_game_logic (     // Odpowiedzialne za logikę gry oraz dane
     .clk(clk),
-    .rst(rst),
+    .rst(rst | rst_ctl),
     .game_enable(game_enable),
     .left_mouse(left_mouse),
     .right_mouse(right_mouse),
@@ -225,7 +228,7 @@ duck_game_logic u_duck_game_logic (     // Odpowiedzialne za logikę gry oraz da
 
 draw_dog_ctl u_draw_dog_ctl ( 
     .clk(clk),
-    .rst(rst),
+    .rst(rst | rst_ctl),
     .game_enable(game_enable_posedge),
 
     .dog_xpos(dog_xpos),
@@ -236,7 +239,7 @@ draw_dog_ctl u_draw_dog_ctl (
 
 dog_bird_ctl u_dog_bird_ctl ( // Odpowiedzialne za poruszanie psa po zabojstwie
     .clk(clk),
-    .rst(rst),
+    .rst(rst | rst_ctl),
     .enable(dog_bird_enable),
     .duck_xpos(duck_xpos),
 
@@ -444,7 +447,7 @@ draw_string
 u_draw_score_your_points (
     .clk(clk),
     .rst(rst),
-    .enable(game_enable),
+    .enable(game_enable || game_finished),
 
     .in(bullets_left_if),
     .out(your_points_if)
@@ -462,7 +465,7 @@ draw_string
 u_draw_score_enemy_points (
     .clk(clk),
     .rst(rst),
-    .enable(game_enable),
+    .enable(game_enable || game_finished),
 
     .in(your_points_if),
     .out(enemy_points_if)
@@ -478,7 +481,7 @@ u_draw_my_score (
     .clk(clk),
     .rst(rst),
 
-    .game_enable(game_enable),
+    .game_enable(game_enable || game_finished),
     .bin_number(my_score),
     .in(enemy_points_if),
     .out(my_score_if)
@@ -495,7 +498,7 @@ u_draw_enemy_score (
     .clk(clk),
     .rst(rst),
 
-    .game_enable(game_enable),
+    .game_enable(game_enable || game_finished),
     .bin_number(enemy_score),
     .in(my_score_if),
     .out(enemy_score_if)
@@ -590,12 +593,12 @@ draw_string
     .COLOUR(RGB_BLUE),             // Kolor tekstu
     .TEXT("IT'S A TIE") // Tekst do wyświetlenia
 )
-u_draw_winner_status_tie (
+u_draw_status_tie (
     .clk(clk),
     .rst(rst),
     .enable(game_end_enable && (winner_status == 2'b00)),      // Wyświetlanie aktywne tylko na końcu gry
     .in(enemy_score_if_end),                      // Wejście sygnału
-    .out(draw_winner_status_if_draw)                      // Wyjście sygnału
+    .out(draw_status_tie_if)                      // Wyjście sygnału
 );
 
 draw_string 
@@ -607,28 +610,45 @@ draw_string
     .COLOUR(RGB_GREEN),             // Kolor tekstu
     .TEXT("YOU WIN") // Tekst do wyświetlenia
 )
-u_draw_winner_status_winner (
+u_draw_status_winner (
     .clk(clk),
     .rst(rst),
     .enable(game_end_enable && (winner_status == 2'b01)),      // Wyświetlanie aktywne tylko na końcu gry
-    .in(draw_winner_status_if_draw),                      // Wejście sygnału
-    .out(draw_winner_status_if_winner)                      // Wyjście sygnału
+    .in(draw_status_tie_if),                      // Wejście sygnału
+    .out(draw_status_win_if)                      // Wyjście sygnału
 );
 
 draw_string 
 #(
-    .CHAR_XPOS(RESULT_XPOS - 230),       // Pozycja X komunikatu
+    .CHAR_XPOS(RESULT_XPOS - 238),       // Pozycja X komunikatu
     .CHAR_YPOS(RESULT_YPOS),       // Pozycja Y komunikatu
     .WIDTH(8),                     // Liczba znaków w komunikacie
     .SIZE(3),                      // Rozmiar tekstu
     .COLOUR(RGB_RED),             // Kolor tekstu
     .TEXT("YOU LOST") // Tekst do wyświetlenia
 )
-u_draw_winner_status_losser (
+u_draw_status_lose (
     .clk(clk),
     .rst(rst),
     .enable(game_end_enable && (winner_status == 2'b10)),      // Wyświetlanie aktywne tylko na końcu gry
-    .in(draw_winner_status_if_winner),                      // Wejście sygnału
+    .in(draw_status_win_if),                      // Wejście sygnału
+    .out(draw_status_lose_if)                      // Wyjście sygnału
+);
+
+draw_string
+#(
+    .CHAR_XPOS(RESTART_CHAR_XPOS),       // Pozycja X komunikatu
+    .CHAR_YPOS(RESTART_CHAR_YPOS),       // Pozycja Y komunikatu
+    .WIDTH(12),                     // Liczba znaków w komunikacie
+    .SIZE(RESTART_CHAR_SIZE),                      // Rozmiar tekstu
+    .COLOUR(RGB_BLACK),             // Kolor tekstu
+    .TEXT("RESTART GAME") // Tekst do wyświetlenia
+)
+u_draw_restart (
+    .clk(clk),
+    .rst(rst),
+    .enable(game_end_enable),      // Wyświetlanie aktywne tylko na końcu gry
+    .in(draw_status_lose_if),                      // Wejście sygnału
     .out(out)                      // Wyjście sygnału
 );
 
