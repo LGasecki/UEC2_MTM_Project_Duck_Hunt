@@ -1,3 +1,11 @@
+/**
+# Copyright (C) 2025  AGH University of Science and Technology
+# MTM UEC2
+# Author: Łukasz Gąsecki
+# Description: This module renders a rectangular character on a VGA display, 
+# scaling its dimensions and position based on input parameters, while applying a specified color.
+# 
+*/
 module draw_rect_char
     #(parameter 
         WIDTH = 32,         

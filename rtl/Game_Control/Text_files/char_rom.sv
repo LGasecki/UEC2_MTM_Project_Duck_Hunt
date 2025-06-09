@@ -1,3 +1,10 @@
+/**
+# Copyright (C) 2025  AGH University of Science and Technology
+# MTM UEC2
+# Author: Łukasz Gąsecki
+# Description: Character ROM module for storing and retrieving ASCII codes based on input coordinates
+# 
+*/
 module char_rom 
     #(parameter string TEXT = 
     {"START GAME"},

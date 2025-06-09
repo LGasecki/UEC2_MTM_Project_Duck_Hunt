@@ -36,36 +36,73 @@ localparam logic [3:0] LFSR_WIDTH = 10; // Width of the LFSR
 
 //--------------------------------//
 // LOCAL VARIABLES
+//lfsr_random_number_out
 logic [LFSR_WIDTH-1:0] random_number;
-logic start_screen_enable, game_enable, game_end_enable, game_enable_posedge;
-logic duck_direction;
-logic [11:0] duck_xpos, duck_ypos, dog_xpos, dog_ypos, 
-             dog_bird_xpos, dog_bird_ypos;
-logic [12:0] pixel_addr;
-logic [10:0] pixel_addr_dog_bird;
-logic [11:0] pixel_addr_dog;
-logic [11:0] pixel_addr_dog_grass;
-logic [15:0] pixel_addr_grass;
-logic [11:0] rgb_pixel, dog_rgb_pixel, rgb_grass;
-logic [11:0] dog_bird_rgb_pixel;
-logic [2:0] bullets_in_magazine;
-logic [6:0] bullets_left;
-logic [6:0] my_score;
-logic [6:0] enemy_score;
+//-----------------------------------
+//--------game_control_fsm-----------
+//in
 logic enemy_start_game;
 logic enemy_ended_game;
-logic hunt_start;
-logic show_reload_char;
-logic target_killed;
-logic [3:0] dog_photo_index;
-logic dog_bird_enable;
+//out
+logic start_screen_enable, game_enable, end_screen_enable, game_enable_posedge;
 logic start_pressed;
 logic game_finished;
-logic [1:0] winner_status; // 00: remis, 01: wygrana, 10: przegrana
-logic [15:0] start_logo_address;
-logic [11:0] start_logo_rgb;
 logic rst_ctl; 
+//-----------------------------------
+//--------draw_logo---------------
+logic [11:0] start_logo_rgb;
+logic [15:0] start_logo_address;
+//--------duck_ctl-------------------
+//out
+logic [11:0] duck_xpos, duck_ypos;
+logic duck_direction;
+//-----------------------------------
+//--------duck_game_logic------------
+//out
+logic [6:0] my_score;
+logic [2:0] bullets_in_magazine;
+logic [6:0] bullets_left;
+logic show_reload_char;
+logic hunt_start;
+logic target_killed;
+logic dog_bird_enable;
+//-----------------------------------
+//--------draw_dog_ctl---------------
+//out
+logic [11:0] dog_xpos, dog_ypos; 
+logic [3:0] dog_photo_index;
+//-----------------------------------
+//--------dog_bird_ctl---------------
+//out
+logic [11:0] dog_bird_xpos, dog_bird_ypos;
+//-----------------------------------
+//--------draw_duck-----------------
+logic [11:0] rgb_pixel;
+logic [12:0] pixel_addr;
+//-----------------------------------
+//--------draw_dog_bird-------------
+logic [11:0] dog_bird_rgb_pixel;
+logic [10:0] pixel_addr_dog_bird;
+//-----------------------------------
+//--------draw_dog_behind_grass-----
+logic [11:0] dog_rgb_pixel;
+logic [11:0] pixel_addr_dog_grass;
+//-----------------------------------
+//--------draw_grass----------------
+logic [11:0] rgb_grass;
+logic [15:0] pixel_addr_grass;
+//-----------------------------------
+//--------draw_dog------------------
+logic [11:0] pixel_addr_dog;
+//-----------------------------------
+//--------winner_status--------------
+logic [1:0] winner_status; // 00: remis, 01: wygrana, 10: przegrana
+//-----------------------------------
+//--------enemy_score----------------
+logic [6:0] enemy_score;
+//-----------------------------------
 
+//--------INTERFACE's----------------
 vga_if start_screen_if();
 vga_if logo_if();
 vga_if waiting_for_enemy_start_if();
@@ -122,12 +159,13 @@ game_control_fsm u_game_control_fsm (  //Sterowanie etapami gry: Ekran startowy-
     .game_finished(bullets_left == 0 && bullets_in_magazine == 0),
     .enemy_ended(enemy_ended_game),
     .enemy_start(enemy_start_game),
-    .start_pressed(start_pressed),
-    .game_ended(game_finished),
+
     .start_screen_enable(start_screen_enable),
+    .start_pressed(start_pressed),
     .game_enable_posedge(game_enable_posedge),
     .game_enable(game_enable),
-    .game_end_enable(game_end_enable),
+    .game_ended(game_finished),
+    .game_end_enable(end_screen_enable),
     .rst_ctl(rst_ctl)
 
 );
@@ -161,7 +199,7 @@ draw_moving_rect
 )u_draw_logo (
     .clk(clk),
     .rst(rst),
-    .game_enable(!game_end_enable && !game_enable),
+    .game_enable(!end_screen_enable || !game_enable),
     .xpos(12'd256),
     .ypos(12'd20),
     .rgb_pixel(start_logo_rgb),
@@ -185,7 +223,7 @@ draw_string
 u_waiting_for_enemy_start (
     .clk(clk),
     .rst(rst),
-    .enable(!start_screen_enable && !game_end_enable && !game_enable),
+    .enable(!start_screen_enable && !end_screen_enable && !game_enable),
 
     .in(logo_if),
     .out(waiting_for_enemy_start_if)
@@ -519,8 +557,7 @@ draw_string
 u_draw_score_your_points_end (
     .clk(clk),
     .rst(rst),
-    .enable(game_end_enable),
-
+    .enable(end_screen_enable),
     .in(enemy_score_if),
     .out(your_points_if_end)
 );
@@ -537,8 +574,7 @@ draw_string
 u_draw_score_enemy_points_end (
     .clk(clk),
     .rst(rst),
-    .enable(game_end_enable),
-
+    .enable(end_screen_enable),
     .in(your_points_if_end),
     .out(enemy_points_if_end)
 );
@@ -554,7 +590,7 @@ u_draw_your_score_end (
     .clk(clk),
     .rst(rst),
 
-    .game_enable(game_end_enable),
+    .game_enable(end_screen_enable),  
     .bin_number(my_score),
     .in(enemy_points_if_end),
     .out(my_score_if_end)
@@ -571,7 +607,7 @@ u_draw_enemy_score_end (
     .clk(clk),
     .rst(rst),
 
-    .game_enable(game_end_enable),
+    .game_enable(end_screen_enable),    
     .bin_number(enemy_score),
     .in(my_score_if_end),
     .out(enemy_score_if_end)
@@ -596,7 +632,7 @@ draw_string
 u_draw_status_tie (
     .clk(clk),
     .rst(rst),
-    .enable(game_end_enable && (winner_status == 2'b00)),      // Wyświetlanie aktywne tylko na końcu gry
+    .enable(end_screen_enable && (winner_status == 2'b00)),      // Wyświetlanie aktywne tylko na końcu gry
     .in(enemy_score_if_end),                      // Wejście sygnału
     .out(draw_status_tie_if)                      // Wyjście sygnału
 );
@@ -613,7 +649,7 @@ draw_string
 u_draw_status_winner (
     .clk(clk),
     .rst(rst),
-    .enable(game_end_enable && (winner_status == 2'b01)),      // Wyświetlanie aktywne tylko na końcu gry
+    .enable(end_screen_enable && (winner_status == 2'b01)),      // Wyświetlanie aktywne tylko na końcu gry
     .in(draw_status_tie_if),                      // Wejście sygnału
     .out(draw_status_win_if)                      // Wyjście sygnału
 );
@@ -630,7 +666,7 @@ draw_string
 u_draw_status_lose (
     .clk(clk),
     .rst(rst),
-    .enable(game_end_enable && (winner_status == 2'b10)),      // Wyświetlanie aktywne tylko na końcu gry
+    .enable(end_screen_enable && (winner_status == 2'b10)),      // Wyświetlanie aktywne tylko na końcu gry
     .in(draw_status_win_if),                      // Wejście sygnału
     .out(draw_status_lose_if)                      // Wyjście sygnału
 );
@@ -647,7 +683,7 @@ draw_string
 u_draw_restart (
     .clk(clk),
     .rst(rst),
-    .enable(game_end_enable),      // Wyświetlanie aktywne tylko na końcu gry
+    .enable(end_screen_enable),      // Wyświetend_screen_enableylko na końcu gry
     .in(draw_status_lose_if),                      // Wejście sygnału
     .out(out)                      // Wyjście sygnału
 );

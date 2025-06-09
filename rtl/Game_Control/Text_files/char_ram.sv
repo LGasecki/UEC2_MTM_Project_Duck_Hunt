@@ -1,3 +1,11 @@
+/**
+# Copyright (C) 2025  AGH University of Science and Technology
+# MTM UEC2
+# Author: Łukasz Gąsecki
+# Description: 
+# This module implements a character RAM that stores two ASCII characters.
+# 
+*/
 module char_ram (
     input  logic        clk,
     input  logic        load_text,        // sygnał załadunku dwóch znaków
